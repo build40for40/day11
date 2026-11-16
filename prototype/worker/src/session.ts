@@ -17,12 +17,11 @@ type DeviceMessage = { t: string; uid?: string };
 
 const HARRIET = "aAsWcN5jdLdiYG7Hq0YL";
 const GIVE_UP_LISTENING_MS = 30000;
-const LONGEST_TURN_MS = 10000;
-const SAID_BYE = /\b(bye|goodbye|see you|night night)\b/i;
+const LONGEST_TURN_MS = 4000;
 const GOODBYE = "Bye bye! Tap your wand when you want to chat again.";
 
 function systemPrompt(kid: string): string {
-  return `${basePrompt}\n\nPROTOTYPE: you have no tools in this chat. The child is called ${kid}. Reply in English with one or two short spoken sentences and nothing else. When the child says bye, says they are done or wants to stop, say a short warm goodbye and call finish_session.`;
+  return `${basePrompt}\n\nPROTOTYPE: you have no tools in this chat. The child is called ${kid}. Reply in English with one or two short spoken sentences and nothing else. You cannot end the chat yourself. If the child says bye or wants to stop, say a short warm goodbye and tell them to tap their wand on your head to finish.`;
 }
 
 function voice(env: Env): Speak {
@@ -67,19 +66,13 @@ class Conversation {
       onSpeechStop: () => {
         if (this.listening) this.speechStopped();
       },
-      onHeard: (transcript) => {
-        if (!SAID_BYE.test(transcript)) return;
-        if (this.live) this.ending = true;
-        else this.tell({ t: "end", reason: "kid_done" });
-      },
+      onHeard: () => {},
       onText: (text) => {
         const turn = this.live ?? this.begin();
         turn.spoke = true;
         turn.sentences.add(text);
       },
-      onFinish: () => {
-        this.ending = true;
-      },
+      onFinish: () => {},
       onDone: () => {
         if (this.live || this.ending || this.stoppedAt) void this.guarded("turn", () => this.finish());
       },
@@ -125,7 +118,6 @@ class Conversation {
     this.live = null;
     turn.sentences.flush();
     if (turn.sentences.full) console.log(`  bella: ${turn.sentences.full}`);
-    if (SAID_BYE.test(turn.sentences.full)) this.ending = true;
     if (this.ending && !turn.spoke) turn.reply.say(GOODBYE);
     await turn.reply.end();
     if (this.ending) {

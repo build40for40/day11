@@ -2,11 +2,11 @@
 
 A throwaway end-to-end test of the proposed shape in [../docs/architecture.md](../docs/architecture.md): the StackChan stays thin and a server does the thinking. It isn't the app. Results are in [../docs/stackchan.md](../docs/stackchan.md).
 
-- `firmware/`: Arduino sketch for the K151. A wand tap starts a conversation. It then streams 16kHz PCM16 from the mic over a WebSocket, plays the 24kHz PCM16 reply as it arrives and reopens the mic afterwards. A tap on the head stops it.
+- `firmware/`: Arduino sketch for the K151. A wand tap starts a conversation. It then streams 16kHz PCM16 from the mic over a WebSocket, plays the 24kHz PCM16 reply as it arrives and reopens the mic afterwards. Lifting the wand and tapping it again ends the conversation, and so does a tap on the head.
 - `server.ts`: a local Node WebSocket server for trying things on a laptop. It maps the UID to a kid and streams the reply back as it is generated.
 - `worker/`: the same `hybrid` mode as a Cloudflare Worker with one Durable Object per device, deployed at `build40for40.com/glissen/api`. The device connects to `/glissen/api/ws` with a device token.
 
-Shortcuts taken on purpose: the screen shows status text (the design says LCD off), the firmware doesn't check the server's TLS certificate, the local server has no auth, and there are no safety checks or storage. The only tool is `finish_session`.
+Shortcuts taken on purpose: the screen shows status text (the design says LCD off), the firmware doesn't check the server's TLS certificate, the local server has no auth, and there are no safety checks or storage. The model has no tools.
 
 ## Run the server
 
@@ -19,7 +19,7 @@ With an empty `.env` it speaks with the macOS `say` voice and echoes the mic bac
 
 `MODE` picks how a turn is answered:
 
-- `chain` (default): speech to text, then a streamed chat model, then text to speech sentence by sentence. Saying bye doesn't end the chat reliably in this mode.
+- `chain` (default): speech to text, then a streamed chat model, then text to speech sentence by sentence.
 - `hybrid`: a realtime model takes the audio and replies in text, which is spoken sentence by sentence.
 - `realtime`: a realtime model does speech to speech, in its own voice.
 
@@ -48,4 +48,4 @@ Copy `firmware/secrets.h.example` to `firmware/secrets.h` and fill in a 2.4GHz W
 arduino-cli compile -u -p <PORT> --fqbn m5stack:esp32:m5stack_cores3 firmware
 ```
 
-Tap the wand on the head for a greeting, then talk. Say bye to end the chat, or tap the head strip. With `WANDS` unset any wand works, and once it is set only the listed ones do. If the server restarts, reset the board: the firmware doesn't reconnect by itself yet.
+Tap the wand on the head for a greeting, then talk. Lift the wand and tap it again to end the chat. Saying bye doesn't end it: speech to text invents a "bye" out of room noise too easily. With `WANDS` unset any wand works, and once it is set only the listed ones do. If the server restarts, reset the board: the firmware doesn't reconnect by itself yet.

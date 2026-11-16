@@ -1,7 +1,7 @@
 import { base64, MIC_RATE, REPLY_RATE, resample } from "./audio";
 
-export const SILENCE_ENDS_TURN_MS = 500;
-const SPEECH_THRESHOLD = 0.75;
+export const SILENCE_ENDS_TURN_MS = 350;
+const SPEECH_THRESHOLD = 0.85;
 export const FINISH_TOOL = {
   name: "finish_session",
   description: "End the chat. Call this when the child says bye, says they are done or wants to stop.",
@@ -66,7 +66,6 @@ export class Realtime {
         type: "realtime",
         instructions,
         output_modalities: ["text"],
-        tools: [{ type: "function", ...FINISH_TOOL }],
         audio: {
           input: {
             format: { type: "audio/pcm", rate: REPLY_RATE },

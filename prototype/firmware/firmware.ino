@@ -22,7 +22,8 @@ constexpr size_t kPrebufferBytes = kReplyRate * 2 / 5;
 constexpr size_t kChunkMinBytes = kReplyRate * 2 / 10;
 constexpr uint8_t kMicMagnification = 16;
 constexpr uint8_t kSpeakerVolume = 255;
-constexpr uint32_t kSameTagQuietMs = 3000;
+constexpr uint32_t kSameTagQuietMs = 1500;
+constexpr uint32_t kWandPollMs = 200;
 constexpr uint32_t kEchoGuardMs = 250;
 constexpr uint32_t kTouchQuietMs = 1500;
 constexpr uint32_t kWaitingTimeoutMs = 15000;
@@ -50,6 +51,7 @@ uint32_t waitingSince = 0;
 uint32_t touchQuietUntil = 0;
 String lastUid;
 uint32_t lastUidAt = 0;
+uint32_t lastWandPollAt = 0;
 
 void status(const char* text, uint16_t color, uint8_t r, uint8_t g, uint8_t b)
 {
@@ -72,7 +74,7 @@ void onSocket(WStype_t type, uint8_t* payload, size_t length)
     switch (type) {
         case WStype_CONNECTED:
             connected = true;
-            ws.sendTXT("{\"t\":\"hello\",\"device\":\"stackchan-01\",\"fw\":\"proto-0.4\"}");
+            ws.sendTXT("{\"t\":\"hello\",\"device\":\"stackchan-01\",\"fw\":\"proto-0.5\"}");
             ready();
             break;
         case WStype_DISCONNECTED:
@@ -179,28 +181,30 @@ void pumpReply()
     }
 }
 
-void pollWand()
+bool wandTapped()
 {
-    if (!nfcReady) return;
+    if (!nfcReady || millis() - lastWandPollAt < kWandPollMs) return false;
+    lastWandPollAt = millis();
     Units.update();
     std::vector<PICC> tags;
-    if (!nfcA.detect(tags)) return;
-    for (auto&& tag : tags) {
-        String uid = tag.uidAsString().c_str();
-        uid.toUpperCase();
-        bool stillThere = uid == lastUid && millis() - lastUidAt < kSameTagQuietMs;
-        lastUid = uid;
-        lastUidAt = millis();
-        if (stillThere) continue;
-        M5.Speaker.tone(3000, 30);
-        String message = "{\"t\":\"nfc\",\"uid\":\"" + uid + "\"}";
-        ws.sendTXT(message);
-        Serial.printf("[nfc] %s\n", uid.c_str());
-        conversation = true;
-        waitingSince = millis();
-        status("Wand!", TFT_CYAN, 0, 40, 60);
-    }
+    if (!nfcA.detect(tags) || tags.empty()) return false;
+    String uid = tags.front().uidAsString().c_str();
+    uid.toUpperCase();
     nfcA.deactivate();
+    bool stillThere = uid == lastUid && millis() - lastUidAt < kSameTagQuietMs;
+    lastUid = uid;
+    lastUidAt = millis();
+    return !stillThere;
+}
+
+void startConversation()
+{
+    M5.Speaker.tone(3000, 30);
+    String message = "{\"t\":\"nfc\",\"uid\":\"" + lastUid + "\"}";
+    ws.sendTXT(message);
+    conversation = true;
+    waitingSince = millis();
+    status("Wand!", TFT_CYAN, 0, 40, 60);
 }
 }  // namespace
 
@@ -250,12 +254,13 @@ void loop()
         if (endRequested) endConversation();
         return;
     }
-    bool tapped = M5StackChan.TouchSensor.wasClicked() && millis() > touchQuietUntil;
-    if (tapped) ws.sendTXT("{\"t\":\"tap\"}");
+    bool headTapped = M5StackChan.TouchSensor.wasClicked() && millis() > touchQuietUntil;
+    bool wand = wandTapped();
 
-    if (tapped && (conversation || replyActive)) {
+    if ((headTapped || wand) && (conversation || replyActive)) {
         ws.sendTXT("{\"t\":\"stop\"}");
         endConversation();
+        M5.Speaker.tone(1500, 60);
     } else if (replyActive) {
         stopListening();
         thinkingRequested = false;
@@ -273,7 +278,7 @@ void loop()
         streamMic();
     } else if (conversation) {
         if (millis() - waitingSince > kWaitingTimeoutMs) startListening();
-    } else {
-        pollWand();
+    } else if (wand) {
+        startConversation();
     }
 }
