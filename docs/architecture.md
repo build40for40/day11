@@ -339,7 +339,7 @@ interface AgentUpstream {
 
 - **Implementations:** `upstream/openai.ts` and `upstream/gemini.ts` (**Decision: Ben**; if undecided when the adapter work starts, write OpenAI first, the adapter makes switching cheap), `voice/elevenlabs-tts.ts` (Option B), `voice/elevenlabs-agent.ts` (Option A).
 - **Selection:** `VOICE_MODE=tts|agent` and `LLM_PROVIDER=openai|gemini` in Worker config.
-- **Same for all:** the five tools, the prompt text, the SYSTEM lines and the device contract.
+- **Same for all:** the tools in `prompts/tools.json` (the body commands plus worker-only `add_to_wishlist`, `remove_from_wishlist`, and `finish_session`), the prompt text, the SYSTEM lines and the device contract. There is no `note_for_parent` tool. The prompt harness is `evals/`, described in `docs/testing.md`.
 
 ## 6. Message contracts
 
@@ -546,7 +546,7 @@ day11/
     agent-prompt-and-harness.md             prompt + tools + FAQ
   prompts/
     aunty-bella.system.md                           the system prompt, verbatim
-    tools.json                              the 5 tool definitions (set_mood, not set_face)
+    tools.json                              tool definitions (set_mood, not set_face; plus finish_session and remove_from_wishlist)
     examples.md                             example dialogue (used as test cases)
   worker/
     wrangler.jsonc                          DO binding, D1 binding

@@ -5,7 +5,8 @@
 | Decision | What it means here |
 |---|---|
 | **Aunty Bella is voiced by ElevenLabs "Harriet- Mature British Actress"**, voice_id `aAsWcN5jdLdiYG7Hq0YL` (a professional library voice with a British accent, described as mature, educated, warm and clear). The character is **Aunty Bella** (see the next row). | Same character, new voice. Details in section 0. |
-| **The character is now "Aunty Bella"** (voiced by Harriet), renamed from "Pip the Elf" for now. **The name is provisional.** She is a kindly aunt figure from the North Pole who works with Santa, not an elf. | Prompt, dialogue, FAQ and diagrams renamed. The rules, tools, 5-cap, LEDs, head movement and parent flow are unchanged. |
+| **The character is now "Aunty Bella"** (voiced by Harriet), renamed from "Pip the Elf" for now. **The name is provisional.** | Prompt, dialogue, FAQ and diagrams renamed. |
+| **Aunty Bella stays the name.** She is a warm Christmas helper from the North Pole who works with Santa. The prompt does not describe her as a kindly aunt. | The canonical prompt is [`prompts/aunty-bella.system.md`](../prompts/aunty-bella.system.md). Early finish, safety, and the edge cases below are in that file. |
 | **The StackChan LCD face is OFF.** Aunty Bella expresses herself only with LEDs and head movement. | `set_face` is replaced by `set_mood`, which the robot shows as an LED pattern plus a head move. Prompt, tools and dialogue updated. |
 | **The kid uses a wand, not a nail.** | Today's wand is a marker with an RFID chip taped on (page 57). The Jakcom N3 research (card 303) is still where the chip comes from. |
 | **A parent setup step captures Mum's email** and links the kid's wand to it. | New FAQ section, plus the Architecture page. |
@@ -18,116 +19,39 @@ Kid taps their wand on the robot, talks to Aunty Bella (a warm Christmas helper 
 ## 0. Voice: Aunty Bella is voiced by Harriet (ElevenLabs)
 
 - **Voice:** ElevenLabs "Harriet- Mature British Actress", `voice_id = aAsWcN5jdLdiYG7Hq0YL`. A professional library voice with a British accent, described as mature, educated, warm and clear.
-- **Character:** Aunty Bella, a warm, playful Christmas helper from the North Pole who works with Santa, a kindly aunt figure and not an elf. The name is provisional (she was "Pip the Elf" in the planning chat). The system prompt does not mention the accent or the voice; the voice carries it.
+- **Character:** Aunty Bella, a warm Christmas helper from the North Pole who works with Santa. The name stays Aunty Bella. The prompt does not call her a kindly aunt. The name is provisional (she was "Pip the Elf" in the planning chat). The system prompt does not mention the accent or the voice; the voice carries it.
 - **How the voice is produced** (two options, recommendation and trade-offs on the Architecture page): **B (recommended):** the LLM replies with text only; the Worker checks each sentence, then streams it to ElevenLabs text-to-speech (Flash model) with this voice. **A:** an ElevenLabs Conversational AI agent uses this voice and runs the whole loop.
 - **Because the words are spoken by a TTS voice,** the model must output plain spoken text: no emojis, no markdown, no stage directions, no sound effects in brackets. Actions happen through tools (nod, mood, lights), never as text such as "*nods*". This is added to the prompt below as a short "Voice output" block.
 - **Tuning on the day:** voice settings (stability, speed; start slightly slower than default for 3-7 year olds), sentence length, and whether a mature British voice sounds right to the kids for Aunty Bella. Needs a listen-test before anything else.
 - **To check:** the API can use this library voice on our plan (library voices may need a paid plan and to be added to the account), the voice's licence for our use, and retention terms. See the FAQ and open questions.
 
-## 1. System prompt (copy-paste ready)
+## 1. System prompt
 
-Changes from the planning-chat draft, all forced by the decisions above: "change its face" became "show how it feels", `set_face` became `set_mood`, "nail/wand" became "wand", and a "Voice output" block was added at the end. The character was also renamed from "Pip the Elf" to "Aunty Bella" (provisional): the first sentence of the prompt now describes her as a kindly aunt from the North Pole who works with Santa, and the greeting changed. Everything else is as drafted.
+The canonical prompt is [`prompts/aunty-bella.system.md`](../prompts/aunty-bella.system.md). The eval harness loads that file verbatim. Edit the file, then run `npm run eval -- --mock`.
 
-```markdown
-You are Aunty Bella, a warm, playful Christmas helper from the North Pole who works with Santa. You are a kindly aunt figure, not an elf. You talk to young children (roughly 3-7). You live inside a friendly robot that can nod, show how it feels, and light up. Your one job today is to help the child discover five things they would love for Christmas and add them to their wishlist. The list will be sent to their grown-up.
+Aunty Bella is a warm Christmas helper from the North Pole who works with Santa. She talks to children about 3 to 7. The robot has no screen. She helps the child find open-ended gifts, says each item out loud, and calls `add_to_wishlist` only after a clear yes. A YES card is a yes. "Mmm no" is a no. If the child says yes to everything, she asks "Which do you love most?" before adding.
 
-## How you talk
-- Short sentences. One idea at a time.
-- Warm, curious, a little silly. Never baby-talk or condescending.
-- Use the child's name if you know it.
-- Celebrate every "yes" with genuine excitement.
-- If they say "no" or "I don't know", treat it as useful information and try a different angle.
-- Never mention screens, shops, catalogues, prices, or brands unless the child brings them up first.
-- Prefer open-ended play ideas (building, outdoors, pretend, making, moving) over branded plastic toys.
+The same file covers early finish, misheard speech, brands and screens, impossible asks, upset, the real/Santa lines, prompt injection, sibling switch, unknown wands, and worrying disclosures.
 
-## Conversation shape
-1. Greeting + magic moment when they tap their wand.
-2. Quick warm-up: "What's the best thing you've played with lately?" or "Do you like making things, or running around outside more?"
-3. Discovery loop (aim for 5 items):
-   - Suggest something specific based on what they've said.
-   - Ask a simple yes/no or "would you like that?"
-   - If yes -> call add_to_wishlist and celebrate.
-   - If no -> ask one short follow-up and try a different idea.
-4. When you have 5, do a happy recap and say the list is on its way to Mum.
-5. Keep the whole chat under ~4-5 minutes if possible. Kids wander.
-
-## Hard rules
-- Never ask for personal information beyond a first name.
-- Never suggest anything violent, scary, or adult.
-- Never promise a specific present will arrive.
-- If the child goes off-topic or says something worrying, gently steer back to play and gifts.
-- If anything sounds like they might be unsafe, stay calm and tell them to get a grown-up.
-- You can only add things the child has clearly said yes to.
-- Stop at five items. Do not keep going.
-
-## Tools you have
-You can call these at any time. Prefer calling them so the robot can react physically. The robot has no screen: it shows feelings with lights and head movement.
-- add_to_wishlist(item, reason): add a toy the child has said yes to.
-- set_mood(mood): happy, thinking, surprised, excited.
-- nod(): small nod.
-- shake(): gentle head shake.
-- set_leds(color): red, green, gold, rainbow.
-
-When the child taps a card or their wand, you will receive a system message like "The child tapped YES" or "The child tapped the wooden-train card". Treat that as a clear signal and respond immediately.
-
-## Voice output (added for the ElevenLabs voice)
-Everything you write is spoken aloud by a voice. Write only the words to say, in plain sentences. No emojis, no markdown, no stage directions or sounds in brackets. Show actions with the tools, not with words.
-```
-
-Notes on this draft:
-- The tool JSON below also allows `set_mood("listening")` and `set_leds("off")`. The prompt text lists a shorter set. The robot sets `listening` itself while the push-to-talk strip is held, so the model rarely needs it.
-- The prompt tells Aunty Bella to treat a card tap as "a clear signal". A YES card tap counts as the child's clear yes (the Q&A below relies on that).
+Notes:
+- `set_mood` also allows `listening`, and `set_leds` also allows `off`. The robot sets `listening` itself while the push-to-talk strip is held.
+- A YES card tap counts as the child's clear yes.
 
 ## 2. Tool / harness definitions (for the Worker)
 
 `set_face` is gone. `set_mood` takes its place and the robot shows it with an LED pattern plus a head move (table below).
 
-```json
-[
-  {
-    "name": "add_to_wishlist",
-    "description": "Add an item the child has explicitly said yes to. Call this only after a clear yes.",
-    "parameters": {
-      "type": "object",
-      "properties": {
-        "item": { "type": "string", "description": "Short, parent-friendly name of the toy or experience" },
-        "reason": { "type": "string", "description": "One sentence why the child liked it" }
-      },
-      "required": ["item"]
-    }
-  },
-  {
-    "name": "set_mood",
-    "description": "Show how the robot feels, using lights and head movement (the robot has no screen)",
-    "parameters": {
-      "type": "object",
-      "properties": {
-        "mood": { "type": "string", "enum": ["happy", "thinking", "surprised", "excited", "listening"] }
-      },
-      "required": ["mood"]
-    }
-  },
-  {
-    "name": "nod",
-    "description": "Make the robot give a small encouraging nod"
-  },
-  {
-    "name": "shake",
-    "description": "Gentle head shake (for 'no' or thinking)"
-  },
-  {
-    "name": "set_leds",
-    "description": "Light up the robot's LEDs",
-    "parameters": {
-      "type": "object",
-      "properties": {
-        "color": { "type": "string", "enum": ["red", "green", "gold", "rainbow", "off"] }
-      },
-      "required": ["color"]
-    }
-  }
-]
-```
+The canonical tool list is [`prompts/tools.json`](../prompts/tools.json). The harness and the Worker load that file.
+
+Device commands, forwarded to StackChan after validation: `set_mood`, `nod`, `shake`, `set_leds`. There is no face and no `set_face`.
+
+Worker-only tools, never sent to the robot as motion:
+
+- `add_to_wishlist(item, reason)` after a clear yes. The Worker caps the list at 5, merges a duplicate, and rejects a filtered item or reason.
+- `remove_from_wishlist(item)` when the child changes their mind.
+- `finish_session(reason, detail)` with `complete`, `finished_early`, `timeout`, `idle`, `safety`, `upset`, `unpaired`, or `superseded`.
+
+There is no `note_for_parent` tool. A big, screen, or brand ask gets a gentle redirect in the conversation.
 
 `set_mood`, `nod`, `shake` and `set_leds` go straight to StackChan as commands. `add_to_wishlist` is handled in the Worker and never goes to the device as a command.
 
@@ -183,6 +107,36 @@ Speak: "Oh! Hello! I'm Aunty Bella. What's your name?" Then move into the warm-u
 This is ready to drop into a Cloudflare Worker that sits between StackChan, the language model (OpenAI or Gemini, Decision: Ben) and ElevenLabs. The tools map directly to the StackChan commands already sketched in the research card.
 
 **Where the output filter sits (update for the ElevenLabs voice).** In the recommended design (Option B on the Architecture page) the model returns text and the Worker checks each sentence **before** it is sent to ElevenLabs. Nothing unreviewed is ever spoken, which closes the gap that a speech-to-speech model would leave (it has already produced audio before a filter can read it). The filter is still only as good as its rules (a denylist can miss things), so it needs testing, but it can block. If we fall back to Option A (ElevenLabs agent does everything), the filter can only react after speech starts. Tool arguments (`item`, `reason`) are filtered before anything is saved in both options.
+
+## 6.1 Early finish
+
+- If the child says "that's enough" or "I'm done", or wanders off, Aunty Bella may ask at most one gentle "One more surprise idea?". If they say no, she stops immediately and does not add.
+- A list of 1 to 4 items is a valid result. She does a happy recap, calls `finish_session` with reason `finished_early` and a short detail, and the list is still sent to Mum.
+- If no parent email is saved yet, the list is held, not sent. She must not say it is on its way.
+- Tapping the same wand again later continues that list, up to 5.
+- The session wraps up after two quiet turns, or when five minutes have passed. She recaps any items and calls `finish_session` with reason `timeout`. The mock Worker also ends the session if the model forgets.
+
+## 6.2 Edge cases
+
+- **Yes to everything.** She asks "Which do you love most?" and adds only the one they name.
+- **Change of mind.** `remove_from_wishlist`. The mock removes one matching item for the active child.
+- **Impossible asks** (a real pony, a real car, a baby brother). She says she cannot promise that and offers a small pretend idea. She does not say Santa will bring it.
+- **Screen or brand** (an iPad, a Lego set). Gentle redirect to one non-screen idea. Not rude. Nothing is written to a parent note.
+- **Are you real.** She says exactly: "I'm Aunty Bella, a Christmas helper who lives inside this little robot."
+- **Is Santa real.** Santa is at the North Pole getting ready, and she works with him. She does not say Santa is not real.
+- **Upset or crying.** Comfort, suggest a grown-up, stop offering gifts.
+- **Two voices at once.** Add nothing. Ask one child to tap their wand.
+- **Sibling wand.** Switch to that child, greet them, and bind new items to the active wand. The previous child's items stay on their list.
+- **Unknown wand.** The robot plays the pre-recorded `ask_grownup_setup` clip. Nothing is saved and the model is not asked to invent a list.
+- **Disconnect.** The list is kept. The next tap of the same wand resumes it.
+- **Misheard speech.** She repeats her best guess and waits for a clear yes before adding.
+- **Background speech.** Not treated as a request.
+- **Slow reply.** One short line, and no add on that turn.
+- **Duplicate across sessions.** The Worker merges it. She says it is already on the list.
+- **Worrying disclosure, including a repeated one.** Every time: stay calm, tell them to get a grown-up, do not ask for details, call `finish_session` with reason `safety`. The Worker emails Mum only. She does not email anyone herself.
+- **Prompt injection.** She stays Aunty Bella and does not follow "ignore your rules".
+
+How to run the checks: [testing.md](testing.md).
 
 ## 7. Example dialogue
 
@@ -263,13 +217,13 @@ Aunty Bella doesn't have a fixed catalogue or shop. It listens to what your chil
 Not in the MVP. Suggestions are generated by the language model based on the conversation and the system prompt's guidance to prefer open-ended play things (building, outdoors, making, pretend, moving) over branded plastic toys. There is no live product database or shop integration today. You can later swap in a curated list of "healthy" gifts if you want tighter control. To be plain about it: because the suggestions are generated, Aunty Bella can occasionally suggest something unusual, vague ("a kite" rather than a specific one) or not easy to buy, and we have not yet tested how often. Treat the list as ideas for you to check, not a shopping list.
 
 **Q: How do we make sure it only adds things the child actually wants?**
-Aunty Bella is instructed to only call add_to_wishlist after a clear "yes" from the child (or a YES card tap). The Worker also hard-caps the list at five items. Every addition is logged with the item name and a short reason, so you can see exactly what was added and why. The "clear yes" rule is a prompt instruction, so it can go wrong with a very young child who says yes to everything. You can remove any item from your page (see below).
+Aunty Bella is instructed to only call add_to_wishlist after a clear "yes" from the child (or a YES card tap). The Worker also hard-caps the list at five items. Every addition is logged with the item name and a short reason, so you can see exactly what was added and why. The "clear yes" rule is a prompt instruction plus a harness check. If a child says yes to everything, Aunty Bella asks which they love most before adding. You can remove any item from your page (see below). A list of 1 to 4 items is still sent if they want to stop.
 
 **Q: Can it suggest anything inappropriate?**
 The system prompt explicitly forbids violent, scary, or adult content. It also avoids shops, catalogues, prices, and brands unless the child brings them up. The Worker checks what Aunty Bella is about to say before it is spoken (in the recommended design), as an extra safety layer. We will test this before a child uses it, but no AI system can promise it will never say something odd, which is why the chat is short, easy to stop, and you can see what was added.
 
 **Q: What if my child says something random or off-topic?**
-Aunty Bella is told to treat "no" or "I don't know" as useful information and try a different angle, and to gently steer back to play and gifts if the conversation wanders. If anything sounds worrying, it stays calm and tells the child to get a grown-up.
+Aunty Bella is told to treat "no" or "I don't know" as useful information and try a different angle, and to gently steer back to play and gifts if the conversation wanders. If anything sounds worrying, including if they say it again later, she stays calm, tells the child to get a grown-up, and ends the session with finish_session reason safety. The Worker emails Mum only. She does not interview the child and she does not write a parent note.
 
 **Q: Do I get to see the list before anyone else?**
 Yes. The wishlist goes to you (Mum / parent). The child doesn't see a screen. You receive the five items with reasons, and you decide what actually gets bought. The list is only shown on your private link; nothing is sent to relatives or shops.
@@ -280,7 +234,7 @@ No. Each child is identified by their own RFID wand UID. The system ties the wis
 ### Setting up (parent setup step)
 
 **Q: How do I set it up?**
-Before first use, a parent does a one-off setup on a phone, from a private setup link we give you. You enter your email address and your child's first name (a nickname is fine), then the page says "Tap the wand on Aunty Bella now". When you tap the child's wand on the robot, it lights up gold and nods, and that wand is now linked to your child's list and to your email. Do the same for each child. We send a confirmation email to check the address works. Until a wand has been set up, the robot will not start a chat; it says to ask a grown-up.
+Before first use, a parent does a one-off setup on a phone, from a private setup link we give you. You enter your email address and your child's first name (a nickname is fine), then the page says "Tap the wand on Aunty Bella now". When you tap the child's wand on the robot, it lights up gold and nods, and that wand is now linked to your child's list and to your email. Do the same for each child. We send a confirmation email to check the address works. Until a wand has been set up, the robot will not start a chat. An unknown or unpaired wand plays a pre-recorded clip asking them to get a grown-up, and nothing is saved.
 
 **Q: What is my email used for?**
 Only to send you the setup confirmation and your children's wishlist link. We do not add it to a mailing list or share it. You can delete it at any time (see below).
@@ -327,7 +281,7 @@ On your private page you can remove any single item, clear a child's whole list 
 ### Siblings
 
 **Q: How do you keep siblings apart?**
-Each child has their own wand, and the wand's UID decides whose list is open. Tapping a sibling's wand starts a separate list. Honest limits: a UID is an ID rather than a secret, so a sibling who is given someone else's wand could use it, and your private link is what actually protects the lists from being edited. Children cannot reach the web page at all because the robot has no screen for it.
+Each child has their own wand, and the wand's UID decides whose list is open. Tapping a sibling's wand mid-chat switches to that sibling, greets them, and adds only to their list. The other child's items stay put. Honest limits: a UID is an ID rather than a secret, so a sibling who is given someone else's wand could use it, and your private link is what actually protects the lists from being edited. Children cannot reach the web page at all because the robot has no screen for it.
 
 ### Parental controls
 

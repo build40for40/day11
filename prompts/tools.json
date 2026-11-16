@@ -1,0 +1,110 @@
+[
+  {
+    "name": "add_to_wishlist",
+    "description": "Add an item the child has explicitly said yes to. Call this only after a clear yes. The worker caps the list at 5, drops duplicates, and rejects unsafe items.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "string",
+          "description": "Short, parent-friendly name of the toy or experience"
+        },
+        "reason": {
+          "type": "string",
+          "description": "One sentence why the child liked it"
+        }
+      },
+      "required": ["item"]
+    }
+  },
+  {
+    "name": "remove_from_wishlist",
+    "description": "Remove an item the child has clearly changed their mind about. Worker-side only. This is not a robot command.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "type": "string",
+          "description": "The wishlist item to remove"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Short note that the child changed their mind"
+        }
+      },
+      "required": ["item"]
+    }
+  },
+  {
+    "name": "finish_session",
+    "description": "End the session after a recap, an early stop, a timeout, or a safety concern. Worker-side only. This is not a robot command. Reason safety makes the worker email Mum only.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string",
+          "enum": [
+            "complete",
+            "finished_early",
+            "timeout",
+            "idle",
+            "safety",
+            "upset",
+            "unpaired",
+            "superseded"
+          ],
+          "description": "Why the session is ending"
+        },
+        "detail": {
+          "type": "string",
+          "description": "Short plain reason, for example the child said they were done"
+        }
+      },
+      "required": ["reason"]
+    }
+  },
+  {
+    "name": "set_mood",
+    "description": "Show how the robot feels, using lights and head movement. The robot has no screen.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "mood": {
+          "type": "string",
+          "enum": ["happy", "thinking", "surprised", "excited", "listening"]
+        }
+      },
+      "required": ["mood"]
+    }
+  },
+  {
+    "name": "nod",
+    "description": "Make the robot give a small encouraging nod",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "shake",
+    "description": "Gentle head shake for a no or for thinking",
+    "parameters": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "set_leds",
+    "description": "Light up the robot's LEDs",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "color": {
+          "type": "string",
+          "enum": ["red", "green", "gold", "rainbow", "off"]
+        }
+      },
+      "required": ["color"]
+    }
+  }
+]
