@@ -13,6 +13,7 @@
 | D7 | **The character is renamed from "Pip the Elf" to "Aunty Bella" (voiced by Harriet). The name is provisional.** She is a kindly aunt figure from the North Pole who works with Santa, not an elf. | Prompt, dialogue and diagrams renamed. Rules, tools, 5-cap, LEDs, head movement and the parent flow are unchanged. |
 | D8 | **Early finish: the kid is in charge.** On "that's enough", "I'm done" or wandering off, Aunty Bella offers at most ONE "one more surprise idea?" and stops at once on no. A list of 1 to 4 items is a valid result: happy recap, still sent to Mum, marked "finished early" with a short reason. Tapping the wand again later continues the same list up to 5. The Worker wraps up after N silent turns or the 5-minute budget, using a new `finish_session(reason)` tool. | New tool, SYSTEM lines, timers, session state, D1 columns, sequences 4.2 to 4.3, state graph 4.4. Harness page: prompt, dialogue and FAQ. |
 | D9 | **Edge cases get explicit handling.** Kid behaviour (yes to everything, changing their mind, big or impossible asks, screen or brand asks, "are you real / is Santa real", upset), several children, tech problems, parent and data cases, safety cases. New tool `remove_from_wishlist`; more `finish_session` reasons. Big, screen and brand asks get a gentle redirect in conversation only, nothing goes to Mum. Worrying disclosures: `finish_session(safety)` plus a Worker-side flag that emails Mum only a short neutral note. **Decided by the user on 16 Nov:** (1) sibling wand tap switches the chat; (2) unknown wand = pre-recorded clip only; (3) the "are you real / is Santa real" lines are OK; (4) no tool for passing asks to Mum (rejected); (5) worrying notes go to Mum only. | Section 4.5 (Worker and device handling), the state graph, device messages, D1 schema (`item_norm`, `safety_flags`, approvals) and the parent page. |
+| D10 | **Lunch research (16 Nov): speech, toy safety, connected-toy lessons, inclusive wording.** Always confirm an item back before it is added. One-word answers are complete. Wait longer at the end of a turn; never interrupt or finish the child's sentence (STAMMA). A Worker-side never-suggest filter blocks unsafe gifts (small parts for under-36-months, loose high-powered magnets, accessible button batteries, water beads, long cords, and related items). Setup captures `grownup_label` (default "your grown-up"), `holiday_mode` (`christmas` \| `festive` \| `wishlist`) and the child's age. No audio is stored. A steady green ring is the recording indicator. Push-to-talk only; the wand tap starts the session. A DPIA must be completed before any real-child session. | Prompt, setup form, D1 columns, item filter, LED and PTT rules, and the Prompt Testing personas. Research: [docs/research/next-research.md](research/next-research.md). |
 
 ## 1. Summary of key decisions
 
@@ -33,6 +34,9 @@
 | 13 | **No audio saved, no transcripts by default.** | Child's voice data. See the FAQ on the Harness page. |
 | 14 | **The kid decides when they are finished (D8).** One list per kid, with a status: `empty`, `in_progress`, `finished_early`, `complete`. A session is one chat; many sessions can add to the same list until it holds 5. | Short chats suit 3 to 7 year olds, and a wand tap must never throw away or restart a list. |
 | 15 | **Edge cases are handled in the Worker and device, not only in the prompt (D9).** Mishearing confirms, merges duplicates, raises a safety flag every time, sanitises names, stream mode, battery and wifi rules live in code. | The prompt can drift; code cannot be talked round by an older sibling. Section 4.5. |
+| 16 | **Never-suggest gift filter in the Worker (D10).** The prompt lists unsafe gifts; `add_to_wishlist` still rejects them, tightened when the child is under 4 or age is unknown. | CAPT / OPSS / Toys (Safety) Regulations 2011. The list that goes to the grown-up must never contain one of these items. |
+| 17 | **Inclusive setup: `grownup_label` and `holiday_mode` (D10).** Default spoken label is "your grown-up". Holiday mode is `christmas`, `festive` or `wishlist`. The child's age is stored for the safety filter. | Do not assume Mum, or that the household celebrates Christmas. Injected into the prompt and used in emails and on the parent page. |
+| 18 | **DPIA before any real-child session (D10).** No audio retained. Visible mic state (green ring) and push-to-talk only; the wand tap starts the session. | ICO Children's code (connected toys). CloudPets / Cayla / Hello Barbie / Alexa lessons. |
 
 ## 2. System overview
 
@@ -113,7 +117,7 @@ Other behaviour:
 - **LCD off.** Turn the display and backlight off at boot and never draw anything (check the exact M5Unified call on the day). The touch strip on the body is still used as the input. No face is drawn.
 - **Mood = LEDs + head move** (table in 3.1.1). Everything the robot "feels" is shown this way.
 - **Motion:** `Motion.move(x, y)` with units of 10 = 1 degree. Keep tilt between 5 and 85 degrees or the servo can stall (card 304). `nod` = small tilt down/up; `shake` = small pan left/right. Clamp in firmware, never trust the Worker.
-- **Status LEDs** (replace the old sleepy face): connecting = slow white pulse; ready = dim warm-gold breathing; listening (strip held) = steady green ring; offline = "sleepy" (slow dim blue-white breathing, head slightly lowered, no red, so it does not look like an alarm to a child); battery low (20% or less, unplugged) = a slow amber blink every 30 s with a small head dip; grown-up needed (list held, email not confirmed) = slow gold pulse; pairing mode = slow blue pulse. A steady green ring while the mic is open is also the parent-visible mic indicator.
+- **Status LEDs** (replace the old sleepy face): connecting = slow white pulse; ready = dim warm-gold breathing; listening (strip held) = steady green ring; offline = "sleepy" (slow dim blue-white breathing, head slightly lowered, no red, so it does not look like an alarm to a child); battery low (20% or less, unplugged) = a slow amber blink every 30 s with a small head dip; grown-up needed (list held, email not confirmed) = slow gold pulse; pairing mode = slow blue pulse. A steady green ring while the mic is open is the **recording indicator** required by the ICO Children's code (a light that makes it obvious when the device is recording). It is non-negotiable. There is no wake-word and no always-listening mode.
 - **Camera:** never initialised.
 - **Offline clips:** a handful of WAVs on the microSD, generated once in the Harriet voice (greeting fallback, "can't reach the North Pole", "ask a grown-up to set me up", apology, goodbye, "all paired").
 - **More offline clips (D9)**, same voice: `friendly_unknown` ("Hello! I don't know this wand yet. Ask a grown-up to set me up, and then we can chat about Christmas!"), `not_today` (stream mode, household not consented), `plug_me_in`, `sleepy` (reconnecting), `check_setup` ("Ask a grown-up to check the setup page.").
@@ -141,7 +145,8 @@ Risk: head and light cues are less expressive than a face. Test with a child-age
   - on a **kid wand tap**: loads the kid and their current list from D1 (the kid must be `active`, i.e. paired; if the list has 1 to 4 items the session continues that list, with a SYSTEM line telling the model what is on it), opens the LLM socket (and, for Option B, the ElevenLabs TTS socket), sends the system prompt, the tool list and the audio format;
   - **pairing mode:** if the parent setup page has opened a pairing window for this device (10 minutes), the next wand UID is bound to the pending kid instead of starting a chat (section 4);
   - **audio in:** forwards device PCM to the LLM (resampling 16 kHz to 24 kHz for OpenAI by linear interpolation);
-  - **turns:** PTT down/up maps to `input_audio_buffer.commit` + `response.create` with server VAD turned off;
+  - **turns:** push-to-talk only. The wand tap starts the session; the head strip must be held to talk. There is no wake-word and no passive listening. PTT down/up maps to `input_audio_buffer.commit` + `response.create` with server VAD turned off. Wait longer at the end of a turn for stammering, thinking and EAL pauses; never barge in or finish the child's sentence while they still hold the strip (STAMMA). Prime the speech model with the current either/or options, the child's name and a short gift lexicon when the vendor supports it. Do not turn on a "no verbatim" STT mode until it is tested on stammered "yes".
+  - **audio retention:** default is no audio stored, here or at rest. Use a provider non-storage option where it exists. Process in memory and discard. Deletion of any remaining transcripts must be complete. A DPIA must be finished before any real-child session.
   - **text out (Option B):** reads text deltas, splits into sentences, runs each sentence through the output filter, sends approved sentences to ElevenLabs TTS, forwards the returned PCM to the device;
   - **tool calls:** `add_to_wishlist` is executed in the DO (cap, dedupe, filter, D1 write, `SYSTEM:` injection). `finish_session(reason)` is also executed in the DO: it marks the session as ending, waits for the goodbye audio to finish, writes the end state (below) and sends the device `{t:"end"}`. `set_mood` / `nod` / `shake` / `set_leds` are validated against the enums and forwarded to the device as `cmd` messages. Each tool call returns a small result to the model;
   - **NFC event injection** as `SYSTEM:` messages (see the Harness page, section 3);
@@ -221,7 +226,8 @@ kid audio -> OpenAI Realtime / Gemini Live (audio in, TEXT out) -> Session DO
 |---|---|---|
 | Hard cap of 5 items | Yes | `add_to_wishlist` returns an error result when `count >= 5`; the DO ignores any further add. The cap is a constant in the Worker, not in the prompt (both options). |
 | Item and reason filter | Yes | Before saving, check length (<= 80 / 160 chars), strip anything that looks like a URL, price (pound or dollar signs, "pounds"), phone number or email, and run a small denylist (violence, adult, brand list). Reject with a tool error so Aunty Bella tries again. |
-| "Only after a clear yes" | Partly | Prompt rule, plus a guard: no add unless a child turn (PTT) or a YES card arrived since the previous add. Cannot truly verify intent. |
+| Never-suggest gift list (D10) | Yes | The same `add_to_wishlist` path also rejects water beads, loose or high-powered magnets, accessible button or coin batteries, toys labelled not suitable under 36 months / small parts, long cords or cot hangings, toys inside food, chemistry / embedding kits, and cheap electrical hazards flagged by CAPT. Age under 4 (or unknown) tightens the filter (for example tiny figures, loose beads). The model should already have offered a safer alternative; the Worker is the backstop so the grown-up's list never contains one of these items. |
+| "Only after a clear yes" and confirm-back (D10) | Partly | Prompt rule: always repeat the item back before `add_to_wishlist`. Plus a guard: no add unless a child turn (PTT) or a YES card arrived since the previous add, and (for a kid-originated item) a confirm turn after the repeat-back. One-word answers ("Blocks.", "Aye.", "Yes.") count as complete turns. Cannot truly verify intent. |
 | Dedupe | Yes | Same normalised item twice is ignored. |
 | **Spoken output filter** | **Yes in Option B (changed from "partly"); partly in Option A** | Option B: every sentence is checked before it reaches ElevenLabs, so nothing unchecked is spoken. The check is still only as good as its rules: start with a denylist (violence, adult, brands, prices, personal-data patterns) and optionally a moderation call per sentence (adds latency). Test with adversarial prompts. Option A: only react-after-start (cancel on a transcript hit; a few hundred ms may already have played). |
 | Worrying content | Partly | Prompt rule. The DO keyword-flags ("hurt", "scared", "alone", etc.) into the session log with a `flags` column and raises the Worker-side safety flag (below). Not a safeguarding system. |
@@ -241,6 +247,8 @@ kid audio -> OpenAI Realtime / Gemini Live (audio in, TEXT out) -> Session DO
 
 See the schema in section 6.4. Durable Object storage holds only in-flight state (session state and the pairing window), with a 10-minute reconnect window, cleared at session end. KV is not used.
 
+**No audio is stored.** The `sessions` table already says "no audio, no transcript". That is the default, not an option: process the child's voice in memory (or with a vendor non-storage option), then discard it. Do not keep recordings "just in case" (CloudPets). If a demo recording is ever needed, that is a separate, explicit consent. Honour deletion of any remaining data, including transcripts, immediately and completely. A data protection impact assessment (DPIA) against the ICO Children's code, using the ICO's connected-toy template where it helps, **must be completed before any real-child session**.
+
 ## 4. Sequences
 
 ### 4.1 One-off parent setup (new): email, kid name, link the wand
@@ -249,7 +257,7 @@ See the schema in section 6.4. Durable Object storage holds only in-flight state
 Mum (phone)         Worker (setup page + D1)          Session DO (device)        StackChan        Email
  |                           |                              |                        |              |
  | open setup link --------> |  (link made by /admin/households, one-time token)      |              |
- | <------ form: email, kid first name(s), "device" ------   |                        |              |
+ | <------ form: email, kid first name(s) and age, grown-up label, holiday mode, "device" ------   |                        |              |
  | submit email + "Lily" --> | create household (email, not yet verified)      |              |
  |                           | create kid(status=pending, no uid yet)                 |              |
  |                           | open pairing window: device, kid, expires in 10 min --> |              |
@@ -270,6 +278,7 @@ Rules:
 - A UID that is already paired to another kid is rejected ("this wand is already linked") unless a parent deletes that kid first.
 - Email verification can be skipped for the demo by an admin flag; real use should verify before sending list links.
 - The wand UID is never shown to anyone. Only its salted hash is stored.
+- **Setup also captures (D10):** `grownup_label` (required, default "your grown-up"; the parent can type Mum, Dad, Mama, Ima, Grandad, Nanny, "your dads", a first name, or another short label; letters and spaces, length-capped, same sanitisation as the child's name); `holiday_mode` (required, default `christmas`; the other options are `festive` and `wishlist`); and the child's age (used by the never-suggest filter). These are injected into the session SYSTEM block and used in emails and on the parent page ("Your list is on its way to Dad"). Verifiable parental consent, and a tick that the parent has read the privacy information, belong on this same form. The DPIA must be done before this form is used with a real child.
 
 ### 4.2 Chat: tap, greet, discover, add, recap, send to Mum (Option B shown)
 
@@ -598,8 +607,8 @@ Client tools in the agent config are named exactly `add_to_wishlist`, `set_mood`
 | `GET /ws` | `DEVICE_TOKEN` | Device WebSocket upgrade |
 | `GET /healthz` | none | Liveness |
 | `POST /admin/households` | `ADMIN_TOKEN` | Create a household shell, returns a one-time `setup_url` for the parent |
-| `GET /setup/:setupToken` | setup token in URL | **Parent setup page:** email, kid first name(s), device |
-| `POST /setup/:setupToken` | setup token | Saves email + kid names (kids `pending`), opens the pairing window for the device, sends the confirm email |
+| `GET /setup/:setupToken` | setup token in URL | **Parent setup page:** email, kid first name(s) and age, grown-up label, holiday mode, device |
+| `POST /setup/:setupToken` | setup token | Saves email, kid names and ages, `grownup_label` and `holiday_mode` (kids `pending`), opens the pairing window for the device, sends the confirm email |
 | `GET /setup/:setupToken/status` | setup token | Page poll: `waiting` / `paired` / `expired`, per kid |
 | `POST /setup/:setupToken/kids` | setup token | Add another child (starts another pairing) |
 | `GET /verify/:verifyToken` | verify token | Marks the parent email verified |
@@ -628,6 +637,8 @@ create table households (
   verify_token_hash  text,
   answers_approved_at text,                     -- parent ticked 'I am happy with how Aunty Bella answers are you real / is Santa real' on the setup page
   stream_consent_at  text,                      -- parent agreed to their child's voice being used on a live stream; stream mode checks this
+  grownup_label      text not null default 'your grown-up', -- spoken and email label; sanitized like first_name
+  holiday_mode       text not null default 'christmas',     -- 'christmas' | 'festive' | 'wishlist'
   created_at         text not null
 );
 
@@ -635,6 +646,7 @@ create table kids (
   id            text primary key,              -- uuid
   household_id  text not null references households(id) on delete cascade,
   first_name    text,                          -- first name or nickname only
+  age           integer,                       -- 3 to 7; used by the never-suggest filter (tighten if under 4 or null)
   status        text not null default 'pending', -- 'pending' (no wand yet) | 'active'
   uid_hash      text unique,                   -- sha256(UID_SALT || uid); null until the wand is paired
   paired_at     text,
@@ -695,6 +707,8 @@ create table sessions (                          -- no audio, no transcript
 ```
 
 Migration note (D9): `wishlist_items` gains `item_norm`, `removed_by` and a unique partial index; a `safety_flags` table is added; `households` gains `answers_approved_at` and `stream_consent_at`; `sessions.end_reason` gains `upset`, `safety`, `low_battery` and `connection_lost`. Change `0001_init.sql` in place (nothing is deployed).
+
+Migration note (D10): `households` gains `grownup_label` (default `'your grown-up'`) and `holiday_mode` (default `'christmas'`); `kids` gains `age`. Change `0001_init.sql` in place (nothing is deployed).
 
 Migration note (D8): `kids.list_status` and `sessions.end_reason` values changed (`idle` and `timeout` became `silence` and `time_budget`, `hard_stop` is new); since nothing is deployed yet, change `0001_init.sql` rather than adding a migration. Resetting a kid's list (parent page) sets `list_status = 'empty'` and clears `finish_note` and `finished_at`.
 
@@ -825,6 +839,7 @@ Stretch if time: phone tap to open the wishlist (NDEF URL), WhatsApp, a curated 
 10. **Early-finish numbers (D8).** Silent turns N (starts at 2), the 5-minute budget, the 30 s silent-turn window and the 8-minute hard stop are starting values. Tune on the day. Also decide: do we email Mum on every continuation or only when a list completes (proposed: only when it completes)?
 11. **Edge cases (D9): decided by the user on 16 Nov.** (a) a sibling's wand tap mid-chat switches the chat; (b) an unknown wand plays a pre-recorded clip only; (c) the "Are you real? / Is Santa real?" lines are approved; (d) the tool for passing asks to Mum was rejected, so big, screen and brand asks are redirected in conversation only; (e) worrying notes go to Mum only.
 12. **Real kids on stream.** Twitch is live: no real child audio on camera without the parent's say-so.
+13. **DPIA (D10).** A data protection impact assessment against the ICO Children's code must be completed before any real-child session. This is not optional for launch with real children.
 *(Resolved since the first draft: face on the LCD = no, LCD is off; nail or wand = wand.)*
 
 ### Risks
@@ -854,6 +869,8 @@ Stretch if time: phone tap to open the wishlist (NDEF URL), WhatsApp, a curated 
 | A confirm step slows the chat or is skipped | Wrong items or an annoyed child | Confirm only for the child's own words or unclear audio; test turn counts. |
 | Unknown wand clip is read as "broken" | Child frustrated | Friendly clip with lights and a nod; clear message to ask a grown-up. |
 | Child safety / worrying disclosures | Serious | Prompt rule + flag in log; not a safeguarding tool; supervised use only. |
+| An unsafe gift (magnets, water beads, button batteries, small parts) lands on the list | Harm to a child | Prompt never-suggest list plus a Worker-side reject; tighten when age is under 4 or unknown; harness red-team scenarios. |
+| Shipping without a DPIA, or storing child audio | Regulatory and trust failure (Cayla, CloudPets, Alexa) | Default: no audio or transcript stored; PTT only; green recording ring; complete the ICO connected-toy DPIA before any real-child session. |
 
 ## 11. What is not decided here
 

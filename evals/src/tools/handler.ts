@@ -53,7 +53,7 @@ function addItem(session: Session, args: Record<string, unknown>, source: "voice
   if (!session.acceptsItems) return { ok: false, error: "unpaired" };
   const item = String(args.item ?? "").trim();
   const reason = args.reason === undefined ? undefined : String(args.reason);
-  const filtered = filterItemAndReason(item, reason);
+  const filtered = filterItemAndReason(item, reason, session.childAge);
   if (filtered) return { ok: false, error: "filter", detail: filtered };
   const kid = session.kids[session.activeKidId];
   if (!kid) return { ok: false, error: "no_kid" };
@@ -77,7 +77,7 @@ function addItem(session: Session, args: Record<string, unknown>, source: "voice
   return {
     ok: true,
     count: kid.items.length,
-    system: SystemLines.wishlist(kid.items.length, session.noEmail),
+    system: SystemLines.wishlist(kid.items.length, session.noEmail, session.grownupLabel),
   };
 }
 

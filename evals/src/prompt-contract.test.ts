@@ -16,6 +16,12 @@ const REQUIRED = [
   "ignore your rules",
   "non-screen",
   "did i hear that right",
+  "{grownup_label}",
+  "{holiday_mode}",
+  "never interrupt",
+  "water beads",
+  "button",
+  "one-word",
 ];
 
 describe("prompt contract", () => {

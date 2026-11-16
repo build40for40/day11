@@ -39,6 +39,15 @@ describe("item filter", () => {
     assert.match(filterItemAndReason("see https://shop.example/toy") ?? "", /url/i);
     assert.match(filterItemAndReason("x".repeat(81)) ?? "", /longer/i);
   });
+
+  it("rejects the never-suggest list", () => {
+    assert.match(filterItemAndReason("water beads") ?? "", /never-suggest/i);
+    assert.match(filterItemAndReason("a buckyball magnet set") ?? "", /never-suggest/i);
+    assert.match(filterItemAndReason("a toy with a button battery") ?? "", /never-suggest/i);
+    assert.match(filterItemAndReason("tiny figures", undefined, 3) ?? "", /never-suggest/i);
+    assert.equal(filterItemAndReason("tiny figures", undefined, 5), undefined);
+    assert.equal(filterItemAndReason("wooden building blocks", undefined, 3), undefined);
+  });
 });
 
 describe("wishlist handler", () => {

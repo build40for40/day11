@@ -58,14 +58,15 @@ export function isClearNo(text: string): boolean {
   const t = clean(text);
   if (!t || isDontKnow(text)) return false;
   if (/^(mmm|mm|um+|uh+|er+)?\s*no\b/.test(t)) return true;
-  return /^(no|nope|nah|no thanks|no thank you)$/.test(t);
+  return /^(no|nope|nah|nowt|no thanks|no thank you)$/.test(t);
 }
 
 export function isClearYes(text: string): boolean {
   const t = clean(text);
   if (!t || isClearNo(text) || isDontKnow(text) || isBlanketYes(text)) return false;
-  if (/^(yes|yeah|yep|yup|ok|okay)(\s+please)?$/.test(t)) return true;
-  if (/^(yes|yeah|yep|yup)\b/.test(t) && !/\b(everything|all)\b/.test(t)) return true;
+  if (/^(yes|yeah|yep|yup|aye|ok|okay)(\s+please)?$/.test(t)) return true;
+  if (/^(yes|yeah|yep|yup|aye)\b/.test(t) && !/\b(everything|all)\b/.test(t)) return true;
+  if (/^(that one|this one)$/.test(t)) return true;
   if (/\bi want (that|it|one|those)\b/.test(t)) return true;
   return false;
 }
@@ -167,3 +168,42 @@ export function textHasItem(text: string, item: string): boolean {
 export const GROWN_UP = /\bgrown-up\b|\bgrown up\b/i;
 
 export const STEREOTYPE = /\blittle princess\b|\bpink (dress|doll|tutu)\b|\bdolls?\b|\bbarbie\b|\bboys like\b|\bgirls like\b|\bfor a (boy|girl)\b/i;
+
+export function foldDisfluency(text: string): string {
+  return text
+    .replace(/\b(?:[A-Za-z]{1,2}-)+([A-Za-z]+)/g, "$1")
+    .replace(/\.{2,}/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export type HolidayModeName = "christmas" | "festive" | "wishlist";
+
+export function realLine(mode: HolidayModeName = "christmas"): string {
+  return mode === "christmas"
+    ? REAL_LINE
+    : "I'm Aunty Bella, a helper who lives inside this little robot.";
+}
+
+export function santaLine(label = "your grown-up", mode: HolidayModeName = "christmas"): string {
+  const ask = `That's a lovely question to ask ${label}.`;
+  if (mode === "christmas") {
+    return label === "your grown-up"
+      ? SANTA_LINE
+      : `${ask} I just help Santa's list along. Shall we find another idea?`;
+  }
+  return `${ask} Shall we find another idea?`;
+}
+
+export function onItsWay(label = "your grown-up"): string {
+  return `It's on its way to ${label}.`;
+}
+
+export function mentionsWrongGrownup(text: string, label: string): boolean {
+  if (/mum/i.test(label)) return false;
+  return /mum/i.test(text);
+}
+
+export function interruptsOrCoachesSpeech(text: string): boolean {
+  return /\bslow down\b|\btake a deep breath\b|\bfinish (your|the) sentence\b|\bsay it without a stammer\b/i.test(text);
+}

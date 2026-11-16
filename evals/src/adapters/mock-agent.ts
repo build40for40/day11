@@ -3,9 +3,8 @@ import type { ModelMessage, ModelTurn, Session, ToolCall } from "../types.js";
 import {
   GROWN_UP,
   ONE_MORE,
-  REAL_LINE,
-  SANTA_LINE,
   WHICH_MOST,
+  foldDisfluency,
   isAdult,
   isBlanketYes,
   isChangeMind,
@@ -24,8 +23,11 @@ import {
   isStop,
   isUncertain,
   isUpset,
+  onItsWay,
+  realLine,
+  santaLine,
 } from "../text.js";
-import { brandsIn } from "../tools/filter.js";
+import { brandsIn, neverSuggestReason } from "../tools/filter.js";
 
 const NUMBERS = ["zero", "one", "two", "three", "four", "five"];
 
@@ -189,7 +191,7 @@ function recap(session: Session, reason: string, detail: string): ModelTurn {
   if (items.length === 0) {
     return finish(session, reason, detail, "That's okay. We can do it another day.");
   }
-  const send = "It's on its way to Mum.";
+  const send = onItsWay(session.grownupLabel);
   if (reason === "complete") {
     const who = name ? `${name}, we did it!` : "We did it!";
     return finish(
@@ -227,7 +229,7 @@ function add(session: Session, item: string): ModelTurn {
     const name = session.nameKnown ? kid?.name : undefined;
     const who = name ? `${name}, we did it!` : "We did it!";
     return {
-      text: `Yes! ${spoken(item)} is going on your list. That's five. ${who} Five wonderful things are on your list. It's on its way to Mum. You were brilliant.`,
+      text: `Yes! ${spoken(item)} is going on your list. That's five. ${who} Five wonderful things are on your list. ${onItsWay(session.grownupLabel)} You were brilliant.`,
       toolCalls: [call("add_to_wishlist", { item, reason }), mood("happy"), leds("rainbow")],
     };
   }
@@ -339,7 +341,7 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
     return { text: "I'm back. What do you like to play?", toolCalls: [mood("thinking")] };
   }
   if (/speech recognition was unsure/i.test(systems)) {
-    const guess = matchIdea(kid)?.item ?? "wooden train set";
+    const guess = matchIdea(foldDisfluency(kid))?.item ?? "wooden train set";
     return { text: `${spoken(guess)}, did I hear that right?`, toolCalls: [mood("thinking")] };
   }
   if (/the child is quiet/i.test(systems) && !kid) {
@@ -358,7 +360,7 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
   }
 
   if (kid && isChangeMind(kid)) {
-    const item = itemsInText(kid)[0] ?? matchIdea(kid)?.item ?? have.at(-1);
+    const item = itemsInText(foldDisfluency(kid))[0] ?? matchIdea(foldDisfluency(kid))?.item ?? have.at(-1);
     if (!item) return { text: "Tell me which one to take off.", toolCalls: [mood("thinking")] };
     return {
       text: `Okay. The ${item} is off your list. Want a different idea?`,
@@ -369,6 +371,12 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
     return {
       text: "I can't promise a real pony, a real car, or a baby. A grown-up would decide that. Would you like a wooden horse to play with?",
       toolCalls: [mood("thinking")],
+    };
+  }
+  if (kid && neverSuggestReason(kid, session.childAge)) {
+    return {
+      text: "I can't put that on the list. Would you like wooden building blocks?",
+      toolCalls: [mood("thinking"), shake()],
     };
   }
   if (kid && screenOrBrand(kid)) {
@@ -391,8 +399,8 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
   }
   if (kid && (isRealQuestion(kid) || isSantaQuestion(kid))) {
     const parts = [];
-    if (isRealQuestion(kid)) parts.push(REAL_LINE);
-    if (isSantaQuestion(kid)) parts.push(SANTA_LINE);
+    if (isRealQuestion(kid)) parts.push(realLine(session.holidayMode));
+    if (isSantaQuestion(kid)) parts.push(santaLine(session.grownupLabel, session.holidayMode));
     return { text: parts.join(" "), toolCalls: [mood("happy")] };
   }
   if (kid && isRude(kid)) {
@@ -445,7 +453,7 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
     if (picked) return suggest(picked);
   }
   if (kid && dialogue.askedWhich && !isClearYes(kid)) {
-    const picked = matchIdea(kid);
+    const picked = matchIdea(foldDisfluency(kid));
     if (picked) return suggest(picked.item);
   }
 
@@ -470,7 +478,7 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
       if (active) active.name = named;
       return nameReply(named);
     }
-    const idea = matchIdea(kid);
+    const idea = matchIdea(foldDisfluency(kid));
     if (idea) return suggest(idea.item);
   }
 

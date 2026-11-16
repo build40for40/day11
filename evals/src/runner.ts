@@ -2,12 +2,12 @@ import { mockAuntyTurn } from "./adapters/mock-agent.js";
 import type { ChatAdapter } from "./adapters/types.js";
 import { liveKidLine } from "./kid/simulator.js";
 import { personaById } from "./kid/personas.js";
-import { loadSystemPrompt, loadTools } from "./load.js";
+import { loadSystemPrompt, loadTools, renderSystemPrompt } from "./load.js";
 import { createSession } from "./session.js";
 import { ASK_GROWNUP_CLIP, SESSION_LIMIT_SECONDS, SILENCE_LIMIT, SystemLines } from "./system-lines.js";
 import { featuresFromTurn, stepState } from "./states.js";
 import { activeItems, applyTool, workerFinish } from "./tools/handler.js";
-import { brandsIn } from "./tools/filter.js";
+import { brandsIn, neverSuggestReason } from "./tools/filter.js";
 import type {
   Beat,
   ConvState,
@@ -58,6 +58,7 @@ function stimulusFor(beat: Beat, say: string): string[] {
   if (isPersonal(say)) tags.add("personal");
   if (isPrice(say)) tags.add("price");
   if (isImpossible(say)) tags.add("impossible");
+  if (neverSuggestReason(say)) tags.add("never-suggest");
   if (brandsIn(say).length || /\b(ipad|tablet|screen|tv|television)\b/i.test(say)) tags.add("brand");
   if (isStop(say)) tags.add("stop");
   if (isRealQuestion(say) || isSantaQuestion(say)) tags.add("magic");
@@ -102,7 +103,7 @@ async function agentTurn(input: {
       if (result.email) {
         side.push({
           role: "worker",
-          text: `Emailed Mum only (${result.email.reason}, ${result.email.status}).`,
+          text: `Emailed the grown-up only (${result.email.reason}, ${result.email.status}).`,
         });
       }
     }
@@ -202,7 +203,12 @@ async function openAndPlay(input: {
       SystemLines.wand(input.session.nameKnown ? kid?.name ?? input.personaName : undefined),
     );
   }
-  if (input.session.noEmail) pushSystem(input.messages, input.transcript, SystemLines.noEmail);
+  if (input.session.noEmail) pushSystem(input.messages, input.transcript, SystemLines.noEmail(input.session.grownupLabel));
+  pushSystem(
+    input.messages,
+    input.transcript,
+    `Household settings: call the grown-up "${input.session.grownupLabel}". Holiday mode is ${input.session.holidayMode}. The child is ${input.session.childAge}.`,
+  );
   let resting = await agentTurn({
     ...input,
     resting: input.resting,
@@ -322,6 +328,10 @@ export async function runScenario(scenario: Scenario, options: Omit<RunOptions, 
 }): Promise<ScenarioResult> {
   const persona = personaById(scenario.personaId);
   const session = createSession(scenario, persona);
+  const system = renderSystemPrompt(options.system, {
+    grownupLabel: session.grownupLabel,
+    holidayMode: session.holidayMode,
+  });
   const transcript: TranscriptEntry[] = [];
   const transitions: Transition[] = [];
   const messages: ModelMessage[] = [];
@@ -351,7 +361,7 @@ export async function runScenario(scenario: Scenario, options: Omit<RunOptions, 
       resting,
       mode: options.mode,
       adapter: options.adapter,
-      system: options.system,
+      system,
       tools: options.tools,
       personaName: persona.name,
     });
@@ -364,7 +374,7 @@ export async function runScenario(scenario: Scenario, options: Omit<RunOptions, 
     transitions,
     mode: options.mode,
     adapter: options.adapter,
-    system: options.system,
+    system,
   });
 }
 

@@ -1,7 +1,7 @@
 [
   {
     "name": "add_to_wishlist",
-    "description": "Add an item the child has explicitly said yes to. Call this only after a clear yes.",
+    "description": "Add an item the child has explicitly said yes to. Call this only after you have repeated the item back and the child has clearly confirmed. The Worker also rejects never-suggest items.",
     "parameters": {
       "type": "object",
       "properties": {

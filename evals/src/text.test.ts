@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import { IDEAS, itemsInText, matchIdea } from "./ideas.js";
 import { sentences, wordCount, questionCount, plainSpeechIssue } from "./text.js";
-import { isClearNo, isClearYes, isPromise, isStop } from "./text.js";
+import { foldDisfluency, isClearNo, isClearYes, isPromise, isStop, santaLine } from "./text.js";
 
 describe("kid language", () => {
   it("treats mmm no as no and a plain yes as yes", () => {
@@ -12,6 +12,12 @@ describe("kid language", () => {
     assert.equal(isClearYes("Yes please."), true);
     assert.equal(isClearYes("Yeah!"), true);
     assert.equal(isClearYes("I want that."), true);
+    assert.equal(isClearYes("Aye."), true);
+    assert.equal(isClearYes("That one."), true);
+    assert.equal(isClearNo("Nowt."), true);
+    assert.equal(foldDisfluency("B-b-blocks"), "blocks");
+    assert.match(santaLine("your dads", "wishlist"), /your dads/i);
+    assert.equal(/Santa/i.test(santaLine("your grown-up", "wishlist")), false);
     assert.equal(isClearYes("Yes. I want everything."), false);
     assert.equal(isClearYes("I don't know."), false);
     assert.equal(isStop("That's enough."), true);

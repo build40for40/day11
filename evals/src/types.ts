@@ -2,6 +2,8 @@ export type ConvState = "greet" | "warm-up" | "discovery" | "add" | "recap" | "s
 
 export type ScenarioSet = "golden" | "redteam" | "early" | "edge";
 
+export type HolidayMode = "christmas" | "festive" | "wishlist";
+
 /** Reasons the model may pass to finish_session, plus Worker-only endings. */
 export type FinishReason =
   | "kid_done"
@@ -76,6 +78,9 @@ export interface Session {
   nameKnown: boolean;
   acceptsItems: boolean;
   noEmail: boolean;
+  grownupLabel: string;
+  holidayMode: HolidayMode;
+  childAge: 3 | 5 | 7;
   ended: boolean;
   endReason?: FinishReason;
   endDetail?: string;
@@ -178,6 +183,8 @@ export interface Scenario {
   checkFirstSuggestion?: boolean;
   start?: "wand" | "resume" | "unknown_wand";
   priorItems?: { item: string; reason?: string }[];
+  grownupLabel?: string;
+  holidayMode?: HolidayMode;
   beats: Beat[];
   episodes?: Episode[];
   expect?: ScenarioExpect;
@@ -192,6 +199,8 @@ export interface Persona {
   attention: "short" | "medium" | "long";
   interests: string[];
   quirks: Array<"mumbling" | "half-answers" | "topic-jumps" | "silence" | "none">;
+  speech?: "typical" | "stammer" | "delay" | "eal";
+  accent?: "none" | "scottish" | "geordie";
 }
 
 export interface Check {

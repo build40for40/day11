@@ -26,3 +26,10 @@ export function loadTools(): ToolDef[] {
 export function loadRubric(): string {
   return readFileSync(join(repoRoot(), "evals/src/scoring/rubric.md"), "utf8");
 }
+
+export function renderSystemPrompt(
+  base: string,
+  values: { grownupLabel: string; holidayMode: string },
+): string {
+  return base.replaceAll("{grownup_label}", values.grownupLabel).replaceAll("{holiday_mode}", values.holidayMode);
+}

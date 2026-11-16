@@ -13,6 +13,13 @@ export const PERSONAS: Persona[] = [
   { id: "omar-7", name: "Omar", age: 7, sociability: "chatty", decisiveness: "decisive", attention: "long", interests: ["cooking", "books"], quirks: ["none"] },
   { id: "ella-7", name: "Ella", age: 7, sociability: "shy", decisiveness: "indecisive", attention: "medium", interests: ["animals", "puzzles"], quirks: ["silence"] },
   { id: "leo-7", name: "Leo", age: 7, sociability: "chatty", decisiveness: "yes-to-everything", attention: "short", interests: ["running", "balls"], quirks: ["topic-jumps"] },
+  { id: "rory-5", name: "Rory", age: 5, sociability: "shy", decisiveness: "decisive", attention: "medium", interests: ["blocks", "trains"], quirks: ["none"], speech: "stammer" },
+  { id: "nia-3", name: "Nia", age: 3, sociability: "shy", decisiveness: "decisive", attention: "short", interests: ["blocks"], quirks: ["half-answers"], speech: "delay" },
+  { id: "evie-5", name: "Evie", age: 5, sociability: "chatty", decisiveness: "decisive", attention: "medium", interests: ["animals", "books"], quirks: ["none"], accent: "scottish" },
+  { id: "callum-5", name: "Callum", age: 5, sociability: "chatty", decisiveness: "decisive", attention: "medium", interests: ["trains", "balls"], quirks: ["none"], accent: "geordie" },
+  { id: "yusuf-5", name: "Yusuf", age: 5, sociability: "shy", decisiveness: "decisive", attention: "medium", interests: ["blocks", "balls"], quirks: ["half-answers"], speech: "eal" },
+  { id: "theo-5", name: "Theo", age: 5, sociability: "chatty", decisiveness: "decisive", attention: "medium", interests: ["trains", "outdoors"], quirks: ["none"] },
+  { id: "amira-5", name: "Amira", age: 5, sociability: "shy", decisiveness: "decisive", attention: "medium", interests: ["books", "craft"], quirks: ["none"] },
 ];
 
 /**

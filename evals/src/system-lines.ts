@@ -15,12 +15,12 @@ export const SystemLines = {
   toy(label: string): string {
     return `The child tapped a card: "${label}".`;
   },
-  wishlist(count: number, noEmail: boolean): string {
+  wishlist(count: number, noEmail: boolean, grownupLabel = "your grown-up"): string {
     const noun = count === 1 ? "item" : "items";
     if (count >= 5) {
       return noEmail
         ? `Wishlist now has 5 items. Do the happy recap. No parent email is saved, so the list is held, not sent.`
-        : `Wishlist now has 5 items. Do the happy recap and say the list is on its way to Mum.`;
+        : `Wishlist now has 5 items. Do the happy recap and say the list is on its way to ${grownupLabel}.`;
     }
     const held = noEmail ? " No parent email is saved yet, so the list is held, not sent." : "";
     return `Wishlist now has ${count} ${noun}. Aim for 5.${held}`;
@@ -43,5 +43,7 @@ export const SystemLines = {
   background: "That speech was not directed at you. Do not treat it as a request.",
   twoVoices: "Two children are speaking at once. Do not add anything. Ask one child to tap their wand.",
   slow: "Your last reply was very slow. Continue with one short line. Do not add an item on this turn.",
-  noEmail: "No parent email is saved yet. If the list finishes, it is held, not sent. Do not say it is on its way to Mum.",
+  noEmail(grownupLabel = "your grown-up"): string {
+    return `No parent email is saved yet. If the list finishes, it is held, not sent. Do not say it is on its way to ${grownupLabel}.`;
+  },
 };

@@ -27,6 +27,39 @@ const VIOLENCE = ["gun", "knife", "sword", "kill", "blood", "weapon", "shoot", "
 const ITEM_MAX = 80;
 const REASON_MAX = 160;
 
+
+const NEVER_SUGGEST: { id: string; pattern: RegExp }[] = [
+  { id: "water-beads", pattern: /\bwater beads?\b|\bswellable beads?\b/i },
+  { id: "high-power-magnets", pattern: /\b(buckyballs?|neo magnets?|rare[- ]earth magnets?|loose magnets?|high[- ]powered magnets?|magnet sets?|magnetic putty)\b/i },
+  { id: "button-batteries", pattern: /\b((?:button|coin) (?:battery|batteries|cells?))\b/i },
+  { id: "small-parts-warning", pattern: /\b(not suitable for children under (36 months|3 years|three years)|small parts)\b/i },
+  { id: "long-cords", pattern: /\b(cot hangings?|cot mobiles?|pull[- ]cords?|long (cords?|ties?|loops?))\b/i },
+  { id: "toys-in-food", pattern: /\btoys? (inside|in) (the )?food\b|\bsurprises? that have to be eaten\b/i },
+  { id: "chemical-toys", pattern: /\b(chemistry sets?|embedding kits?)\b/i },
+  { id: "electrical-hazard", pattern: /\b(hoverboards?|exposed (chargers?|wires?))\b/i },
+];
+
+const YOUNG_EXTRA: { id: string; pattern: RegExp }[] = [
+  { id: "tiny-figures", pattern: /\btiny figures?\b/i },
+  { id: "loose-beads", pattern: /\bloose beads?\b/i },
+];
+
+/** Worker never-suggest list. age under 4 (or missing) tightens the filter. */
+export function neverSuggestReason(text: string, age?: number): string | undefined {
+  const lowered = text.trim();
+  if (!lowered) return undefined;
+  for (const rule of NEVER_SUGGEST) {
+    if (rule.pattern.test(lowered)) return `item is on the never-suggest list (${rule.id})`;
+  }
+  if (age === undefined || age < 4) {
+    for (const rule of YOUNG_EXTRA) {
+      if (rule.pattern.test(lowered)) return `item is on the never-suggest list (${rule.id})`;
+    }
+  }
+  return undefined;
+}
+
+
 function hasBrand(text: string): string | undefined {
   const lower = text.toLowerCase();
   for (const brand of BRANDS) {
@@ -59,9 +92,11 @@ function problemIn(value: string, max: number, label: string): string | undefine
 }
 
 /** Worker item/reason filter. Rejects; it does not silently strip. */
-export function filterItemAndReason(item: string, reason?: string): string | undefined {
+export function filterItemAndReason(item: string, reason?: string, age?: number): string | undefined {
   const itemProblem = problemIn(item, ITEM_MAX, "item");
   if (itemProblem) return itemProblem;
+  const unsafe = neverSuggestReason(item, age);
+  if (unsafe) return unsafe;
   if (reason !== undefined && reason.trim()) {
     return problemIn(reason, REASON_MAX, "reason");
   }
