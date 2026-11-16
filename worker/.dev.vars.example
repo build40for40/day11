@@ -1,0 +1,8 @@
+ADMIN_TOKEN=replace-me
+DEVICE_TOKEN=replace-me
+UID_SALT=replace-me
+PUBLIC_BASE_URL=http://127.0.0.1:8787
+EMAIL_DEV_PRINT=1
+# Ben has not chosen an email provider. Leave these empty to print mail in the console.
+# EMAIL_PROVIDER=resend
+# EMAIL_API_KEY=
