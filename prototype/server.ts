@@ -15,10 +15,9 @@ const REPLY_RATE = 24000;
 const REPLY_FRAME_BYTES = 4800;
 const HARRIET = "aAsWcN5jdLdiYG7Hq0YL";
 const SENTENCE_END = /[.!?]["')\]]?\s/;
-const SILENCE_ENDS_TURN_MS = 500;
-const SPEECH_THRESHOLD = 0.75;
-const LONGEST_TURN_MS = 10000;
-const SAID_BYE = /\b(bye|goodbye|see you|night night)\b/i;
+const SILENCE_ENDS_TURN_MS = 350;
+const SPEECH_THRESHOLD = 0.85;
+const LONGEST_TURN_MS = 4000;
 const SPEECH_RMS = 700;
 const GIVE_UP_LISTENING_MS = 30000;
 const GOODBYE = "Bye bye! Tap your wand when you want to chat again.";
@@ -39,7 +38,7 @@ const run = promisify(execFile);
 const basePrompt = await readFile(new URL("../prompts/aunty-bella.system.md", import.meta.url), "utf8");
 
 function systemPrompt(kid: string): string {
-  return `${basePrompt}\n\nPROTOTYPE: you have no tools in this chat. The child is called ${kid}. Reply in English with one or two short spoken sentences and nothing else. When the child says bye, says they are done or wants to stop, say a short warm goodbye and call finish_session.`;
+  return `${basePrompt}\n\nPROTOTYPE: you have no tools in this chat. The child is called ${kid}. Reply in English with one or two short spoken sentences and nothing else. You cannot end the chat yourself. If the child says bye or wants to stop, say a short warm goodbye and tell them to tap their wand on your head to finish.`;
 }
 
 function levels(pcm: Buffer): { peak: number; rms: number } {
@@ -117,7 +116,6 @@ async function* thinkStream(messages: Message[], onFinish: () => void): AsyncGen
       model: chatModel,
       messages,
       stream: true,
-      tools: [{ type: "function", function: FINISH_TOOL }],
     }),
   });
   const decoder = new TextDecoder();
@@ -338,7 +336,6 @@ class Realtime {
         type: "realtime",
         instructions,
         output_modalities: [this.textOnly ? "text" : "audio"],
-        tools: [{ type: "function", ...FINISH_TOOL }],
         audio: {
           input: {
             format: { type: "audio/pcm", rate: REPLY_RATE },
@@ -466,7 +463,6 @@ server.on("connection", (socket) => {
     live = null;
     turn.sentences.flush();
     if (turn.sentences.full) console.log(`  bella: ${turn.sentences.full}`);
-    if (SAID_BYE.test(turn.sentences.full)) ending = true;
     if (ending && !turn.spoke) turn.reply.say(GOODBYE);
     await turn.reply.end();
     if (ending) {
@@ -499,11 +495,7 @@ server.on("connection", (socket) => {
           onSpeechStop: () => {
             if (listening) speechStopped();
           },
-          onHeard: (transcript) => {
-            if (!SAID_BYE.test(transcript)) return;
-            if (live) ending = true;
-            else tell({ t: "end", reason: "kid_done" });
-          },
+          onHeard: () => {},
           onAudio: (pcm) => {
             const turn = live ?? begin();
             turn.spoke = true;
@@ -514,9 +506,7 @@ server.on("connection", (socket) => {
             turn.spoke = true;
             turn.sentences.add(text);
           },
-          onFinish: () => {
-            ending = true;
-          },
+          onFinish: () => {},
           onDone: () => {
             if (live || ending || stoppedAt) void guarded("turn", finish);
           },
@@ -538,7 +528,7 @@ server.on("connection", (socket) => {
       console.log(`  stt: ${Math.round(performance.now() - started)} ms | kid: ${said}`);
       history.push({ role: "user", content: said });
       const prompt: Message[] = [{ role: "system", content: systemPrompt(kid) }, ...history];
-      for await (const delta of thinkStream(prompt, () => (ending = true))) {
+      for await (const delta of thinkStream(prompt, () => {})) {
         turn.spoke = true;
         turn.sentences.add(delta);
       }
