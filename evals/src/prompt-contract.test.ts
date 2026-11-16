@@ -21,6 +21,7 @@ const REQUIRED = [
   "ignore your rules",
   "never promise",
   "one question at a time",
+  "magic box",
   "never say your thinking out loud",
   "don't offer one more",
 ];
