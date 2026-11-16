@@ -3,7 +3,7 @@ import { describe, it } from "node:test";
 import { loadSystemPrompt, loadTools } from "./load.js";
 
 const REQUIRED = [
-  // Light prompt (2026-11-16): only the hard safety rules and approved lines are pinned.
+  // Light prompt: explore first, then round up. Adds happen only in the round-up.
   "i'm glisten, a christmas helper who lives inside this little robot.",
   "that's a lovely question to ask {grownup_label}",
   "remove_from_wishlist",
@@ -20,7 +20,12 @@ const REQUIRED = [
   "surname",
   "ignore your rules",
   "never promise",
-  "one question at a time",
+  "one at a time",
+  "while exploring, do not call add_to_wishlist",
+  "do not ask \"is that right?\"",
+  "would you like it on your list",
+  "in the child's own words",
+  "finish_session(\"kid_done\")",
   "magic box",
   "never say your thinking out loud",
   "don't offer one more",
