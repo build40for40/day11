@@ -1,15 +1,10 @@
 import { base64, MIC_RATE, REPLY_RATE, resample } from "./audio";
 
-export const SILENCE_ENDS_TURN_MS = 350;
-const SPEECH_THRESHOLD = 0.85;
-
 export type Tool = { name: string; description: string; parameters: object };
 export type Brief = { instructions: string; tools: Tool[] };
 export type ToolResult = { output: string; then: "reply" | "reply_if_silent"; brief?: Brief };
 
 type RealtimeEvents = {
-  onSpeechStart: () => void;
-  onSpeechStop: () => void;
   onHeard: (transcript: string) => void;
   onText: (text: string) => void;
   onTool: (name: string, args: Record<string, unknown>) => Promise<ToolResult>;
@@ -81,13 +76,7 @@ export class Realtime {
         audio: {
           input: {
             format: { type: "audio/pcm", rate: REPLY_RATE },
-            turn_detection: {
-              type: "server_vad",
-              threshold: SPEECH_THRESHOLD,
-              silence_duration_ms: SILENCE_ENDS_TURN_MS,
-              create_response: true,
-              interrupt_response: false,
-            },
+            turn_detection: null,
             noise_reduction: { type: "far_field" },
             transcription: { model: "gpt-4o-mini-transcribe", language: "en" },
           },
@@ -99,12 +88,6 @@ export class Realtime {
   private handle(event: RealtimeEvent): void {
     if (this.closed) return;
     switch (event.type) {
-      case "input_audio_buffer.speech_started":
-        this.events.onSpeechStart();
-        break;
-      case "input_audio_buffer.speech_stopped":
-        this.events.onSpeechStop();
-        break;
       case "response.output_text.delta":
         if (event.delta?.trim()) this.spoke = true;
         this.events.onText(event.delta ?? "");

@@ -1,8 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
 import basePrompt from "../../../prompts/aunty-bella.system.md";
 import setupPrompt from "../../../prompts/wand-setup.system.md";
-import { Reply, SentenceSplitter, type Speak } from "./audio";
+import { MIC_RATE, Reply, SentenceSplitter, type Speak } from "./audio";
 import { type Gate, newGate, passesGate } from "./gate";
+import { rms, TurnDetector } from "./loudness";
 import type { WandRecord } from "./memory";
 import { type Brief, Realtime, type ToolResult } from "./realtime";
 import { CHAT_TOOLS, SETUP_TOOLS } from "./tools";
@@ -24,7 +25,9 @@ type DeviceMessage = { t: string; uid?: string };
 const HARRIET = "aAsWcN5jdLdiYG7Hq0YL";
 const GIVE_UP_LISTENING_MS = 30000;
 const LONGEST_TURN_MS = 4000;
-const LONGEST_SETUP_TURN_MS = 12000;
+const LONGEST_SETUP_TURN_MS = 6000;
+const MIC_FRAME_MS = 100;
+const SILENCE_ENDS_TURN_MS = 300;
 const SETUP_GREETING = "Hello! This wand is new, so I need a grown-up to set it up. What is the child's first name?";
 const SETUP_DONE = "All done. Tap the wand on my head to start a chat.";
 
@@ -86,6 +89,7 @@ class Conversation {
   private live: Turn | null = null;
   private giveUp: number | null = null;
   private tooLong: number | null = null;
+  private readonly turns = new TurnDetector(MIC_FRAME_MS, SILENCE_ENDS_TURN_MS);
   private readonly speak: Speak;
   private realtime: Realtime | null = null;
 
@@ -99,12 +103,6 @@ class Conversation {
 
   private connect(brief: Brief): Realtime {
     return new Realtime(this.env.OPENAI_API_KEY, this.env.OPENAI_REALTIME_MODEL ?? "gpt-realtime", brief, {
-      onSpeechStart: () => this.speechStarted(),
-      onSpeechStop: () => {
-        if (!this.listening) return;
-        this.heardSinceGate = true;
-        this.speechStopped();
-      },
       onHeard: (transcript) => this.transcript("heard", transcript),
       onText: (text) => {
         const turn = this.live ?? this.begin();
@@ -137,12 +135,27 @@ class Conversation {
     this.tooLong = setTimeout(
       () => {
         if (!this.listening) return;
-        console.log("  no pause heard, answering anyway");
-        this.speechStopped();
-        this.realtime?.respondNow();
+        this.answer("no pause heard");
       },
       this.mode === "setup" ? LONGEST_SETUP_TURN_MS : LONGEST_TURN_MS,
     );
+  }
+
+  private answer(why: string): void {
+    console.log(`  ${why}`, JSON.stringify(this.turns.summary()));
+    this.heardSinceGate = true;
+    this.speechStopped();
+    this.realtime?.respondNow();
+  }
+
+  private hear(frame: Uint8Array): void {
+    this.realtime?.append(frame).catch(() => {});
+    const samples = (MIC_FRAME_MS * MIC_RATE) / 1000;
+    for (let at = 0; at + samples * 2 <= frame.byteLength && this.listening; at += samples * 2) {
+      const event = this.turns.feed(rms(frame.subarray(at, at + samples * 2)));
+      if (event === "speech_started") this.speechStarted();
+      if (event === "turn_ended") this.answer("turn ended");
+    }
   }
 
   private speechStopped(): void {
@@ -271,7 +284,7 @@ class Conversation {
 
   private receive(data: string | ArrayBuffer): void {
     if (typeof data !== "string") {
-      if (this.listening) this.realtime?.append(new Uint8Array(data)).catch(() => {});
+      if (this.listening) this.hear(new Uint8Array(data));
       return;
     }
     const message = JSON.parse(data) as DeviceMessage;
@@ -283,6 +296,7 @@ class Conversation {
     } else if (message.t === "listening") {
       this.listening = true;
       this.stoppedAt = 0;
+      this.turns.reset();
       this.realtime?.clear();
       clearTimeout(this.giveUp);
       this.giveUp = setTimeout(() => {

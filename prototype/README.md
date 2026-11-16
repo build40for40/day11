@@ -56,6 +56,10 @@ The Worker keeps one small Durable Object per wand, keyed by the wand's UID. It 
 - **Reset:** saying something like "wand setup" or "reset this wand" in a chat makes the model call `start_wand_setup`. The Worker then asks a times table question, and only the right number switches the chat into setup mode. One wrong answer locks setup until the next tap. A reset can change the name and profile, wipe the memory, or delete everything for the wand with `erase_wand`.
 - **Logs:** the Worker never logs wand UIDs, names or memory. Transcripts are logged only when `LOG_TRANSCRIPTS=1` is set, which is meant for `.dev.vars` and not for the deployed Worker.
 
+## When a turn ends
+
+The Worker decides when the speaker has finished, in `worker/src/loudness.ts`. It learns the room's volume while nobody speaks, treats two loud 100ms frames in a row as speech, and ends the turn after 0.3 seconds of quiet. A turn is cut off after 4 seconds of speech in a chat and 6 in setup. Every turn logs the room level and the loudest frame, which is what to look at when tuning the constants at the top of that file.
+
 ## Flash the firmware
 
 Needs the setup in [../hardware-tests/README.md](../hardware-tests/README.md), plus `arduino-cli lib install WebSockets@2.7.2`.
