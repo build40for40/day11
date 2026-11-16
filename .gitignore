@@ -21,3 +21,6 @@ evals/out/
 
 # macOS
 .DS_Store
+
+# prototype firmware Wi-Fi credentials
+secrets.h

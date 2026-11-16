@@ -6,11 +6,18 @@
     "eval": "tsx evals/src/cli.ts",
     "eval:mock": "tsx evals/src/cli.ts --mock",
     "test": "node --import tsx --test evals/src/*.test.ts evals/src/kid/*.test.ts evals/src/tools/*.test.ts evals/src/scoring/*.test.ts evals/src/adapters/*.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p prototype/worker",
+    "server": "node --env-file-if-exists=.env --import tsx prototype/server.ts",
+    "wrangler": "env -u CLOUDFLARE_API_KEY -u CLOUDFLARE_EMAIL wrangler --profile 40for40",
+    "worker:dev": "npm run wrangler -- dev --config prototype/worker/wrangler.jsonc --port 8790"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261116.1",
     "@types/node": "^22.19.0",
+    "@types/ws": "^8.18.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.163.0",
+    "ws": "^8.23.0"
   }
 }
