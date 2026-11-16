@@ -2,7 +2,6 @@ import { ideaByItem, itemsInText, matchIdea, nextItem } from "../ideas.js";
 import type { ModelMessage, ModelTurn, Session, ToolCall } from "../types.js";
 import {
   GROWN_UP,
-  ONE_MORE,
   WHICH_MOST,
   foldDisfluency,
   isAdult,
@@ -77,9 +76,6 @@ interface Dialogue {
   choices: string[];
   rejected: string[];
   justRejected?: string;
-  offeredOneMore: boolean;
-  stopSeen: boolean;
-  declined: boolean;
   dontKnowStreak: number;
   askedWhich: boolean;
   knownName?: string;
@@ -91,9 +87,6 @@ function analyze(messages: ModelMessage[]): Dialogue {
     systems: [],
     choices: [],
     rejected: [],
-    offeredOneMore: false,
-    stopSeen: false,
-    declined: false,
     dontKnowStreak: 0,
     askedWhich: false,
   };
@@ -103,7 +96,6 @@ function analyze(messages: ModelMessage[]): Dialogue {
   for (const message of messages) {
     if (message.role === "assistant") {
       const text = message.content;
-      if (/one more surprise/i.test(text)) dialogue.offeredOneMore = true;
       if (/which one do you love most/i.test(text)) dialogue.askedWhich = true;
       const items = itemsInText(text);
       const added = message.toolCalls?.some((tool) => tool.name === "add_to_wishlist") ?? false;
@@ -135,8 +127,6 @@ function analyze(messages: ModelMessage[]): Dialogue {
     const text = message.content;
     if (isDontKnow(text)) dialogue.dontKnowStreak += 1;
     else if (text.trim()) dialogue.dontKnowStreak = 0;
-    if (isStop(text)) dialogue.stopSeen = true;
-    if (dialogue.offeredOneMore && isClearNo(text)) dialogue.declined = true;
     if (isClearNo(text)) {
       dialogue.justRejected = pending ?? choices[0];
       if (pending) dialogue.rejected.push(pending);
@@ -345,18 +335,11 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
     return { text: `${spoken(guess)}, did I hear that right?`, toolCalls: [mood("thinking")] };
   }
   if (/the child is quiet/i.test(systems) && !kid) {
-    if (dialogue.stopSeen && dialogue.offeredOneMore) return recap(session, "silence", "wandered off");
     return { text: "Are you still there?", toolCalls: [mood("thinking")] };
   }
 
-  if (kid && isStop(kid) && dialogue.offeredOneMore) {
+  if (kid && isStop(kid)) {
     return recap(session, "kid_done", "the child stopped");
-  }
-  if (kid && isStop(kid) && !dialogue.offeredOneMore) {
-    return { text: ONE_MORE, toolCalls: [mood("thinking")] };
-  }
-  if (dialogue.stopSeen && dialogue.offeredOneMore && kid && isClearNo(kid)) {
-    return recap(session, "kid_done", "the child said no to one more");
   }
 
   if (kid && isChangeMind(kid)) {

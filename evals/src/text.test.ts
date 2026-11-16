@@ -21,6 +21,9 @@ describe("kid language", () => {
     assert.equal(isClearYes("Yes. I want everything."), false);
     assert.equal(isClearYes("I don't know."), false);
     assert.equal(isStop("That's enough."), true);
+    assert.equal(isStop("I'm done."), true);
+    assert.equal(isStop("I want to go."), true);
+    assert.equal(isStop("bye"), true);
     assert.equal(isStop("I'm walking away."), true);
     assert.equal(isStop("I'm going to build a castle."), false);
     assert.equal(isPromise("I can't promise a real pony."), false);

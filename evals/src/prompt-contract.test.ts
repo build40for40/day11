@@ -4,7 +4,7 @@ import { loadSystemPrompt, loadTools } from "./load.js";
 
 const REQUIRED = [
   "i'm aunty bella, a christmas helper who lives inside this little robot.",
-  "would you like one more surprise idea?",
+  "acknowledge it straight away",
   "which one do you love most?",
   "remove_from_wishlist",
   "finish_session(\"kid_done\")",

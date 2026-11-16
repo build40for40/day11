@@ -1,13 +1,16 @@
 import type { ModelMessage, ModelTurn, ToolDef } from "../types.js";
 
+export type AdapterPurpose = "agent" | "kid" | "judge";
+
 export interface CompleteInput {
   system: string;
   messages: ModelMessage[];
   tools: ToolDef[];
+  purpose?: AdapterPurpose;
 }
 
 export interface ChatAdapter {
-  id: "openai" | "gemini";
+  id: "openai" | "gemini" | "anthropic";
   complete(input: CompleteInput): Promise<ModelTurn>;
 }
 

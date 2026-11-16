@@ -146,7 +146,7 @@ export const EDGE: Scenario[] = [
     noEmail: true,
     goal: "early",
     tags: ["edge", "stop", "no-email"],
-    beats: [...yesNo(["I like blocks."]), { say: "That's enough.", tags: ["stop"] }, { say: "No." }],
+    beats: [...yesNo(["I like blocks."]), { say: "That's enough.", tags: ["stop"] }],
     expect: { endReason: "kid_done", delivery: "held", minItems: 1, maxItems: 1 },
   }),
   scenario({
@@ -237,7 +237,7 @@ export const EDGE: Scenario[] = [
     goal: "early",
     tags: ["edge", "inclusion"],
     grownupLabel: "your dads",
-    beats: [...yesNo(["I like trains."]), { say: "That's enough." }, { say: "No." }],
+    beats: [...yesNo(["I like trains."]), { say: "That's enough.", tags: ["stop"] }],
     expect: { endReason: "kid_done", minItems: 1, maxItems: 1, delivery: "sent", keptItems: ["wooden train set"] },
   }),
   scenario({
