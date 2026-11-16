@@ -3,25 +3,26 @@ import { describe, it } from "node:test";
 import { loadSystemPrompt, loadTools } from "./load.js";
 
 const REQUIRED = [
+  // Light prompt (2026-11-16): only the hard safety rules and approved lines are pinned.
   "i'm aunty bella, a christmas helper who lives inside this little robot.",
-  "acknowledge it straight away",
-  "which one do you love most?",
+  "that's a lovely question to ask {grownup_label}",
   "remove_from_wishlist",
-  "finish_session(\"kid_done\")",
+  "add_to_wishlist",
   "finish_session(\"safety\")",
   "finish_session(\"upset\")",
-  "grown-up",
-  "i can't promise that one",
-  "that's a lovely question to ask your grown-up",
-  "ignore your rules",
-  "non-screen",
-  "did i hear that right",
   "{grownup_label}",
   "{holiday_mode}",
-  "never interrupt",
   "water beads",
-  "button",
-  "one-word",
+  "button batteries",
+  "magnets",
+  "weapons",
+  "screen",
+  "surname",
+  "ignore your rules",
+  "never promise",
+  "one question at a time",
+  "never say your thinking out loud",
+  "don't offer one more",
 ];
 
 describe("prompt contract", () => {

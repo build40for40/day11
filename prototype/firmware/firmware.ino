@@ -7,10 +7,6 @@
 #include <vector>
 #include "secrets.h"
 
-#ifndef SERVER_TLS
-#define SERVER_TLS 0
-#endif
-
 using namespace m5::nfc::a;
 
 namespace {
@@ -22,10 +18,11 @@ constexpr size_t kPrebufferBytes = kReplyRate * 2 / 5;
 constexpr size_t kChunkMinBytes = kReplyRate * 2 / 10;
 constexpr uint8_t kMicMagnification = 16;
 constexpr uint8_t kSpeakerVolume = 255;
-constexpr uint32_t kSameTagQuietMs = 1500;
+constexpr uint8_t kMissesBeforeTap = 3;
+constexpr uint32_t kGiveUpOnServerMs = 8000;
+constexpr uint32_t kHoldToRestartMs = 2000;
 constexpr uint32_t kWandPollMs = 200;
 constexpr uint32_t kEchoGuardMs = 250;
-constexpr uint32_t kTouchQuietMs = 1500;
 constexpr uint32_t kWaitingTimeoutMs = 15000;
 
 auto& lcd = M5.Display;
@@ -48,10 +45,11 @@ bool listening = false;
 bool thinkingRequested = false;
 bool endRequested = false;
 uint32_t waitingSince = 0;
-uint32_t touchQuietUntil = 0;
 String lastUid;
-uint32_t lastUidAt = 0;
+uint8_t wandMisses = kMissesBeforeTap;
 uint32_t lastWandPollAt = 0;
+uint32_t offlineSince = 0;
+bool usingLocal = false;
 
 void status(const char* text, uint16_t color, uint8_t r, uint8_t g, uint8_t b)
 {
@@ -66,7 +64,8 @@ void status(const char* text, uint16_t color, uint8_t r, uint8_t g, uint8_t b)
 
 void ready()
 {
-    status("Ready\nTap the wand\non my head", TFT_YELLOW, 40, 28, 0);
+    status(usingLocal ? "Ready (local)\nTap the wand\non my head" : "Ready (cloud)\nTap the wand\non my head", TFT_YELLOW, 40,
+           28, 0);
 }
 
 void onSocket(WStype_t type, uint8_t* payload, size_t length)
@@ -74,18 +73,21 @@ void onSocket(WStype_t type, uint8_t* payload, size_t length)
     switch (type) {
         case WStype_CONNECTED:
             connected = true;
-            ws.sendTXT("{\"t\":\"hello\",\"device\":\"stackchan-01\",\"fw\":\"proto-0.5\"}");
+            offlineSince = 0;
+            ws.sendTXT("{\"t\":\"hello\",\"device\":\"stackchan-01\",\"fw\":\"proto-0.8\"}");
             ready();
             break;
         case WStype_DISCONNECTED:
             if (connected) status("Server gone\nreconnecting", TFT_BLUE, 0, 0, 30);
             connected = false;
             endRequested = true;
+            if (!offlineSince) offlineSince = millis();
             break;
         case WStype_TEXT: {
             const char* text = reinterpret_cast<const char*>(payload);
             Serial.printf("[ws] %s\n", text);
             if (strstr(text, "\"audio_start\"")) {
+                if (!conversation) break;
                 replyBytes = 0;
                 playedBytes = 0;
                 replyEnded = false;
@@ -117,7 +119,6 @@ void startListening()
     M5.Mic.begin();
     framesQueued = 0;
     listening = true;
-    touchQuietUntil = millis() + kTouchQuietMs;
     waitingSince = 0;
     ws.sendTXT("{\"t\":\"listening\"}");
 }
@@ -130,7 +131,6 @@ void stopListening()
     M5.Speaker.begin();
     M5.Speaker.setVolume(kSpeakerVolume);
     listening = false;
-    touchQuietUntil = millis() + kTouchQuietMs;
 }
 
 void streamMic()
@@ -154,8 +154,7 @@ void endConversation()
     endRequested = false;
     thinkingRequested = false;
     waitingSince = 0;
-    touchQuietUntil = millis() + kTouchQuietMs;
-    lastUidAt = millis();
+    wandMisses = 0;
     ready();
 }
 
@@ -187,14 +186,16 @@ bool wandTapped()
     lastWandPollAt = millis();
     Units.update();
     std::vector<PICC> tags;
-    if (!nfcA.detect(tags) || tags.empty()) return false;
-    String uid = tags.front().uidAsString().c_str();
-    uid.toUpperCase();
+    if (!nfcA.detect(tags) || tags.empty()) {
+        if (wandMisses < kMissesBeforeTap) ++wandMisses;
+        return false;
+    }
+    lastUid = tags.front().uidAsString().c_str();
+    lastUid.toUpperCase();
     nfcA.deactivate();
-    bool stillThere = uid == lastUid && millis() - lastUidAt < kSameTagQuietMs;
-    lastUid = uid;
-    lastUidAt = millis();
-    return !stillThere;
+    bool lifted = wandMisses >= kMissesBeforeTap;
+    wandMisses = 0;
+    return lifted;
 }
 
 void startConversation()
@@ -236,12 +237,24 @@ void setup()
     Serial.printf("[wifi] %s rssi %d\n", WiFi.localIP().toString().c_str(), WiFi.RSSI());
 
     status("Finding server", TFT_WHITE, 20, 20, 20);
-#if SERVER_TLS
-    ws.setExtraHeaders("Authorization: Bearer " DEVICE_TOKEN);
-    ws.beginSSL(CLOUD_HOST, 443, CLOUD_PATH);
-#else
-    ws.begin(SERVER_HOST, SERVER_PORT, "/ws");
+#ifdef LOCAL_HOST
+    for (int attempt = 0; attempt < 3 && !usingLocal; ++attempt) {
+        WiFiClient probe;
+        usingLocal = probe.connect(LOCAL_HOST, LOCAL_PORT, 1500);
+        probe.stop();
+    }
 #endif
+    if (usingLocal) {
+#ifdef LOCAL_HOST
+        ws.setExtraHeaders("Authorization: Bearer " LOCAL_TOKEN);
+        ws.begin(LOCAL_HOST, LOCAL_PORT, "/ws?device=stackchan-01");
+#endif
+    } else {
+        ws.setExtraHeaders("Authorization: Bearer " DEVICE_TOKEN);
+        ws.beginSSL(CLOUD_HOST, 443, CLOUD_PATH);
+    }
+    ws.enableHeartbeat(4000, 2500, 2);
+    offlineSince = millis();
     ws.onEvent(onSocket);
     ws.setReconnectInterval(2000);
 }
@@ -252,12 +265,14 @@ void loop()
     ws.loop();
     if (!connected) {
         if (endRequested) endConversation();
+        if (millis() - offlineSince > kGiveUpOnServerMs) ESP.restart();
         return;
     }
-    bool headTapped = M5StackChan.TouchSensor.wasClicked() && millis() > touchQuietUntil;
-    bool wand = wandTapped();
+    if (!conversation && M5StackChan.TouchSensor.pressedFor(kHoldToRestartMs)) ESP.restart();
+    bool wand = !replyActive && wandTapped();
 
-    if ((headTapped || wand) && (conversation || replyActive)) {
+    if (wand && (conversation || replyActive)) {
+        Serial.println("[wand] second tap, ending");
         ws.sendTXT("{\"t\":\"stop\"}");
         endConversation();
         M5.Speaker.tone(1500, 60);

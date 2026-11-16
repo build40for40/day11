@@ -2,7 +2,7 @@
 
 A throwaway end-to-end test of the proposed shape in [../docs/architecture.md](../docs/architecture.md): the StackChan stays thin and a server does the thinking. It isn't the app. Results are in [../docs/stackchan.md](../docs/stackchan.md).
 
-- `firmware/`: Arduino sketch for the K151. A wand tap starts a conversation. It then streams 16kHz PCM16 from the mic over a WebSocket, plays the 24kHz PCM16 reply as it arrives and reopens the mic afterwards. Lifting the wand and tapping it again ends the conversation, and so does a tap on the head.
+- `firmware/`: Arduino sketch for the K151. A wand tap starts a conversation. It then streams 16kHz PCM16 from the mic over a WebSocket, plays the 24kHz PCM16 reply as it arrives and reopens the mic afterwards. Lifting the wand and tapping it again ends the conversation. The head strip is ignored, because a wand tap sets it off, except that holding it for two seconds while idle restarts the robot.
 - `server.ts`: a local Node WebSocket server for trying things on a laptop. It maps the UID to a kid and streams the reply back as it is generated.
 - `worker/`: the same `hybrid` mode as a Cloudflare Worker with one Durable Object per device, deployed at `build40for40.com/glissen/api`. The device connects to `/glissen/api/ws` with a device token.
 
@@ -29,12 +29,21 @@ MODE=hybrid npm run server
 
 ## Deploy the Worker
 
-Merging to `main` deploys it when `prototype/worker/`, `prompts/` or the package files change (`.github/workflows/deploy.yml`). The Worker bundles `prompts/aunty-bella.system.md` and `prompts/wand-setup.system.md`, so a prompt change needs a deploy to reach the robot. To deploy by hand, or to run it locally on port 8790 with `prototype/worker/.dev.vars` filled in from `.dev.vars.example`:
+Merging to `main` deploys it when `prototype/worker/`, `prompts/` or the package files change (`.github/workflows/deploy.yml`). The Worker bundles `prompts/aunty-bella.system.md` and `prompts/wand-setup.system.md`, so a prompt change needs a deploy to reach the robot. To deploy by hand:
 
 ```bash
 npm run wrangler -- deploy --config prototype/worker/wrangler.jsonc
+```
+
+## Develop against a local Worker
+
+Fill in `prototype/worker/.dev.vars` from `.dev.vars.example`, then:
+
+```bash
 npm run worker:dev
 ```
+
+That serves the Worker on port 8790 on every network interface. At boot the robot looks for a server at `LOCAL_HOST` and uses it when one answers, otherwise it goes to the deployed Worker. The screen says which: "Ready (local)" or "Ready (cloud)". If the connection drops for 8 seconds the robot restarts and looks again, so stopping the local server sends it back to the cloud. To move it from the cloud to a local server you just started, hold the head strip for two seconds or reset it.
 
 The secrets `OPENAI_API_KEY`, `ELEVENLABS_API_KEY` and `DEVICE_TOKEN` are set once with `npm run wrangler -- secret put <NAME> --config prototype/worker/wrangler.jsonc`. Every deploy disconnects a chat in progress.
 
@@ -51,10 +60,10 @@ The Worker keeps one small Durable Object per wand, keyed by the wand's UID. It 
 
 Needs the setup in [../hardware-tests/README.md](../hardware-tests/README.md), plus `arduino-cli lib install WebSockets@2.7.2`.
 
-Copy `firmware/secrets.h.example` to `firmware/secrets.h` and fill in a 2.4GHz Wi-Fi network. With `SERVER_TLS` set to 1 it talks to the deployed Worker and needs the `DEVICE_TOKEN`. Set it to 0 and fill in this machine's LAN address to use the local server. Then from this folder:
+Copy `firmware/secrets.h.example` to `firmware/secrets.h` and fill in a 2.4GHz Wi-Fi network and the `DEVICE_TOKEN` of the deployed Worker. For local development also set `LOCAL_HOST` to this machine's LAN address and `LOCAL_TOKEN` to the `DEVICE_TOKEN` in `.dev.vars`. Then from this folder:
 
 ```bash
 arduino-cli compile -u -p <PORT> --fqbn m5stack:esp32:m5stack_cores3 firmware
 ```
 
-Tap the wand on the head for a greeting, then talk. Lift the wand and tap it again to end the chat. Saying bye doesn't end it: speech to text invents a "bye" out of room noise too easily. A wand the Worker hasn't seen starts setup mode. On the local server, with `WANDS` unset any wand works, and once it is set only the listed ones do. If the server restarts, reset the board: the firmware doesn't reconnect by itself yet.
+Tap the wand on the head for a greeting, lift it away, then talk. Tap it again to end the chat. Saying bye doesn't end it: speech to text invents a "bye" out of room noise too easily. A wand the Worker hasn't seen starts setup mode. On the local server, with `WANDS` unset any wand works, and once it is set only the listed ones do.
