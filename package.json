@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit && tsc --noEmit -p prototype/worker && tsc --noEmit -p worker",
     "server": "node --env-file-if-exists=.env --import tsx prototype/server.ts",
     "wrangler": "env -u CLOUDFLARE_API_KEY -u CLOUDFLARE_EMAIL wrangler --profile 40for40",
-    "worker:dev": "npm run wrangler -- dev --config prototype/worker/wrangler.jsonc --port 8790",
+    "worker:dev": "npm run wrangler -- dev --config prototype/worker/wrangler.jsonc --port 8790 --ip 0.0.0.0",
     "setup:dev": "npm run wrangler -- dev --config worker/wrangler.jsonc --port 8787"
   },
   "devDependencies": {
