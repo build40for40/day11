@@ -20,7 +20,6 @@ constexpr uint8_t kMicMagnification = 16;
 constexpr uint8_t kSpeakerVolume = 255;
 constexpr uint8_t kMissesBeforeTap = 3;
 constexpr uint32_t kGiveUpOnServerMs = 8000;
-constexpr uint32_t kHoldToRestartMs = 2000;
 constexpr uint32_t kWandPollMs = 200;
 constexpr uint32_t kEchoGuardMs = 250;
 constexpr uint32_t kWaitingTimeoutMs = 15000;
@@ -74,7 +73,7 @@ void onSocket(WStype_t type, uint8_t* payload, size_t length)
         case WStype_CONNECTED:
             connected = true;
             offlineSince = 0;
-            ws.sendTXT("{\"t\":\"hello\",\"device\":\"stackchan-01\",\"fw\":\"proto-0.8\"}");
+            ws.sendTXT("{\"t\":\"hello\",\"device\":\"stackchan-01\",\"fw\":\"proto-0.9\"}");
             ready();
             break;
         case WStype_DISCONNECTED:
@@ -253,7 +252,6 @@ void setup()
         ws.setExtraHeaders("Authorization: Bearer " DEVICE_TOKEN);
         ws.beginSSL(CLOUD_HOST, 443, CLOUD_PATH);
     }
-    ws.enableHeartbeat(4000, 2500, 2);
     offlineSince = millis();
     ws.onEvent(onSocket);
     ws.setReconnectInterval(2000);
@@ -268,7 +266,6 @@ void loop()
         if (millis() - offlineSince > kGiveUpOnServerMs) ESP.restart();
         return;
     }
-    if (!conversation && M5StackChan.TouchSensor.pressedFor(kHoldToRestartMs)) ESP.restart();
     bool wand = !replyActive && wandTapped();
 
     if (wand && (conversation || replyActive)) {
