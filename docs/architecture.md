@@ -1,4 +1,4 @@
-> **Status:** proposed design for Day 11 ("Wish"). **The character name "Aunty Bella" is provisional.** Written 16 Nov 2026 and updated the same day for the voice, LCD-off, wand and parent-setup decisions. Nothing here is built or tested. It follows what the team already decided in [Day 11 - Brief & prep](https://app.superthread.com/40for40/page-60-day-11-brief--prep) (MVP, StackChan + Cloudflare Worker + speech/voice models, RFID as auth) and the research in cards [303](https://app.superthread.com/40for40/card-303-research-jakcom-n3-nail-chip) (N3 chip) and [304](https://app.superthread.com/40for40/card-304-research-stackchan-with-the-n3-nail-and-a-voice-agent) (StackChan + voice agent). Prompt, tools and parent FAQ: [Day 11 – Agent Prompt & Harness](https://app.superthread.com/40for40/page-61-day-11--agent-prompt--harness). Repo: https://github.com/build40for40/day11
+> **Status:** proposed design for Day 11 ("Wish"). **The character name "Aunty Bella" is provisional.** Written 16 Nov 2026 and updated the same day for the voice, LCD-off, wand, parent-setup, early-finish and edge-case (D9) decisions. Nothing here is built or tested. It follows what the team already decided in [Day 11 - Brief & prep](https://app.superthread.com/40for40/page-60-day-11-brief--prep) (MVP, StackChan + Cloudflare Worker + speech/voice models, RFID as auth) and the research in cards [303](https://app.superthread.com/40for40/card-303-research-jakcom-n3-nail-chip) (N3 chip) and [304](https://app.superthread.com/40for40/card-304-research-stackchan-with-the-n3-nail-and-a-voice-agent) (StackChan + voice agent). Prompt, tools and parent FAQ: [Day 11 – Agent Prompt & Harness](https://app.superthread.com/40for40/page-61-day-11--agent-prompt--harness). Repo: https://github.com/build40for40/day11
 
 ## 0. Decisions since the first draft (16 Nov 2026)
 
@@ -11,6 +11,8 @@
 | D5 | **Wand, not nail.** | Today's wand is a marker with an RFID chip taped on (page 57). The N3 research (card 303) still applies to the chip. |
 | D6 | The recovered prompt wording is OK. | Only the changes forced by D1-D5 and D7 were made to the prompt. |
 | D7 | **The character is renamed from "Pip the Elf" to "Aunty Bella" (voiced by Harriet). The name is provisional.** She is a kindly aunt figure from the North Pole who works with Santa, not an elf. | Prompt, dialogue and diagrams renamed. Rules, tools, 5-cap, LEDs, head movement and the parent flow are unchanged. |
+| D8 | **Early finish: the kid is in charge.** On "that's enough", "I'm done" or wandering off, Aunty Bella offers at most ONE "one more surprise idea?" and stops at once on no. A list of 1 to 4 items is a valid result: happy recap, still sent to Mum, marked "finished early" with a short reason. Tapping the wand again later continues the same list up to 5. The Worker wraps up after N silent turns or the 5-minute budget, using a new `finish_session(reason)` tool. | New tool, SYSTEM lines, timers, session state, D1 columns, sequences 4.2 to 4.3, state graph 4.4. Harness page: prompt, dialogue and FAQ. |
+| D9 | **Edge cases get explicit handling.** Kid behaviour (yes to everything, changing their mind, big or impossible asks, screen or brand asks, "are you real / is Santa real", upset), several children, tech problems, parent and data cases, safety cases. New tool `remove_from_wishlist`; more `finish_session` reasons. Big, screen and brand asks get a gentle redirect in conversation only, nothing goes to Mum. Worrying disclosures: `finish_session(safety)` plus a Worker-side flag that emails Mum only a short neutral note. **Decided by the user on 16 Nov:** (1) sibling wand tap switches the chat; (2) unknown wand = pre-recorded clip only; (3) the "are you real / is Santa real" lines are OK; (4) no tool for passing asks to Mum (rejected); (5) worrying notes go to Mum only. | Section 4.5 (Worker and device handling), the state graph, device messages, D1 schema (`item_norm`, `safety_flags`, approvals) and the parent page. |
 
 ## 1. Summary of key decisions
 
@@ -29,6 +31,8 @@
 | 11 | **Wishlist is a private web page** at an unguessable parent link (not the UID). Send-to-Mum = email that link to the address from setup. | Keeps the kid's UID out of URLs. |
 | 12 | **Fallback is a phone hidden behind StackChan** if the mic/speaker/round-trip proofs fail. | Card 304. The Worker is unchanged; only the client changes. |
 | 13 | **No audio saved, no transcripts by default.** | Child's voice data. See the FAQ on the Harness page. |
+| 14 | **The kid decides when they are finished (D8).** One list per kid, with a status: `empty`, `in_progress`, `finished_early`, `complete`. A session is one chat; many sessions can add to the same list until it holds 5. | Short chats suit 3 to 7 year olds, and a wand tap must never throw away or restart a list. |
+| 15 | **Edge cases are handled in the Worker and device, not only in the prompt (D9).** Mishearing confirms, merges duplicates, raises a safety flag every time, sanitises names, stream mode, battery and wifi rules live in code. | The prompt can drift; code cannot be talked round by an older sibling. Section 4.5. |
 
 ## 2. System overview
 
@@ -109,9 +113,11 @@ Other behaviour:
 - **LCD off.** Turn the display and backlight off at boot and never draw anything (check the exact M5Unified call on the day). The touch strip on the body is still used as the input. No face is drawn.
 - **Mood = LEDs + head move** (table in 3.1.1). Everything the robot "feels" is shown this way.
 - **Motion:** `Motion.move(x, y)` with units of 10 = 1 degree. Keep tilt between 5 and 85 degrees or the servo can stall (card 304). `nod` = small tilt down/up; `shake` = small pan left/right. Clamp in firmware, never trust the Worker.
-- **Status LEDs** (replace the old sleepy face): connecting = slow white pulse; ready = dim warm-gold breathing; listening (strip held) = steady green ring; offline = slow red pulse with the head slightly lowered; pairing mode = slow blue pulse. A steady green ring while the mic is open is also the parent-visible mic indicator.
+- **Status LEDs** (replace the old sleepy face): connecting = slow white pulse; ready = dim warm-gold breathing; listening (strip held) = steady green ring; offline = "sleepy" (slow dim blue-white breathing, head slightly lowered, no red, so it does not look like an alarm to a child); battery low (20% or less, unplugged) = a slow amber blink every 30 s with a small head dip; grown-up needed (list held, email not confirmed) = slow gold pulse; pairing mode = slow blue pulse. A steady green ring while the mic is open is also the parent-visible mic indicator.
 - **Camera:** never initialised.
 - **Offline clips:** a handful of WAVs on the microSD, generated once in the Harriet voice (greeting fallback, "can't reach the North Pole", "ask a grown-up to set me up", apology, goodbye, "all paired").
+- **More offline clips (D9)**, same voice: `friendly_unknown` ("Hello! I don't know this wand yet. Ask a grown-up to set me up, and then we can chat about Christmas!"), `not_today` (stream mode, household not consented), `plug_me_in`, `sleepy` (reconnecting), `check_setup` ("Ask a grown-up to check the setup page.").
+- **Battery:** report `battery` and `charging` in every `ping` (about every 20 s). Firmware shows the low-battery blink and plays `plug_me_in` only between turns, never over speech.
 - **Power/wifi:** USB-C power while live. 2.4 GHz wifi only. Credentials in a `secrets.h` that is not committed.
 - **Flashing wipes the factory XiaoZhi agent** and it is unclear how easily it comes back (card 304). Decide before flashing; keep a second unit or a phone fallback.
 
@@ -132,16 +138,23 @@ Risk: head and light cues are less expressive than a face. Test with a child-age
 - **fetch handler:** routing and auth. `GET /ws` (device WebSocket upgrade) is forwarded to a Session DO. `/setup/*` is the one-off parent setup. `/w/*` serves the parent wishlist. `/admin/*` creates households and cards. `GET /healthz`.
 - **Session Durable Object** (id = `deviceId`; one active chat per device):
   - accepts the device WebSocket (hibernation API is optional; sessions are short);
-  - on a **kid wand tap**: loads the kid from D1 (must be `active`, i.e. paired), opens the LLM socket (and, for Option B, the ElevenLabs TTS socket), sends the system prompt, the tool list and the audio format;
+  - on a **kid wand tap**: loads the kid and their current list from D1 (the kid must be `active`, i.e. paired; if the list has 1 to 4 items the session continues that list, with a SYSTEM line telling the model what is on it), opens the LLM socket (and, for Option B, the ElevenLabs TTS socket), sends the system prompt, the tool list and the audio format;
   - **pairing mode:** if the parent setup page has opened a pairing window for this device (10 minutes), the next wand UID is bound to the pending kid instead of starting a chat (section 4);
   - **audio in:** forwards device PCM to the LLM (resampling 16 kHz to 24 kHz for OpenAI by linear interpolation);
   - **turns:** PTT down/up maps to `input_audio_buffer.commit` + `response.create` with server VAD turned off;
   - **text out (Option B):** reads text deltas, splits into sentences, runs each sentence through the output filter, sends approved sentences to ElevenLabs TTS, forwards the returned PCM to the device;
-  - **tool calls:** `add_to_wishlist` is executed in the DO (cap, dedupe, filter, D1 write, `SYSTEM:` injection). `set_mood` / `nod` / `shake` / `set_leds` are validated against the enums and forwarded to the device as `cmd` messages. Each tool call returns a small result to the model;
+  - **tool calls:** `add_to_wishlist` is executed in the DO (cap, dedupe, filter, D1 write, `SYSTEM:` injection). `finish_session(reason)` is also executed in the DO: it marks the session as ending, waits for the goodbye audio to finish, writes the end state (below) and sends the device `{t:"end"}`. `set_mood` / `nod` / `shake` / `set_leds` are validated against the enums and forwarded to the device as `cmd` messages. Each tool call returns a small result to the model;
   - **NFC event injection** as `SYSTEM:` messages (see the Harness page, section 3);
-  - **timers:** idle nudge 30 s, idle goodbye 60 s, hard stop 8 min;
-  - **session state** (in memory + DO storage for reconnects): `kid_id`, `wishlist[]`, `items_added`, `last_suggestion`, preference flags, `last_seen`;
-  - on end: writes a `sessions` row, emails the parent link once (first time the list reaches 5, or on end with >= 1 item, only to a verified or demo-approved address), closes all sockets.
+  - **Edge-case handling (D9)** (section 4.5): unknown wand, stream mode, sibling switch, mishearing guard, duplicate merge, safety flags, name sanitising, battery and connection rules. `remove_from_wishlist` runs in the DO like `add_to_wishlist`;
+  - **timers and wrap-up rules (starting values, tune on the day):**
+    - **Silent turns:** a turn is "silent" when the child does not hold PTT within 30 s of Aunty Bella finishing. After the 1st silent turn the DO injects the nudge line. After **N = 2** silent turns it injects the "gone quiet again" line and ends with `finish_session("silence")`. Any child speech resets the count.
+    - **5-minute budget:** 5 minutes from the first greeting of this session. At the limit the DO lets the current sentence finish, injects the "Time is up" line and ends with `finish_session("time_budget")`.
+    - **Hard stop at 8 minutes:** last backstop, plays the `goodbye` clip, no recap, ends with `hard_stop`.
+    - If the model has not called `finish_session` about 15 s after the recap, the DO ends the session itself with the same reason.
+    - After any finish reason, further tool calls are ignored except `finish_session`.
+  - **session state** (in memory + DO storage for reconnects): `kid_id`, `wishlist[]`, `items_added`, `last_suggestion`, preference flags, `last_seen`, `started_at`, `silent_turns`, `stop_offered`, `ending` (reason, once set), `list_status`;
+  - **on end** (same path for every reason): writes the `sessions` row, then sets the kid's list state: 5 items -> `complete` (note "Complete"); 1 to 4 items -> `finished_early` with a short parent-facing note built by the Worker from facts, never by the model (`kid_done`: "Happy with 2"; `silence`: "Chat ended after 3 min (went quiet)"; `time_budget`: "Chat ended after 5 min"; `upset` and `safety`: "Chat ended early: your child needed a grown-up"; `low_battery`: "Chat ended early (robot battery low)"; `connection_lost`: "Chat ended early (connection lost)"; `superseded`: "Chat ended early (a sibling took a turn)"; `hard_stop` and `error`: "Chat ended early (technical)"); 0 items -> list stays `empty` and no email is sent. A later session that adds items updates the same list, the status and the note.
+  - **email to Mum:** at the end of the first session that leaves at least 1 item on the list, and again only if a later session makes the list `complete`. Items added in between just appear on the page. Only to a verified or demo-approved address. Then closes all sockets.
 - **Parent setup and wishlist pages:** server-rendered HTML, no JS needed except a status poll on the setup page. Section 6.4.
 - **Secrets (Worker secrets, never in the repo; `.dev.vars` is already git-ignored):** `OPENAI_API_KEY` or `GEMINI_API_KEY` (Decision: Ben), `ELEVENLABS_API_KEY`, `ELEVENLABS_VOICE_ID` (Harriet: `aAsWcN5jdLdiYG7Hq0YL`), `ELEVENLABS_AGENT_ID` (Option A only), `DEVICE_TOKEN`, `ADMIN_TOKEN`, `UID_SALT`, `EMAIL_API_KEY`.
 
@@ -211,8 +224,17 @@ kid audio -> OpenAI Realtime / Gemini Live (audio in, TEXT out) -> Session DO
 | "Only after a clear yes" | Partly | Prompt rule, plus a guard: no add unless a child turn (PTT) or a YES card arrived since the previous add. Cannot truly verify intent. |
 | Dedupe | Yes | Same normalised item twice is ignored. |
 | **Spoken output filter** | **Yes in Option B (changed from "partly"); partly in Option A** | Option B: every sentence is checked before it reaches ElevenLabs, so nothing unchecked is spoken. The check is still only as good as its rules: start with a denylist (violence, adult, brands, prices, personal-data patterns) and optionally a moderation call per sentence (adds latency). Test with adversarial prompts. Option A: only react-after-start (cancel on a transcript hit; a few hundred ms may already have played). |
-| Worrying content | Partly | Prompt rule. The DO keyword-flags ("hurt", "scared", "alone", etc.) into the session log with a `flags` column so a grown-up can check. Not a safeguarding system. |
+| Worrying content | Partly | Prompt rule. The DO keyword-flags ("hurt", "scared", "alone", etc.) into the session log with a `flags` column and raises the Worker-side safety flag (below). Not a safeguarding system. |
 | Personal data | Partly | Prompt says first name only. Transcripts are not stored by default, so nothing to leak at rest. |
+| Mishearing guard | Partly | `add_to_wishlist` for a kid-originated item needs a confirm turn: the DO tracks `pending_confirm` and rejects the add unless a child turn (PTT) or YES card arrived after the repeat-back. Cannot verify the child really said yes. |
+| Duplicates across sessions | Yes | `item_norm` unique per kid among non-removed items; a repeat merges (reasons combined) and returns `ok, merged`. |
+| Safety flag (worrying disclosure) | Partly | The Worker raises a flag **every time** `finish_session(safety)` is called or a keyword matches the transient transcript: one `safety_flags` row (no content, no transcript) and an immediate email to the parent only, with a fixed neutral note ("Something your child said may need a grown-up check-in, so Aunty Bella ended the chat."). No banner, no tool the model can use to write free text to Mum. Not a safeguarding system. |
+| Name sanitising | Yes | `first_name` is letters, spaces and hyphens only, up to 20 characters, checked on the setup form and again before it goes into the prompt, so a name cannot carry instructions. |
+| Stream mode | Yes | `STREAM_MODE=true` lets only households with `stream_consent_at` start chats; others get `not_today`. Does not control the camera. |
+| Prompt injection by older siblings | Partly | Rules are in the system prompt; the cap, tool-argument validation, spoken-text filter, name sanitising and card labels (set by an adult) are code. Red-team scenarios on the Prompt Testing page. |
+| Early finish is the kid's choice | Partly | The Worker never tries to keep a chat going: its timers can only end a chat sooner. "At most one offer, then stop" is a prompt rule; backstop: count spoken sentences that look like an offer ("one more") and drop a second, injecting `SYSTEM: You have already offered ... Do the recap now.` Test with a child who says stop twice. |
+| Wrap-up after silence or time | Yes | Silent-turn counter, 5-minute budget and 8-minute hard stop live in the DO, not the prompt. |
+| One list per kid, continued by a wand tap | Yes | The list and its status are in D1, not session memory. A tap never creates a second list or clears items; only the parent can reset it. |
 | Unknown wand | Yes | A UID that is not paired to a kid never starts a chat. |
 
 ### 3.5 Storage
@@ -292,11 +314,140 @@ Kid     StackChan           Worker / Session DO              D1        LLM (text
 If Option A is used instead, the LLM and TTS columns collapse into one "ElevenLabs agent" column. Tool calls arrive as client-tool requests that the DO answers. Spoken audio comes back from the agent with no filter step in between.
 
 Variants:
-- **Unknown or unpaired wand UID:** Worker replies `{session, kid:null, unregistered:true}`; the device plays the offline "ask a grown-up to set me up" clip. The Worker never creates kids from taps.
+- **Unknown or unpaired wand UID:** Worker replies `{t:"session", kid:null, mode:"unregistered"}`; the device plays the `friendly_unknown` clip with a gold glow and a nod and opens **no microphone and no upstream** (nothing is sent, nothing saved). The Worker never creates kids from taps. **Decided (user, 16 Nov): clip only, no live chat.**
 - **Second tap of the same wand mid-chat:** ignored (debounce).
-- **A different kid's wand mid-chat:** current session ends as `superseded` (items kept) and a new one starts.
-- **Tap with no PTT for 30 s:** Aunty Bella nudges once ("Are you still there?"), then says goodbye at 60 s.
-- **List already at 5 for this kid:** Aunty Bella is told so up front ("The list is full. Celebrate it and offer to start again only if the parent resets it").
+- **A different kid's wand mid-chat (decided: switch):** the current session ends as `superseded` (items kept, first kid's list `finished_early`, note "Chat ended early (a sibling took a turn)") and a new session starts for the tapped wand with a greeting.
+- **Silent turns:** after 30 s with no PTT Aunty Bella nudges once ("Are you still there?"). After the 2nd silent turn she does a short recap and says goodbye, and the Worker ends the session with `silence` (section 4.3).
+- **Wand tapped again later with 1 to 4 items on the list:** the session continues the same list: SYSTEM line with the items so far, `count` in the `session` message, no new list. When it reaches 5 it becomes `complete`.
+- **List already at 5 for this kid:** Aunty Bella is told so up front ("The list is full. Celebrate it and say goodbye. A new list starts only if the parent resets it"). No new list is created by a tap.
+- **Kid says stop or wanders off:** early finish (section 4.3).
+
+### 4.3 Early finish and timeouts (D8)
+
+Three ways a chat can end before 5 items. All use the same ending path.
+
+```text
+Kid says "that's enough"            Session DO                     LLM            Mum
+ |                                     |                            |              |
+ | "I'm done" (PTT) ----------------> | audio -----------------> |              |
+ |                                     | <-- text: "Would you like one more surprise idea?" (the ONE offer)
+ |                                     | stop_offered = true (filter saw the offer sentence)
+ | "No." (PTT) ---------------------> | ----------------------> |              |
+ |                                     | <-- tool: finish_session(kid_done) + recap text (1-4 items)
+ |                                     | recap audio plays (gold glow, nod), wait for playback_done
+ |                                     | write sessions row: end_reason=kid_done
+ |                                     | kids.list_status=finished_early, note="Happy with 2"
+ | <-- {end, reason: kid_done, list_status: finished_early}               |              |
+ |                                     | email parent link (first session with >= 1 item) -----> | Mum: page shows "Finished early: happy with 2"
+
+ Said "yes" to the offer: one surprise idea, normal add if the kid says yes. A second stop: no second offer,
+ the DO injects "You have already offered ... Do the recap now." and the chat ends.
+
+Silence                                                          Time budget
+ 30 s no PTT -> nudge (silent turn 1)                            5:00 since first greeting
+ 30 s no PTT -> SYSTEM "gone quiet again" (turn 2 = N)          -> finish the sentence, SYSTEM "Time is up"
+ -> short recap + goodbye, finish_session(silence)               -> recap, finish_session(time_budget)
+ note: "Chat ended after 3 min (went quiet)"                     note: "Chat ended after 5 min"
+```
+
+Rules:
+- A list of **1 to 4 items is a valid result**: happy recap, `finished_early`, and it still goes to Mum.
+- **0 items:** kind goodbye, list stays `empty`, no email. The session row is still written.
+- **The next wand tap continues the same list** up to 5 (D1 holds the list, not the session). Reaching 5 makes it `complete`, replaces the note with "Complete", and sends the second email.
+- Order of precedence if several fire at once: `hard_stop` > `time_budget` > `silence` > `kid_done`. Only the first sets `ending`.
+- Device behaviour at the end: `finished_early` and `complete` both end with a gold glow and a nod; only `complete` uses the rainbow finale.
+
+### 4.4 Session state graph
+
+```mermaid
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Greeting: wand tap (paired kid)
+    Greeting --> WarmUp: new list
+    Greeting --> Discovery: wand tapped again, list has 1 to 4 items
+    Greeting --> Closed: list already at 5, celebrate and goodbye
+    WarmUp --> Discovery
+    Discovery --> Adding: clear yes or YES card
+    Adding --> Discovery: fewer than 5 items
+    Adding --> Recap: 5th item, status complete
+    Discovery --> OfferOneMore: kid says stop, first time
+    WarmUp --> OfferOneMore: kid says stop, first time
+    OfferOneMore --> Discovery: kid says yes, one surprise idea
+    OfferOneMore --> Recap: kid says no, stop immediately
+    Discovery --> Recap: kid says stop, offer already used
+    Discovery --> Recap: timeout, 5 min budget or N silent turns
+    WarmUp --> Recap: timeout, 5 min budget or N silent turns
+    Discovery --> Safety: worrying disclosure or unsafe topic
+    WarmUp --> Safety: worrying disclosure
+    Safety --> Discovery: minor, gently steered back
+    Safety --> Closed: get a grown-up, list so far kept
+    Discovery --> Comfort: child upset
+    WarmUp --> Comfort: child upset
+    Comfort --> Closed: finish_session upset, no gift push
+    Discovery --> Greeting: sibling taps own wand, switch
+    Discovery --> Closed: wifi gone over 10 min, connection lost
+    Discovery --> Recap: battery very low
+    Idle --> UnknownWand: wand not paired, or stream mode and no consent
+    UnknownWand --> Idle: friendly clip, nothing saved or sent
+    Recap --> Closed: finish_session, status finished_early or complete
+    Closed --> [*]
+    Closed --> Greeting: wand tapped again later (same list, up to 5)
+    note right of Closed
+      hard stop at 8 min from any state:
+      goodbye clip, no recap
+    end note
+```
+
+### 4.5 Edge cases: Worker and device handling (D9)
+
+Prompt rules are on the Harness page; this is what the Worker and the robot do. The five edge-case decisions are decided by the user (16 Nov): sibling switch, clip-only unknown wand, approved Santa lines, no tool for passing asks to Mum, worrying notes to Mum only.
+
+**Kid behaviour**
+
+| Case | Prompt does | Worker / device does |
+|---|---|---|
+| Says yes to everything | After about 3 yeses in a row, asks once "Which one do you love most?" | `yes_streak` counter (reset by a no); `love_most_asked` makes it once per chat. Cap of 5 and dedupe still apply. |
+| Changes their mind | Cheerfully "Okay, taking that off!" and calls `remove_from_wishlist(item)` | DO matches `item` against the live list by `item_norm` (exact, then prefix), soft-deletes with `removed_by='kid'`, returns `ok` or `not_found` (model then asks which one). Frees a slot under the cap. A list that was `complete` becomes `in_progress` if the removal drops it below 5. |
+| Big or impossible ask | Kind, no promise, offers a giftable idea; never says it will tell Mum | Conversation only. Nothing is stored or passed to Mum about the original ask. |
+| Screen or brand ask | Warm acknowledgement, offers one non-screen alternative, `add_to_wishlist(item, reason)` if yes | Conversation only. Nothing about the original ask is stored or sent. The item filter's brand denylist applies to `item` (the alternative); the spoken filter still blocks the *model* from introducing brands. |
+| "Are you real?" / "Is Santa real?" | Fixed approved lines | Lines live in the prompt and are shown on the setup page; the parent ticks `answers_approved_at`. If a parent has not ticked, setup is not complete and the wand is not activated. |
+| Upset or crying | Soft words, no gift talk, `finish_session("upset")` | End note for Mum: "Chat ended early: your child needed a grown-up". Mood `happy` is toned down: gold glow, no sparkle chase, no double nod. No safety flag is raised for plain upset. |
+
+**Several children**
+
+| Case | Worker / device does |
+|---|---|
+| Two talking at once | PTT is a single strip, so the model hears a mix. Items are always bound to the session's kid (the tapped wand). Prompt asks who has the wand. Test with cross-talk audio later. |
+| A sibling taps their wand mid-chat | **Decided: switch.** The first session ends `superseded` (list `finished_early`, note "Chat ended early (a sibling took a turn)", no email if no items). A new session starts for the tapped wand with a greeting and `{t:"session", state:"switched"}`. Debounce: ignore the same UID for 2 s; ignore any wand tap during the last 3 s of a recap. |
+| Unknown wand | **Decided: friendly pre-recorded clip, no mic, no upstream, nothing saved.** (A live chat would send an unregistered child's voice to the providers with no parent having agreed.) |
+| Stream mode, household not consented | `STREAM_MODE=true`: the wand behaves like an unknown wand with the `not_today` clip. |
+
+**Technical**
+
+| Case | Worker / device does |
+|---|---|
+| Wifi drops | Items are already in D1. Device shows "sleepy" LEDs and plays `sleepy` once. DO keeps the session 10 minutes. Back in time: `{t:"session", state:"resumed"}`. Not back: the DO ends the session as `connection_lost` (list `finished_early` with a note) and the next tap continues the same list. Offline mid-recap: the end state is still written; any email is queued until the DO can send it. |
+| Mishearing | `add_to_wishlist` for a kid-originated item needs a repeat-back and a yes (`pending_confirm` in the DO). A suggestion she made herself and a clear yes, or a card tap, adds directly. Garbled audio never counts as a yes. |
+| Background noise or TV | Push to talk: the mic is open only while the strip is held. The setup page asks for the TV off and the strip held while talking. Unintelligible audio gets "I didn't catch that"; after two misses she offers two choices. |
+| Latency | On `ptt up` the Worker sends `set_mood thinking` (thinking LEDs plus a head tilt) **immediately**, without waiting for the model. If no audio starts within 3 s it plays the filler clip ("Hmm, let me think!"). The 14:15 latency gate on the timeline still decides Option A vs B. |
+| Low battery | `ping.battery` at 20% or less and not charging: amber blink and head dip between turns, `plug_me_in` clip. At 10% or less and not charging: the DO injects the low-battery SYSTEM line and ends with `low_battery`. |
+
+**Parent and data**
+
+| Case | Worker / page does |
+|---|---|
+| Email not set up or not confirmed | List is saved and held; `emailed_at` stays null. The robot plays `check_setup` and a slow gold pulse at the next tap. The held email is sent as soon as the address is verified (or the demo flag is on). |
+| Duplicates across sessions | Unique `(kid_id, item_norm)` among non-removed rows. A repeat merges: keep the first row, append the new reason if different (160-character cap). The SYSTEM line on resume lists existing items so she does not suggest them again; if the child asks for one anyway she says "That's already on your list!". |
+| Mum edits, deletes or resets | Page endpoints (6.4). The cap and counts always read the live D1 state, so a removal during a live chat is respected. Reset sets `list_status='empty'`. |
+| Same gift for two siblings | Page query joins `wishlist_items` on `item_norm` across kids in the household and shows a neutral flag. Never spoken to children. |
+
+**Safety**
+
+| Case | Worker does |
+|---|---|
+| Repeated disclosure | **Escalate every time.** Each `finish_session(safety)` or keyword hit raises the Worker-side safety flag and sends the parent (only) a fixed neutral email. Repeats across sessions are never merged or silenced. **Decided: Mum only**, nobody else is notified. |
+| Prompt injection by older siblings | See the safety table (3.4) and the red-team scenarios on the Prompt Testing page. The model cannot change the cap, the filter or the tool schemas. |
+| No audio storage; stream demos | No audio or transcripts stored (D13). Debug transcript mode is off by default and only for the build team's own tests. Stream mode (above) enforces parental consent for live streams. |
 
 ## 5. Upstream adapters (Decision: Ben, provider)
 
@@ -339,7 +490,7 @@ interface AgentUpstream {
 
 - **Implementations:** `upstream/openai.ts` and `upstream/gemini.ts` (**Decision: Ben**; if undecided when the adapter work starts, write OpenAI first, the adapter makes switching cheap), `voice/elevenlabs-tts.ts` (Option B), `voice/elevenlabs-agent.ts` (Option A).
 - **Selection:** `VOICE_MODE=tts|agent` and `LLM_PROVIDER=openai|gemini` in Worker config.
-- **Same for all:** the tools in `prompts/tools.json` (the body commands plus worker-only `add_to_wishlist`, `remove_from_wishlist`, and `finish_session`), the prompt text, the SYSTEM lines and the device contract. There is no `note_for_parent` tool. The prompt harness is `evals/`, described in `docs/testing.md`.
+- **Same for all:** the seven tools, the prompt text, the SYSTEM lines and the device contract.
 
 ## 6. Message contracts
 
@@ -360,7 +511,7 @@ URL: `wss://<worker-host>/ws?device=<deviceId>` with header `Authorization: Bear
 { "t": "ptt",   "state": "down" }
 { "t": "ptt",   "state": "up" }
 { "t": "playback_done" }
-{ "t": "ping" }
+{ "t": "ping", "battery": 87, "charging": true }
 { "t": "error", "code": "nfc_read_failed", "detail": "..." }
 ```
 
@@ -370,6 +521,8 @@ URL: `wss://<worker-host>/ws?device=<deviceId>` with header `Authorization: Bear
 
 ```json
 { "t": "session", "id": "s_01H...", "state": "started", "kid_name": "Lily", "count": 0, "max": 5 }
+{ "t": "session", "state": "unregistered" }
+{ "t": "session", "id": "s_01H...", "state": "switched", "kid_name": "Sam", "count": 0, "max": 5 }
 { "t": "cmd", "name": "set_mood", "args": { "mood": "excited" } }
 { "t": "cmd", "name": "set_leds", "args": { "color": "gold" } }
 { "t": "cmd", "name": "nod" }
@@ -381,15 +534,17 @@ URL: `wss://<worker-host>/ws?device=<deviceId>` with header `Authorization: Bear
 { "t": "pairing", "state": "expired" }
 { "t": "paired", "kid_name": "Lily" }
 { "t": "pair_error", "reason": "uid_already_paired" }
-{ "t": "end", "reason": "complete" }
+{ "t": "end", "reason": "complete", "count": 5, "list_status": "complete" }
+{ "t": "end", "reason": "kid_done", "count": 2, "list_status": "finished_early" }
 { "t": "error", "code": "upstream_unavailable" }
 { "t": "pong" }
 ```
 
 - `cmd` names and args match the tool JSON exactly (Harness page, section 2). `set_face` no longer exists. Firmware must ignore unknown names and clamp servo ranges.
 - `pairing waiting` puts the robot in pairing mode (slow blue pulse); `paired` plays the gold flash, a nod and the "all paired" clip.
+- `end.reason` is one of `complete`, `kid_done`, `upset`, `safety`, `silence`, `time_budget`, `low_battery`, `connection_lost`, `hard_stop`, `error`, `superseded`. The device plays the gold glow and nod for all but `complete` (rainbow) and `hard_stop` / `error` (offline `goodbye` or `sorry` clip).
 - `audio_cancel` = flush the playback ring buffer now (filter hit or the kid pressed PTT mid-reply).
-- `play_local` clips (pre-rendered in the Harriet voice): `offline_greeting`, `ask_grownup_setup`, `try_again`, `sorry`, `goodbye`, `paired`.
+- `play_local` clips (pre-rendered in the Harriet voice): `offline_greeting`, `ask_grownup_setup`, `friendly_unknown`, `not_today`, `check_setup`, `plug_me_in`, `sleepy`, `try_again`, `sorry`, `goodbye`, `paired`.
 - Reconnect: the device reconnects with the same `device` id; the DO resumes if the session is under 10 minutes old and sends `{t:"session", state:"resumed"}`.
 
 ### 6.2 Worker <-> language model (OpenAI Realtime shape; Gemini Live maps the same, Decision: Ben)
@@ -397,7 +552,7 @@ URL: `wss://<worker-host>/ws?device=<deviceId>` with header `Authorization: Bear
 Event names differ between OpenAI's beta and GA Realtime APIs; check the current docs before coding. In outline:
 
 - Connect: `wss://api.openai.com/v1/realtime?model=<realtime model>` with `Authorization: Bearer <OPENAI_API_KEY>` (set from the Worker; the device never sees the key).
-- `session.update`: `instructions` (system prompt), `tools` (the 5 functions), input audio format `pcm16`, **output modality text only** (Option B), turn detection off (PTT).
+- `session.update`: `instructions` (system prompt), `tools` (the 7 functions), input audio format `pcm16`, **output modality text only** (Option B), turn detection off (PTT).
 - Audio in: `input_audio_buffer.append` (base64), then `input_audio_buffer.commit` and `response.create` on PTT up.
 - System injections: `conversation.item.create` (a text item starting with `SYSTEM:`), then `response.create`.
 - Text out: text delta events -> sentence splitter -> filter -> TTS.
@@ -434,7 +589,7 @@ Receives (relevant): audio events, agent_response (text), interruption,
 Worker answers: { "type": "client_tool_result", "tool_call_id": "...", "result": "ok, count=1", "is_error": false }
 ```
 
-Client tools in the agent config are named exactly `add_to_wishlist`, `set_mood`, `nod`, `shake`, `set_leds` (same schemas as the Harness page). Worker-side cap: an `add_to_wishlist` request at count 5 returns `is_error: true`.
+Client tools in the agent config are named exactly `add_to_wishlist`, `set_mood`, `nod`, `shake`, `set_leds`, `finish_session`, `remove_from_wishlist` (same schemas as the Harness page). Worker-side cap: an `add_to_wishlist` request at count 5 returns `is_error: true`.
 
 ### 6.4 HTTP API and D1 schema
 
@@ -451,6 +606,7 @@ Client tools in the agent config are named exactly `add_to_wishlist`, `set_mood`
 | `GET /w/:token` | parent token in URL | Parent wishlist page (HTML) |
 | `GET /w/:token.json` | parent token | JSON of the same |
 | `POST /w/:token/items/:itemId/remove` | parent token | Remove one item |
+| `POST /w/:token/items/:itemId/edit` | parent token | Edit the text of an item (same filter as the Worker) |
 | `POST /w/:token/kids/:kidId/reset` | parent token | Clear one kid's list |
 | `POST /w/:token/kids/:kidId/delete` | parent token | Delete a kid, their items and sessions |
 | `POST /w/:token/email` | parent token | Change the parent email (re-verify) |
@@ -470,6 +626,8 @@ create table households (
   parent_email       text,                     -- from parent setup; null until the parent submits it
   email_verified_at  text,                     -- set by /verify/:token
   verify_token_hash  text,
+  answers_approved_at text,                     -- parent ticked 'I am happy with how Aunty Bella answers are you real / is Santa real' on the setup page
+  stream_consent_at  text,                      -- parent agreed to their child's voice being used on a live stream; stream mode checks this
   created_at         text not null
 );
 
@@ -480,6 +638,9 @@ create table kids (
   status        text not null default 'pending', -- 'pending' (no wand yet) | 'active'
   uid_hash      text unique,                   -- sha256(UID_SALT || uid); null until the wand is paired
   paired_at     text,
+  list_status   text not null default 'empty',  -- 'empty' | 'in_progress' | 'finished_early' | 'complete' (D8: one list per kid)
+  finish_note   text,                           -- short parent-facing reason, e.g. 'Happy with 2', 'Chat ended after 3 min (went quiet)', 'Complete'; written by the Worker
+  finished_at   text,                           -- when the list last reached a finished state
   created_at    text not null
 );
 
@@ -492,13 +653,25 @@ create table pairings (                         -- short-lived pairing windows
 );
 
 create table wishlist_items (
+  id           text primary key,
+  kid_id       text not null references kids(id) on delete cascade,
+  item         text not null,
+  item_norm    text not null,                   -- lower-cased, trimmed, plural-folded, used to merge duplicates
+  reason       text,
+  source       text not null,                   -- 'voice' | 'card'
+  created_at   text not null,
+  removed_at   text,                            -- soft delete
+  removed_by   text                             -- 'parent' | 'kid' | 'merge'
+);
+create unique index wishlist_one_per_item on wishlist_items(kid_id, item_norm) where removed_at is null;
+
+create table safety_flags (                      -- worrying-moment flags; no content and no transcript are stored
   id          text primary key,
   kid_id      text not null references kids(id) on delete cascade,
-  item        text not null,
-  reason      text,
-  source      text not null,                   -- 'voice' | 'card'
+  session_id  text references sessions(id) on delete set null,
+  source      text not null,                    -- 'safety_finish' (finish_session safety) | 'keyword'
   created_at  text not null,
-  removed_at  text                              -- soft delete by parent
+  emailed_at  text                              -- the neutral email to the parent only, sent every time
 );
 
 create table cards (                             -- toy / YES / NO / category cards
@@ -512,24 +685,30 @@ create table sessions (                          -- no audio, no transcript
   kid_id      text not null references kids(id) on delete cascade,
   started_at  text not null,
   ended_at    text,
-  end_reason  text,                              -- complete | idle | timeout | error | superseded
+  end_reason  text,                              -- complete | kid_done | upset | safety | silence | time_budget | low_battery | connection_lost | hard_stop | error | superseded
+  continued   integer not null default 0,        -- 1 if the session continued an existing list (wand tapped again)
+  finish_note text,                              -- same short text as the kid's finish_note at the time
   items_added integer not null default 0,
   flags       text,                              -- comma-separated safety flags
   emailed_at  text                               -- when the parent link was sent
 );
 ```
 
+Migration note (D9): `wishlist_items` gains `item_norm`, `removed_by` and a unique partial index; a `safety_flags` table is added; `households` gains `answers_approved_at` and `stream_consent_at`; `sessions.end_reason` gains `upset`, `safety`, `low_battery` and `connection_lost`. Change `0001_init.sql` in place (nothing is deployed).
+
+Migration note (D8): `kids.list_status` and `sessions.end_reason` values changed (`idle` and `timeout` became `silence` and `time_budget`, `hard_stop` is new); since nothing is deployed yet, change `0001_init.sql` rather than adding a migration. Resetting a kid's list (parent page) sets `list_status = 'empty'` and clears `finish_note` and `finished_at`.
+
 Chain: wand UID (hashed) -> `kids` -> `households.parent_email`. A kid without `uid_hash` or `status = 'active'` cannot start a chat. Deleting a household cascades to kids, items, sessions and pairings.
 
 Wishlist JSON shape:
 
 ```json
-{ "household": "h_...", "kids": [ { "id": "k_...", "first_name": "Lily", "items": [ { "id": "i_...", "item": "wooden building blocks", "reason": "Loves building castles", "created_at": "2026-11-16T14:05:00Z" } ], "max": 5 } ] }
+{ "household": "h_...", "kids": [ { "id": "k_...", "first_name": "Lily", "status": "finished_early", "finish_note": "Happy with 2", "items": [ { "id": "i_...", "item": "wooden building blocks", "reason": "Loves building castles", "created_at": "2026-11-16T14:05:00Z" } ], "max": 5 } ] }
 ```
 
 ### 6.5 Parent wishlist page
 
-- `GET /w/:parentToken` lists each kid with items and reasons, newest last, with remove / reset / delete buttons.
+- `GET /w/:parentToken` lists each kid with items and reasons, newest last, with remove / reset / delete buttons, and a status line per kid: "In progress", "Complete: 5 of 5" or "Finished early: happy with 2" (the `finish_note`). Early finish is shown as a normal result, not an error. The page also shows a **sibling flag** when two kids in the household have the same `item_norm` ("Lily and Sam both asked for: wooden blocks"). The children are never told about each other's lists.
 - Stretch (page 60): write an NDEF URL (`https://.../w/<token>` as the first record) to a separate parent tag so a phone tap opens the list. Card 303 caveats: iPhones read NDEF in the background but give no UID to Safari; never lock a tag; writing replaces the Jakcom profile URL.
 - Once the product has a name, web-facing paths are served at `build40for40.com/<app>/` (repo `AGENTS.md`). Until then use the `workers.dev` URL.
 
@@ -546,7 +725,7 @@ day11/
     agent-prompt-and-harness.md             prompt + tools + FAQ
   prompts/
     aunty-bella.system.md                           the system prompt, verbatim
-    tools.json                              tool definitions (set_mood, not set_face; plus finish_session and remove_from_wishlist)
+    tools.json                              the 7 tool definitions (set_mood, not set_face; finish_session, remove_from_wishlist)
     examples.md                             example dialogue (used as test cases)
   worker/
     wrangler.jsonc                          DO binding, D1 binding
@@ -571,7 +750,7 @@ day11/
       email.ts                              confirm email + send the link
       protocol.ts                           device message types (shared)
     migrations/0001_init.sql
-    test/                                   tools.test.ts, filter.test.ts, pairing.test.ts
+    test/                                   tools.test.ts, filter.test.ts, pairing.test.ts, earlyfinish.test.ts, edgecases.test.ts
   firmware/
     stackchan/
       platformio.ini  (or .ino)
@@ -643,7 +822,9 @@ Stretch if time: phone tap to open the wishlist (NDEF URL), WhatsApp, a curated 
 7. **Name?** Holding name "Wish". Page 60 floats Wishbox, Elf, "11". Affects the URL path (`build40for40.com/<app>/`). The character name "Aunty Bella" is also provisional (she was "Pip the Elf" in the planning chat).
 8. **Items per chat:** five (page 60 MVP). Card 304's "Toy 20 Questions" mentioned suggesting three toys; this design follows the five of the MVP.
 9. **Toy cards:** do we make any today, or only the wand + YES/NO? Cards are optional for the MVP.
-10. **Real kids on stream.** Twitch is live: no real child audio on camera without the parent's say-so.
+10. **Early-finish numbers (D8).** Silent turns N (starts at 2), the 5-minute budget, the 30 s silent-turn window and the 8-minute hard stop are starting values. Tune on the day. Also decide: do we email Mum on every continuation or only when a list completes (proposed: only when it completes)?
+11. **Edge cases (D9): decided by the user on 16 Nov.** (a) a sibling's wand tap mid-chat switches the chat; (b) an unknown wand plays a pre-recorded clip only; (c) the "Are you real? / Is Santa real?" lines are approved; (d) the tool for passing asks to Mum was rejected, so big, screen and brand asks are redirected in conversation only; (e) worrying notes go to Mum only.
+12. **Real kids on stream.** Twitch is live: no real child audio on camera without the parent's say-so.
 *(Resolved since the first draft: face on the LCD = no, LCD is off; nail or wand = wand.)*
 
 ### Risks
@@ -667,6 +848,11 @@ Stretch if time: phone tap to open the wishlist (NDEF URL), WhatsApp, a curated 
 | Library updates break the Arduino build (card 304) | Lost hour | Pin versions; build once early; keep the `.bin`. |
 | Wifi 2.4 GHz only / venue wifi | No connection | Phone hotspot on 2.4 GHz; offline clips. |
 | Provider spend (LLM + ElevenLabs credits) | Surprise bill | Spend and usage limits; hard stop at 8 min; one active session per device. |
+| Aunty Bella keeps pushing after the kid says stop | Child annoyed, trust lost | One-offer rule in the prompt, spoken-offer backstop in the Worker, test scenarios on the Prompt Testing page; the Worker's timers can only shorten a chat. |
+| A wand tap restarts or wipes a list | Lost wishlist | The list lives in D1 with a status; a tap only continues it; only the parent can reset. |
+| Older sibling prompt-injects or tricks the model | Odd or rude speech, rule bypass | Rules in the prompt, caps and filters in code, name sanitising, red-team scenarios. |
+| A confirm step slows the chat or is skipped | Wrong items or an annoyed child | Confirm only for the child's own words or unclear audio; test turn counts. |
+| Unknown wand clip is read as "broken" | Child frustrated | Friendly clip with lights and a nod; clear message to ask a grown-up. |
 | Child safety / worrying disclosures | Serious | Prompt rule + flag in log; not a safeguarding tool; supervised use only. |
 
 ## 11. What is not decided here
