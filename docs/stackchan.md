@@ -1,6 +1,6 @@
 # StackChan and the voice agent
 
-Source: the Superthread research card "Research: StackChan with the N3 nail and a voice agent". Nothing here has been tested on a real StackChan yet.
+Source: the Superthread research card "Research: StackChan with the N3 nail and a voice agent". Only the "Tested so far" section was run on a real StackChan.
 
 ## What StackChan is
 
@@ -47,7 +47,30 @@ Factory baseline, tested on a real StackChan:
 - **Mic and speaker with our own code (open question 2): work, quality poor.** A touch-to-record sketch (3 seconds at 16kHz mono, played back through `M5.Speaker` at volume 200) ran reliably six times in a row. Mic levels were low: peak 2,400 to 10,000 and RMS 130 to 790 out of a 32,767 scale, from about 30cm away and not speaking directly at it. Playback was muffled, a little tinny, distorted and too quiet, with white-noise background hiss. A loud voice was fine. Mic and speaker share one audio bus, so the sketch switches between them (no full duplex tested). Not yet tried: higher volume, mic gain, a higher sample rate.
 - **NFC read reliability:** the nail was harder to read in later testing than in the first run. Cause not found yet.
 
-Not yet tested: NFC read distance, a sticker as a control, full duplex audio, speech round trip with our own model, and restoring the factory firmware.
+- **Thin device plus server, end to end (16 Nov): works.** The sketch in [../prototype/](../prototype/README.md) joined 2.4GHz Wi-Fi, opened a WebSocket to a Node server on a laptop on the same network and completed a push-to-talk turn on the first try. It streamed 2.5 seconds of 16kHz PCM16 from the mic in 100ms frames while the head strip was held, with no frames dropped, then received and played 5.6 seconds of 24kHz PCM16. From letting go of the strip, the first reply audio arrived after 1.0 second and playback started after 1.7 seconds. The server had no model behind it: it replied with a macOS `say` line (about 1 second to generate) plus an echo of the mic audio. The device waits for the whole reply before playing, so the 0.7 second gap grows with reply length until playback is streamed.
+- **Built-in mic is good enough for speech to text (16 Nov).** Real turns spoken at the StackChan from close range transcribed correctly with `gpt-4o-mini-transcribe`, at `magnification` 16. A 1.2 second mumble came back as Danish, so very short turns are unreliable. The echo of the mic through the speaker sounds terrible, but that didn't stop transcription.
+- **Blocking chain, through the StackChan (16 Nov): 3 to 5 seconds on the server.** Speech to text 0.6 to 1.1s, `gpt-4o-mini` 0.9 to 1.2s, `gpt-4o-mini-tts` 1.5 to 2.7s, each as one blocking HTTP call, before the device's own delay. Too slow.
+- **Three faster modes, server only (16 Nov).** The same synthetic 2.3 second sentence, two turns each, sent to the prototype server at mic pace. Time from the end of speech to the first reply audio leaving the server:
+
+  | `MODE` | How it works | First audio |
+  |---|---|---|
+  | `chain` | speech to text, streamed `gpt-4o-mini`, text to speech per sentence | 3.5s, then 1.6s |
+  | `hybrid` | `gpt-realtime` with audio in and text out, text to speech per sentence | 0.9s, then 1.1s |
+  | `realtime` | `gpt-realtime` speech to speech | 0.6s, then 0.4s |
+
+  `hybrid` is the Option B shape in [architecture.md](architecture.md): the reply exists as text before it is spoken, so a safety check can sit in between. Two turns per mode is a small sample, and these numbers leave out the device (about 0.7s on the earlier test).
+- **Mic gain:** with `magnification` raised from 16 to 32 the mic clipped (peak 32,752, RMS 10,731) on that one turn. Distance from the mic wasn't noted.
+
+- **Hybrid mode through the StackChan (16 Nov): 1.4 seconds.** One real turn (6.8 seconds of speech, transcribed correctly) with streamed playback on the device: sound started 1.4 seconds after letting go of the head strip, against about 5 seconds on the factory agent. One turn only, so treat it as a first reading.
+- **Hands-free conversation with a "bye" ending, server only (16 Nov): works in `hybrid` and `realtime`.** Tap the head to start, and the mic stays open between replies. The realtime model's own speech detection ends each turn after 0.7 seconds of silence, and the model calls a `finish_session` tool when the child says bye, which closes the mic. With a fake device, sound started 1.7 to 2.0 seconds after the last word (that includes the 0.7 second silence wait), and "Okay bye bye, I am all done now" ended the chat in both modes. In `chain` mode `gpt-4o-mini` wrote the tool call out as text and read it aloud, so the chat didn't end. Not yet confirmed through the StackChan: only a tap to start and a tap to stop were seen.
+- **Hands-free on the StackChan in a busy room (16 Nov): works, but the room got in the way.** Eight turns ran with no tapping between them and the chat ended on "I need to go". Other people talking nearby were transcribed as the child, so the 0.7 second silence that ends a turn often didn't come and the robot kept listening, and "bye" only landed on the third try. Changed after that, and tested on a fake device only: speech threshold raised from 0.5 to 0.75, silence wait cut to 0.5 seconds, the realtime API's far-field noise reduction turned on, a turn forced to end after 10 seconds of speech, and "bye" in the transcript ends the chat even if the model doesn't call `finish_session`.
+- **Phantom taps on the head strip (16 Nov).** After a chat ended properly, the StackChan reopened the mic with nobody touching it, several times. The likely cause is the touch strip misfiring when the speaker and mic switch over, not confirmed. The firmware now ignores the strip for 1.5 seconds after each switch, and only a wand tap can start a chat. A head tap still stops one. Not yet retested on the device.
+- **The model says goodbye without ending the chat.** In `hybrid` mode it often said "Bye for now!" without calling `finish_session`, so the mic reopened. The server now also ends the chat when the reply itself contains a goodbye.
+- **ElevenLabs Harriet voice, server only (16 Nov): faster than the OpenAI voice.** In `hybrid` mode with `eleven_flash_v2_5`, the first audio left the server 0.4 to 0.5 seconds after speech stopped, against about 0.8 to 1.0 with `gpt-4o-mini-tts`. From the last word that is about 1.1 seconds on a fake device. Two turns, not yet heard through the StackChan.
+- **Deployed on Cloudflare (16 Nov): works.** `hybrid` mode runs as a Worker with one Durable Object per device on the route `build40for40.com/glissen/api*`, alongside the main site's custom domain. A fake device completed two turns and a "bye" ending against it, with sound about 1.1 seconds after the last word on the second turn, and a wrong device token got a 401. The first connections straight after the deploy failed with a 404 and a 500, then it settled. The StackChan connects to it over TLS (certificate not checked) and reaches "Ready". No conversation has been run through the StackChan on the deployed Worker yet, and the Workers subrequest limit over a long chat is untested.
+- **The prototype firmware doesn't recover when the server isn't there.** Twice it sat idle after the server restarted or started late, and needed a board reset. Cause not found.
+
+Not yet tested: the wand tap on the prototype, a full hands-free conversation and `realtime` mode through the StackChan itself, false triggers from background noise, how streamed playback sounds over a long reply, NFC read distance, a sticker as a control, full duplex audio, and restoring the factory firmware.
 
 ## Restoring the factory firmware (unverified)
 

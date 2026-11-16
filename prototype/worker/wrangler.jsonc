@@ -1,0 +1,17 @@
+{
+  "name": "glissen",
+  "account_id": "9b4d3e616e55585a0ae844f424717b43",
+  "compatibility_date": "2026-10-01",
+  "main": "./src/index.ts",
+  "rules": [{ "type": "Text", "globs": ["**/*.md"], "fallthrough": false }],
+  "durable_objects": {
+    "bindings": [{ "name": "SESSIONS", "class_name": "DeviceSession" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DeviceSession"] }],
+  "vars": {
+    "OPENAI_REALTIME_MODEL": "gpt-realtime"
+  },
+  "routes": [{ "pattern": "build40for40.com/glissen/api*", "zone_name": "build40for40.com" }],
+  "workers_dev": false,
+  "preview_urls": false
+}
