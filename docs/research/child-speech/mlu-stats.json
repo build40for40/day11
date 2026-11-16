@@ -1,0 +1,678 @@
+[
+  {
+    "scope": "primary_all_corpora",
+    "region": "Eng-UK",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 1085,
+    "n_children": 83,
+    "mlu_w_mean": 2.97,
+    "mlu_w_median": 2.71,
+    "mlu_w_p25": 2.33,
+    "mlu_w_p75": 3.47,
+    "mlu_w_min": 1.16,
+    "mlu_w_max": 6.12,
+    "mean_child_utterances_per_transcript": 417.8,
+    "median_child_utterances_per_transcript": 424,
+    "total_child_utterances": 453284,
+    "corpora": {
+      "Belfast": 31,
+      "Fletcher": 24,
+      "Forrester": 11,
+      "Lara": 312,
+      "MPI-EVA-Manchester": 207,
+      "Manchester": 165,
+      "Thomas": 175,
+      "Tommerdahl": 36,
+      "Wells": 124
+    }
+  },
+  {
+    "scope": "primary_all_corpora",
+    "region": "Eng-UK",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 70,
+    "n_children": 43,
+    "mlu_w_mean": 3.28,
+    "mlu_w_median": 3.14,
+    "mlu_w_p25": 2.85,
+    "mlu_w_p75": 3.65,
+    "mlu_w_min": 1.8,
+    "mlu_w_max": 5.11,
+    "mean_child_utterances_per_transcript": 490.4,
+    "median_child_utterances_per_transcript": 442.0,
+    "total_child_utterances": 34329,
+    "corpora": {
+      "Belfast": 1,
+      "Fletcher": 24,
+      "Forrester": 1,
+      "Thomas": 28,
+      "Wells": 16
+    }
+  },
+  {
+    "scope": "primary_all_corpora",
+    "region": "Eng-UK",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 24,
+    "n_children": 23,
+    "mlu_w_mean": 4.27,
+    "mlu_w_median": 4.33,
+    "mlu_w_p25": 3.95,
+    "mlu_w_p75": 4.72,
+    "mlu_w_min": 2.86,
+    "mlu_w_max": 5.55,
+    "mean_child_utterances_per_transcript": 317.5,
+    "median_child_utterances_per_transcript": 320.5,
+    "total_child_utterances": 7621,
+    "corpora": {
+      "Fletcher": 24
+    }
+  },
+  {
+    "scope": "primary_all_corpora",
+    "region": "Eng-NA",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 1526,
+    "n_children": 359,
+    "mlu_w_mean": 3.45,
+    "mlu_w_median": 3.06,
+    "mlu_w_p25": 2.32,
+    "mlu_w_p75": 4.25,
+    "mlu_w_min": 0.52,
+    "mlu_w_max": 11.6,
+    "mean_child_utterances_per_transcript": 198.2,
+    "median_child_utterances_per_transcript": 165.5,
+    "total_child_utterances": 302520,
+    "corpora": {
+      "Bliss": 1,
+      "Bloom": 7,
+      "Bohannon": 27,
+      "Braunwald": 315,
+      "Brown": 74,
+      "Champaign": 247,
+      "Clark": 33,
+      "Demetras1": 17,
+      "Demetras2": 13,
+      "EHS": 76,
+      "Gelman": 44,
+      "Gleason": 22,
+      "Gopnik": 31,
+      "Haggerty": 1,
+      "Higginson": 3,
+      "Kuczaj": 94,
+      "MacWhinney": 47,
+      "Morisset": 196,
+      "Nelson": 5,
+      "NewEngland": 27,
+      "Nicolopoulou": 11,
+      "OCSC": 1,
+      "Post": 3,
+      "Sachs": 25,
+      "Snow": 35,
+      "Suppes": 25,
+      "Valian": 13,
+      "VanHouten": 45,
+      "VanKleeck": 2,
+      "Warren": 4,
+      "Weist": 82
+    }
+  },
+  {
+    "scope": "primary_all_corpora",
+    "region": "Eng-NA",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 620,
+    "n_children": 129,
+    "mlu_w_mean": 3.58,
+    "mlu_w_median": 3.31,
+    "mlu_w_p25": 2.54,
+    "mlu_w_p75": 4.31,
+    "mlu_w_min": 0.5,
+    "mlu_w_max": 10.8,
+    "mean_child_utterances_per_transcript": 135.9,
+    "median_child_utterances_per_transcript": 99.5,
+    "total_child_utterances": 84235,
+    "corpora": {
+      "Bliss": 2,
+      "Braunwald": 10,
+      "Brown": 35,
+      "EHS": 97,
+      "Gelman": 7,
+      "Gleason": 5,
+      "Gopnik": 42,
+      "HSLLD": 295,
+      "Hicks": 12,
+      "Kuczaj": 30,
+      "Nicolopoulou": 11,
+      "OCSC": 38,
+      "PetersonMcCabe": 15,
+      "Sachs": 3,
+      "Warren": 5,
+      "Weist": 13
+    }
+  },
+  {
+    "scope": "primary_all_corpora",
+    "region": "Eng-NA",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 279,
+    "n_children": 108,
+    "mlu_w_mean": 4.64,
+    "mlu_w_median": 3.99,
+    "mlu_w_p25": 2.87,
+    "mlu_w_p75": 6.29,
+    "mlu_w_min": 1.31,
+    "mlu_w_max": 11.93,
+    "mean_child_utterances_per_transcript": 172.7,
+    "median_child_utterances_per_transcript": 86,
+    "total_child_utterances": 48193,
+    "corpora": {
+      "Braunwald": 1,
+      "EHS": 2,
+      "Gelman": 12,
+      "HSLLD": 121,
+      "Hicks": 63,
+      "OCSC": 59,
+      "PetersonMcCabe": 21
+    }
+  },
+  {
+    "scope": "focus_corpora",
+    "region": "Eng-UK",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 488,
+    "n_children": 70,
+    "mlu_w_mean": 2.52,
+    "mlu_w_median": 2.5,
+    "mlu_w_p25": 2.18,
+    "mlu_w_p75": 2.83,
+    "mlu_w_min": 1.16,
+    "mlu_w_max": 4.07,
+    "mean_child_utterances_per_transcript": 490.6,
+    "median_child_utterances_per_transcript": 541.0,
+    "total_child_utterances": 239413,
+    "corpora": {
+      "Fletcher": 24,
+      "Manchester": 165,
+      "Thomas": 175,
+      "Wells": 124
+    }
+  },
+  {
+    "scope": "focus_corpora",
+    "region": "Eng-UK",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 68,
+    "n_children": 41,
+    "mlu_w_mean": 3.28,
+    "mlu_w_median": 3.14,
+    "mlu_w_p25": 2.86,
+    "mlu_w_p75": 3.63,
+    "mlu_w_min": 1.8,
+    "mlu_w_max": 5.11,
+    "mean_child_utterances_per_transcript": 499.8,
+    "median_child_utterances_per_transcript": 449.0,
+    "total_child_utterances": 33983,
+    "corpora": {
+      "Fletcher": 24,
+      "Thomas": 28,
+      "Wells": 16
+    }
+  },
+  {
+    "scope": "focus_corpora",
+    "region": "Eng-UK",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 24,
+    "n_children": 23,
+    "mlu_w_mean": 4.27,
+    "mlu_w_median": 4.33,
+    "mlu_w_p25": 3.95,
+    "mlu_w_p75": 4.72,
+    "mlu_w_min": 2.86,
+    "mlu_w_max": 5.55,
+    "mean_child_utterances_per_transcript": 317.5,
+    "median_child_utterances_per_transcript": 320.5,
+    "total_child_utterances": 7621,
+    "corpora": {
+      "Fletcher": 24
+    }
+  },
+  {
+    "scope": "focus_corpora",
+    "region": "Eng-NA",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 213,
+    "n_children": 58,
+    "mlu_w_mean": 2.93,
+    "mlu_w_median": 2.74,
+    "mlu_w_p25": 2.35,
+    "mlu_w_p75": 3.52,
+    "mlu_w_min": 0.55,
+    "mlu_w_max": 6.56,
+    "mean_child_utterances_per_transcript": 284.9,
+    "median_child_utterances_per_transcript": 212,
+    "total_child_utterances": 60679,
+    "corpora": {
+      "Bliss": 1,
+      "Brown": 74,
+      "Gelman": 44,
+      "Gleason": 22,
+      "MacWhinney": 47,
+      "Sachs": 25
+    }
+  },
+  {
+    "scope": "focus_corpora",
+    "region": "Eng-NA",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 347,
+    "n_children": 79,
+    "mlu_w_mean": 3.26,
+    "mlu_w_median": 3.13,
+    "mlu_w_p25": 2.45,
+    "mlu_w_p75": 3.82,
+    "mlu_w_min": 0.5,
+    "mlu_w_max": 10.8,
+    "mean_child_utterances_per_transcript": 122.0,
+    "median_child_utterances_per_transcript": 88,
+    "total_child_utterances": 42343,
+    "corpora": {
+      "Bliss": 2,
+      "Brown": 35,
+      "Gelman": 7,
+      "Gleason": 5,
+      "HSLLD": 295,
+      "Sachs": 3
+    }
+  },
+  {
+    "scope": "focus_corpora",
+    "region": "Eng-NA",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 133,
+    "n_children": 60,
+    "mlu_w_mean": 3.71,
+    "mlu_w_median": 3.18,
+    "mlu_w_p25": 2.57,
+    "mlu_w_p75": 4.32,
+    "mlu_w_min": 1.31,
+    "mlu_w_max": 11.55,
+    "mean_child_utterances_per_transcript": 94.2,
+    "median_child_utterances_per_transcript": 74,
+    "total_child_utterances": 12532,
+    "corpora": {
+      "Gelman": 12,
+      "HSLLD": 121
+    }
+  },
+  {
+    "scope": "corpus:Fletcher",
+    "region": "Eng-UK",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 24,
+    "n_children": 24,
+    "mlu_w_mean": 2.82,
+    "mlu_w_median": 2.78,
+    "mlu_w_p25": 2.55,
+    "mlu_w_p75": 3.17,
+    "mlu_w_min": 1.22,
+    "mlu_w_max": 4.07,
+    "mean_child_utterances_per_transcript": 305.1,
+    "median_child_utterances_per_transcript": 280.5,
+    "total_child_utterances": 7323,
+    "corpora": {
+      "Fletcher": 24
+    }
+  },
+  {
+    "scope": "corpus:Fletcher",
+    "region": "Eng-UK",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 24,
+    "n_children": 24,
+    "mlu_w_mean": 3.69,
+    "mlu_w_median": 3.8,
+    "mlu_w_p25": 3.19,
+    "mlu_w_p75": 4.26,
+    "mlu_w_min": 1.8,
+    "mlu_w_max": 5.11,
+    "mean_child_utterances_per_transcript": 335.1,
+    "median_child_utterances_per_transcript": 326.0,
+    "total_child_utterances": 8042,
+    "corpora": {
+      "Fletcher": 24
+    }
+  },
+  {
+    "scope": "corpus:Fletcher",
+    "region": "Eng-UK",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 24,
+    "n_children": 23,
+    "mlu_w_mean": 4.27,
+    "mlu_w_median": 4.33,
+    "mlu_w_p25": 3.95,
+    "mlu_w_p75": 4.72,
+    "mlu_w_min": 2.86,
+    "mlu_w_max": 5.55,
+    "mean_child_utterances_per_transcript": 317.5,
+    "median_child_utterances_per_transcript": 320.5,
+    "total_child_utterances": 7621,
+    "corpora": {
+      "Fletcher": 24
+    }
+  },
+  {
+    "scope": "corpus:Wells",
+    "region": "Eng-UK",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 124,
+    "n_children": 31,
+    "mlu_w_mean": 2.61,
+    "mlu_w_median": 2.68,
+    "mlu_w_p25": 2.28,
+    "mlu_w_p75": 2.99,
+    "mlu_w_min": 1.16,
+    "mlu_w_max": 4.04,
+    "mean_child_utterances_per_transcript": 154.5,
+    "median_child_utterances_per_transcript": 141.5,
+    "total_child_utterances": 19156,
+    "corpora": {
+      "Wells": 124
+    }
+  },
+  {
+    "scope": "corpus:Wells",
+    "region": "Eng-UK",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 16,
+    "n_children": 16,
+    "mlu_w_mean": 3.15,
+    "mlu_w_median": 3.2,
+    "mlu_w_p25": 2.88,
+    "mlu_w_p75": 3.38,
+    "mlu_w_min": 2.48,
+    "mlu_w_max": 3.78,
+    "mean_child_utterances_per_transcript": 313,
+    "median_child_utterances_per_transcript": 318.0,
+    "total_child_utterances": 5008,
+    "corpora": {
+      "Wells": 16
+    }
+  },
+  {
+    "scope": "corpus:Wells",
+    "region": "Eng-UK",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:Thomas",
+    "region": "Eng-UK",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 175,
+    "n_children": 2,
+    "mlu_w_mean": 2.34,
+    "mlu_w_median": 2.33,
+    "mlu_w_p25": 2.07,
+    "mlu_w_p75": 2.56,
+    "mlu_w_min": 1.45,
+    "mlu_w_max": 3.51,
+    "mean_child_utterances_per_transcript": 633.6,
+    "median_child_utterances_per_transcript": 640,
+    "total_child_utterances": 110880,
+    "corpora": {
+      "Thomas": 175
+    }
+  },
+  {
+    "scope": "corpus:Thomas",
+    "region": "Eng-UK",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 28,
+    "n_children": 1,
+    "mlu_w_mean": 3.0,
+    "mlu_w_median": 2.98,
+    "mlu_w_p25": 2.83,
+    "mlu_w_p75": 3.13,
+    "mlu_w_min": 2.51,
+    "mlu_w_max": 3.65,
+    "mean_child_utterances_per_transcript": 747.6,
+    "median_child_utterances_per_transcript": 709.5,
+    "total_child_utterances": 20933,
+    "corpora": {
+      "Thomas": 28
+    }
+  },
+  {
+    "scope": "corpus:Thomas",
+    "region": "Eng-UK",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:Manchester",
+    "region": "Eng-UK",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 165,
+    "n_children": 13,
+    "mlu_w_mean": 2.61,
+    "mlu_w_median": 2.61,
+    "mlu_w_p25": 2.31,
+    "mlu_w_p75": 2.88,
+    "mlu_w_min": 1.53,
+    "mlu_w_max": 3.7,
+    "mean_child_utterances_per_transcript": 618.5,
+    "median_child_utterances_per_transcript": 604,
+    "total_child_utterances": 102054,
+    "corpora": {
+      "Manchester": 165
+    }
+  },
+  {
+    "scope": "corpus:Manchester",
+    "region": "Eng-UK",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:Manchester",
+    "region": "Eng-UK",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:Gathburn",
+    "region": "Eng-UK",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:Gathburn",
+    "region": "Eng-UK",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:Gathburn",
+    "region": "Eng-UK",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:Brown",
+    "region": "Eng-NA",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 74,
+    "n_children": 2,
+    "mlu_w_mean": 2.58,
+    "mlu_w_median": 2.52,
+    "mlu_w_p25": 2.12,
+    "mlu_w_p75": 2.94,
+    "mlu_w_min": 1.27,
+    "mlu_w_max": 4.18,
+    "mean_child_utterances_per_transcript": 502.1,
+    "median_child_utterances_per_transcript": 356.5,
+    "total_child_utterances": 37154,
+    "corpora": {
+      "Brown": 74
+    }
+  },
+  {
+    "scope": "corpus:Brown",
+    "region": "Eng-NA",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 35,
+    "n_children": 2,
+    "mlu_w_mean": 3.75,
+    "mlu_w_median": 3.67,
+    "mlu_w_p25": 3.35,
+    "mlu_w_p75": 4.1,
+    "mlu_w_min": 3.04,
+    "mlu_w_max": 4.72,
+    "mean_child_utterances_per_transcript": 366.4,
+    "median_child_utterances_per_transcript": 258,
+    "total_child_utterances": 12824,
+    "corpora": {
+      "Brown": 35
+    }
+  },
+  {
+    "scope": "corpus:Brown",
+    "region": "Eng-NA",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:MacWhinney",
+    "region": "Eng-NA",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 47,
+    "n_children": 1,
+    "mlu_w_mean": 3.88,
+    "mlu_w_median": 3.88,
+    "mlu_w_p25": 3.19,
+    "mlu_w_p75": 4.58,
+    "mlu_w_min": 1.88,
+    "mlu_w_max": 6.56,
+    "mean_child_utterances_per_transcript": 135.3,
+    "median_child_utterances_per_transcript": 100,
+    "total_child_utterances": 6358,
+    "corpora": {
+      "MacWhinney": 47
+    }
+  },
+  {
+    "scope": "corpus:MacWhinney",
+    "region": "Eng-NA",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:MacWhinney",
+    "region": "Eng-NA",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:Gleason",
+    "region": "Eng-NA",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 22,
+    "n_children": 9,
+    "mlu_w_mean": 2.71,
+    "mlu_w_median": 2.64,
+    "mlu_w_p25": 2.47,
+    "mlu_w_p75": 2.9,
+    "mlu_w_min": 2.18,
+    "mlu_w_max": 4.16,
+    "mean_child_utterances_per_transcript": 284.8,
+    "median_child_utterances_per_transcript": 282.0,
+    "total_child_utterances": 6265,
+    "corpora": {
+      "Gleason": 22
+    }
+  },
+  {
+    "scope": "corpus:Gleason",
+    "region": "Eng-NA",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 5,
+    "n_children": 2,
+    "mlu_w_mean": 3.31,
+    "mlu_w_median": 3.26,
+    "mlu_w_p25": 3.12,
+    "mlu_w_p75": 3.53,
+    "mlu_w_min": 3.11,
+    "mlu_w_max": 3.53,
+    "mean_child_utterances_per_transcript": 323.6,
+    "median_child_utterances_per_transcript": 385,
+    "total_child_utterances": 1618,
+    "corpora": {
+      "Gleason": 5
+    }
+  },
+  {
+    "scope": "corpus:Gleason",
+    "region": "Eng-NA",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:HSLLD",
+    "region": "Eng-NA",
+    "age_band": "3 (2.5\u20133.5y)",
+    "n_transcripts": 0,
+    "n_children": 0
+  },
+  {
+    "scope": "corpus:HSLLD",
+    "region": "Eng-NA",
+    "age_band": "5 (4.5\u20135.5y)",
+    "n_transcripts": 295,
+    "n_children": 65,
+    "mlu_w_mean": 3.21,
+    "mlu_w_median": 2.99,
+    "mlu_w_p25": 2.4,
+    "mlu_w_p75": 3.74,
+    "mlu_w_min": 0.5,
+    "mlu_w_max": 10.8,
+    "mean_child_utterances_per_transcript": 85.9,
+    "median_child_utterances_per_transcript": 71,
+    "total_child_utterances": 25341,
+    "corpora": {
+      "HSLLD": 295
+    }
+  },
+  {
+    "scope": "corpus:HSLLD",
+    "region": "Eng-NA",
+    "age_band": "7 (6.5\u20137.5y)",
+    "n_transcripts": 121,
+    "n_children": 48,
+    "mlu_w_mean": 3.81,
+    "mlu_w_median": 3.26,
+    "mlu_w_p25": 2.61,
+    "mlu_w_p75": 4.48,
+    "mlu_w_min": 1.31,
+    "mlu_w_max": 11.55,
+    "mean_child_utterances_per_transcript": 87.4,
+    "median_child_utterances_per_transcript": 62,
+    "total_child_utterances": 10576,
+    "corpora": {
+      "HSLLD": 121
+    }
+  }
+]

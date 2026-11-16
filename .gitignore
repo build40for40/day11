@@ -16,5 +16,8 @@ dist/
 # wrangler state
 .wrangler/
 
+# eval runs (the committed sample is evals/sample-report/)
+evals/out/
+
 # macOS
 .DS_Store

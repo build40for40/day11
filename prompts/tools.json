@@ -1,0 +1,66 @@
+[
+  {
+    "name": "add_to_wishlist",
+    "description": "Add an item the child has explicitly said yes to. Call this only after a clear yes.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "item": { "type": "string", "description": "Short, parent-friendly name of the toy or experience" },
+        "reason": { "type": "string", "description": "One sentence why the child liked it" }
+      },
+      "required": ["item"]
+    }
+  },
+  {
+    "name": "remove_from_wishlist",
+    "description": "Take an item off the list because the child changed their mind. Use the item name as it was added.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "item": { "type": "string" }
+      },
+      "required": ["item"]
+    }
+  },
+  {
+    "name": "set_mood",
+    "description": "Show how the robot feels, using lights and head movement (the robot has no screen)",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "mood": { "type": "string", "enum": ["happy", "thinking", "surprised", "excited", "listening"] }
+      },
+      "required": ["mood"]
+    }
+  },
+  {
+    "name": "nod",
+    "description": "Make the robot give a small encouraging nod"
+  },
+  {
+    "name": "shake",
+    "description": "Gentle head shake (for 'no' or thinking)"
+  },
+  {
+    "name": "set_leds",
+    "description": "Light up the robot's LEDs",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "color": { "type": "string", "enum": ["red", "green", "gold", "rainbow", "off"] }
+      },
+      "required": ["color"]
+    }
+  },
+  {
+    "name": "finish_session",
+    "description": "End the chat after the goodbye. kid_done: the child is finished. upset: the child is upset. safety: something worrying was said. The Worker uses silence, time_budget and low_battery itself.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "reason": { "type": "string", "enum": ["kid_done", "upset", "safety", "silence", "time_budget", "low_battery"] }
+      },
+      "required": ["reason"]
+    }
+  }
+]

@@ -33,7 +33,7 @@ No architecture decisions have been made. The candidate device is the M5Stack St
 - [docs/brief.md](docs/brief.md): the Superthread brief, ideas considered, the MVP idea and open risks.
 - [docs/chip.md](docs/chip.md): the Jakcom N3 nail chip research.
 - [docs/stackchan.md](docs/stackchan.md): the M5Stack StackChan research, open questions and what we've tested.
-- [docs/architecture.md](docs/architecture.md): the proposed shape and the decisions still to make. Nothing is decided.
+- [docs/architecture.md](docs/architecture.md): the team's proposed design. Nothing in it is built or tested.
 - [hardware-tests/](hardware-tests/README.md): throwaway Arduino sketches and setup steps for the hardware tests.
 
 The brief and research docs were copied from Superthread (the "Day 11 - Brief & prep" page and the two research cards on the `day11` board). Results marked as tested were run on real hardware, and everything else is still desk research, so mark things verified as they are.

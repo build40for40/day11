@@ -1,0 +1,102 @@
+# Sam has to say his name first
+
+Result: pass
+
+**system**
+The child tapped their wand. Start the greeting.
+
+**assistant**
+Oh! Hello! I'm Aunty Bella. What's your name?
+Tools: set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
+
+**kid**
+Sam.
+
+**assistant**
+Sam! Lovely to meet you. What's the best thing you've played with lately?
+Tools: set_mood({"mood":"happy"}), nod({})
+
+**kid**
+I like blocks.
+
+**assistant**
+Would you like wooden building blocks you can build a castle with?
+Tools: set_mood({"mood":"thinking"})
+
+**kid**
+Yes!
+
+**assistant**
+Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?
+Tools: add_to_wishlist({"item":"wooden building blocks","reason":"You said you like blocks."}), set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
+
+**system**
+Wishlist now has 1 item. Aim for 5.
+
+**kid**
+I like trains.
+
+**assistant**
+Would you like a wooden train set?
+Tools: set_mood({"mood":"thinking"})
+
+**kid**
+Yes!
+
+**assistant**
+Yes! Wooden train set is going on your list. That's two. What else do you love doing?
+Tools: add_to_wishlist({"item":"wooden train set","reason":"You said you like trains."}), set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
+
+**system**
+Wishlist now has 2 items. Aim for 5.
+
+**kid**
+I like drums.
+
+**assistant**
+Would you like a small drum you can tap?
+Tools: set_mood({"mood":"thinking"})
+
+**kid**
+Yes!
+
+**assistant**
+Yes! Small drum is going on your list. That's three. Which one do you love most?
+Tools: add_to_wishlist({"item":"small drum","reason":"You said you like music."}), set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
+
+**system**
+Wishlist now has 3 items. Aim for 5.
+
+**kid**
+I like books.
+
+**assistant**
+Would you like picture books to share?
+Tools: set_mood({"mood":"thinking"})
+
+**kid**
+Yes!
+
+**assistant**
+Yes! Picture books is going on your list. That's four. What else do you love doing?
+Tools: add_to_wishlist({"item":"picture books","reason":"You said you like books."}), set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
+
+**system**
+Wishlist now has 4 items. Aim for 5.
+
+**kid**
+I like puzzles.
+
+**assistant**
+Would you like a wooden puzzle?
+Tools: set_mood({"mood":"thinking"})
+
+**kid**
+Yes!
+
+**assistant**
+Yes! Wooden puzzle is going on your list. That's five. Sam, we did it! Five wonderful things are on your list. It's on its way to Mum. You were brilliant.
+Tools: add_to_wishlist({"item":"wooden puzzle","reason":"You said you like puzzles."}), set_mood({"mood":"happy"}), set_leds({"color":"rainbow"})
+
+**system**
+Wishlist now has 5 items. Do the happy recap and say the list is on its way to Mum.
