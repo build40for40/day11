@@ -6,7 +6,7 @@ Source: the Superthread research card "Research: Jakcom N3 nail chip". Desk rese
 
 A passive 13.56 MHz NFC sticker, 7 x 7 x 0.12 mm, glued onto a nail. Jakcom's app sets it up with an activation code and it holds one "service" at a time. Jakcom's other models are the N2F (full NFC), N2L (an LED that lights near a reader, stores nothing) and N2M (access control). A teardown of an N2F found an NXP NTAG213 with 144 bytes of user memory.
 
-**Unconfirmed:** the N3's exact chip. It's very likely an NTAG213.
+**Tested on our N3:** NFC Tools on Android reads it as NXP Mifare Ultralight (ISO 14443-3A) with NfcA, MifareUltralight and Ndef, ATQA 0x0044, SAK 0x00, a 7-byte UID, NFC Forum Type 2, 137 bytes of NDEF space, writable and not locked. That matches an NTAG213. It holds one URL record, the Jakcom profile link. NXP TagInfo confirms an NXP NTAG213 with an NDEF Type 2 tag. It showed nothing about password protection, so we assume there is none. Still unchecked: a test write.
 
 ## Capabilities, assuming NTAG213
 

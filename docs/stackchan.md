@@ -27,6 +27,36 @@ Nothing is decided on how to build this. Things to find out first:
 
 Precedent for an ESP32 voice device talking to a realtime model: ElatoAI (https://github.com/akdeb/ElatoAI). The open-source XiaoZhi firmware and server (`xiaozhi-esp32`, `xiaozhi-esp32-server`) solve voice but lean Chinese and need C++ for NFC. A phone doing the voice behind StackChan was floated as a safe fallback.
 
+## Tested so far
+
+Factory baseline, tested on a real StackChan:
+
+- **Firmware:** 1.6.0, after the on-device upgrade.
+- **Wi-Fi:** set up on a 2.4GHz network through the StackChan World app.
+- **Speech latency:** about 5 seconds from the end of speech to the start of the reply, on the factory agent.
+- **Hearing itself:** it doesn't.
+- **Factory agent:** uses Qwen or DeepSeek models by default. It has a personality setting and short-term memory, but no sign we can swap in our own model. It also has an "EzData" mode we haven't identified.
+
+- **Build toolchain:** `arduino-cli` 1.6.0 with core `m5stack:esp32` 3.3.10 and libraries M5StackChan 1.1.1, M5Unified 0.3.0, M5UnitUnified 0.6.5 and M5Unit-NFC 0.1.2. The official NFC Detect example compiles for `m5stack:esp32:m5stack_cores3` with the newest versions, no pinning needed. Setup steps are in [../hardware-tests/README.md](../hardware-tests/README.md).
+- **M5Burner web:** it can connect to our StackChan over USB. No burn attempted yet, and we didn't confirm a StackChan factory image is listed.
+
+- **Nail on the head (open question 1): reads.** The official NFC Detect example, flashed over the factory firmware, read our N3 on top of the head. It printed the same UID as NFC Tools (`04E28F4A1F1D90`) and identified it as NTAG 213, repeatedly. One read out of eight showed a different ATQA (`0A40` instead of `0044`) with the right UID, probably a read glitch. Position on the head didn't matter much: it read as long as the nail was under the ports on top of the head. Read distance not measured yet.
+- **Flashing:** the unit was flashed with `arduino-cli`, and every segment verified. The factory firmware is now overwritten and not yet restored.
+- **macOS:** Terminal can't read `~/Documents`, so Arduino libraries live in `~/arduino-user` (`directories.user` in the `arduino-cli` config).
+
+- **Mic and speaker with our own code (open question 2): work, quality poor.** A touch-to-record sketch (3 seconds at 16kHz mono, played back through `M5.Speaker` at volume 200) ran reliably six times in a row. Mic levels were low: peak 2,400 to 10,000 and RMS 130 to 790 out of a 32,767 scale, from about 30cm away and not speaking directly at it. Playback was muffled, a little tinny, distorted and too quiet, with white-noise background hiss. A loud voice was fine. Mic and speaker share one audio bus, so the sketch switches between them (no full duplex tested). Not yet tried: higher volume, mic gain, a higher sample rate.
+- **NFC read reliability:** the nail was harder to read in later testing than in the first run. Cause not found yet.
+
+Not yet tested: NFC read distance, a sticker as a control, full duplex audio, speech round trip with our own model, and restoring the factory firmware.
+
+## Restoring the factory firmware (unverified)
+
+A third-party write-up says the web version of M5Burner restored a StackChan to its initial state: connect by USB, pick StackChan, flash the factory image. It needs an M5Stack account and has limitations. Not yet tried on our unit. Source: https://dev.classmethod.jp/en/articles/web-m5burner/
+
+## Custom server option (unverified)
+
+The factory firmware is XiaoZhi, which is open source. Third-party guides say it can be pointed at our own XiaoZhi-compatible server by changing the OTA URL, which returns the WebSocket address used for voice. That would let us choose the model and character while keeping the factory audio and servo code. Needs ESP-IDF 5.5.4 to build, and NFC would still need firmware changes. Not an official M5Stack path.
+
 ## Toy cards (idea only)
 
 Toys almost never have NFC, so cards are ours to make: a toy picture on card with an NTAG213 sticker on the back, each UID mapped to a toy. Cards can also be YES, NO or category cards for a 20 Questions game. Toniebox figures and Yoto cards already give kids "put a thing on the box and something happens". Shop security tags are a different technology StackChan can't read.
