@@ -1,4 +1,4 @@
-import { ARE_YOU_REAL, IS_SANTA_REAL, DEFAULT_GROWNUP } from "./copy.js";
+import { ARE_YOU_REAL, DEFAULT_GROWNUP } from "./copy.js";
 import type { Kid } from "./db.js";
 
 export function escapeHtml(value: string): string {
@@ -68,9 +68,9 @@ export function setupForm(opts: {
 }): string {
   const holiday = opts.holiday ?? "christmas";
   return page(
-    "Set up Aunty Bella",
+    "Set up Glisten",
     `${opts.error ? `<p class="error">${escapeHtml(opts.error)}</p>` : ""}
-    <h1>Hello. Let's set up Aunty Bella.</h1>
+    <h1>Hello. Let's set up Glisten.</h1>
     <p>This page links your child's wand to you. We do not save recordings of their voice, and we do not keep a transcript.</p>
     <form method="post">
       <input type="hidden" name="csrf" value="${escapeHtml(opts.csrf)}">
@@ -80,7 +80,7 @@ export function setupForm(opts: {
       <input id="first_name" name="first_name" required maxlength="20" value="${escapeHtml(opts.name ?? "")}">
       <label for="age">Child's age</label>
       <input id="age" name="age" inputmode="numeric" required value="${escapeHtml(opts.age ?? "")}">
-      <label for="grownup_label">What should Aunty Bella call you?</label>
+      <label for="grownup_label">What should Glisten call you?</label>
       <input id="grownup_label" name="grownup_label" maxlength="20" value="${escapeHtml(opts.grownup ?? DEFAULT_GROWNUP)}">
       <label for="holiday_mode">What sort of list is this?</label>
       <select id="holiday_mode" name="holiday_mode">
@@ -88,16 +88,14 @@ export function setupForm(opts: {
         <option value="festive" ${holiday === "festive" ? "selected" : ""}>Festive, without assuming Santa</option>
         <option value="wishlist" ${holiday === "wishlist" ? "selected" : ""}>Just a wishlist</option>
       </select>
-      <label for="device_id">Which Aunty Bella robot?</label>
+      <label for="device_id">Which Glisten robot?</label>
       <input id="device_id" name="device_id" required value="${escapeHtml(opts.device ?? "stackchan-01")}">
-      <h2>Two answers we will not change</h2>
-      <p>If your child asks "Are you real?"</p>
+      <h2>The answer we will not change</h2>
+      <p>If your child asks "Are you real?" or "Is Santa real?", Glisten says:</p>
       <blockquote>${escapeHtml(ARE_YOU_REAL)}</blockquote>
-      <p>If your child asks "Is Santa real?"</p>
-      <blockquote>${escapeHtml(IS_SANTA_REAL)}</blockquote>
-      <p>In a festive or plain wishlist she will not bring Santa up herself.</p>
-      <label class="tick"><input type="checkbox" name="answers" value="yes"> I am happy with these two answers.</label>
-      <label class="tick"><input type="checkbox" name="consent" value="yes"> I am the child's parent or carer, and I agree to them using Aunty Bella.</label>
+      <p>In a festive or plain wishlist, Glisten says "a helper" instead of "a Christmas helper", and does not bring Santa up.</p>
+      <label class="tick"><input type="checkbox" name="answers" value="yes"> I am happy with this answer.</label>
+      <label class="tick"><input type="checkbox" name="consent" value="yes"> I am the child's parent or carer, and I agree to them using Glisten.</label>
       <label class="tick"><input type="checkbox" name="privacy" value="yes"> I have read that no audio is stored and no transcript is kept.</label>
       <button type="submit">Save and pair the wand</button>
     </form>`,
@@ -116,7 +114,7 @@ export function waitingPage(
     .join("");
   return page(
     "Tap the wand",
-    `<h1>Tap the wand on Aunty Bella now.</h1>
+    `<h1>Tap the wand on Glisten now.</h1>
     <p>She will glow a slow blue while she waits, for ten minutes. Hold the wand on her head until she nods and glows gold.</p>
     ${list}
     <h2>Another child?</h2>

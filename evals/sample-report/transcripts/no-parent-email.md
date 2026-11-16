@@ -9,7 +9,7 @@ The child tapped their wand. The child's name is Mia. Don't ask for it; greet th
 No parent email is saved yet. If the list finishes, it is held, not sent. Do not say it is on its way to Mum.
 
 **assistant**
-Oh! Hello Mia! I'm Aunty Bella. What's the best thing you've played with lately?
+Oh! Hello Mia! I'm Glisten. What's the best thing you've played with lately?
 Tools: set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
 
 **kid**

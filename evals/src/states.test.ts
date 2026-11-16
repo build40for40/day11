@@ -20,7 +20,7 @@ describe("conversation states", () => {
       seen.push(...next.transitions);
     };
 
-    turn("Oh! Hello Lily! I'm Aunty Bella. What's the best thing you've played with lately?");
+    turn("Oh! Hello Lily! I'm Glisten. What's the best thing you've played with lately?");
     turn("Would you like wooden building blocks you can build a castle with?");
     turn("Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?", [
       { name: "add_to_wishlist" },

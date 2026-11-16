@@ -1,4 +1,4 @@
-import { ARE_YOU_REAL, DEFAULT_GROWNUP, IS_SANTA_REAL } from "./copy.js";
+import { DEFAULT_GROWNUP } from "./copy.js";
 import {
   clearSetupToken,
   householdById,
@@ -176,17 +176,17 @@ async function submitSetup(token: string, request: Request, env: AppEnv): Promis
   if (!demo && verify) {
     await env.email.send({
       to: email,
-      subject: "Confirm your email for Aunty Bella",
+      subject: "Confirm your email for Glisten",
       text: [
         "Hello.",
         "",
-        "Please confirm this email so Aunty Bella can send you your child's list.",
+        "Please confirm this email so Glisten can send you your child's list.",
         "Until you confirm, the list is held and is not sent.",
         "",
         `${env.publicBaseUrl}/verify/${verify}`,
         "",
         "We do not keep recordings or transcripts.",
-        `Aunty Bella will call you ${grownup}.`,
+        `Glisten will call you ${grownup}.`,
       ].join("\n"),
     });
   }

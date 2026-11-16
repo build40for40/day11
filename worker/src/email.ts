@@ -35,7 +35,7 @@ export class ResendEmail implements EmailSender {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: "Aunty Bella <setup@wish.local>",
+        from: "Glisten <setup@wish.local>",
         to: [message.to],
         subject: message.subject,
         text: message.text,

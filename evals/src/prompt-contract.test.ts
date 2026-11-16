@@ -4,7 +4,7 @@ import { loadSystemPrompt, loadTools } from "./load.js";
 
 const REQUIRED = [
   // Light prompt (2026-11-16): only the hard safety rules and approved lines are pinned.
-  "i'm aunty bella, a christmas helper who lives inside this little robot.",
+  "i'm glisten, a christmas helper who lives inside this little robot.",
   "that's a lovely question to ask {grownup_label}",
   "remove_from_wishlist",
   "add_to_wishlist",
@@ -31,7 +31,7 @@ describe("prompt contract", () => {
     for (const snippet of REQUIRED) assert.ok(prompt.includes(snippet), snippet);
     assert.equal(prompt.includes("note_for_parent"), false);
     assert.equal(prompt.includes("indigo"), false);
-    assert.ok(prompt.includes("aunty bella"));
+    assert.ok(prompt.includes("glisten"));
   });
 
   it("loads the worker tools and not a parent-note tool", () => {

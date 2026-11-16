@@ -6,7 +6,7 @@ Result: pass
 The child tapped their wand. Start the greeting.
 
 **assistant**
-Oh! Hello! I'm Aunty Bella. What's your name?
+Oh! Hello! I'm Glisten. What's your name?
 Tools: set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
 
 **kid**

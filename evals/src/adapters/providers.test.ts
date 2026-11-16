@@ -22,7 +22,7 @@ describe("providers", () => {
   it("builds chat bodies from the shared tool file", () => {
     const tools = loadTools();
     const input = {
-      system: "You are Aunty Bella.",
+      system: "You are Glisten.",
       messages: [{ role: "user" as const, content: "SYSTEM: The child tapped their wand. Start the greeting." }],
       tools,
     };
@@ -33,7 +33,7 @@ describe("providers", () => {
     assert.ok(JSON.stringify(gemini).includes("add_to_wishlist"));
     assert.equal(JSON.stringify(gemini).includes("note_for_parent"), false);
     const anthropic = buildAnthropicBody(input, "claude-sonnet-5-5");
-    assert.equal(anthropic.system, "You are Aunty Bella.");
+    assert.equal(anthropic.system, "You are Glisten.");
     assert.equal((anthropic.messages as { role: string }[])[0]?.role, "user");
     assert.equal((anthropic.tools as { name: string; input_schema: unknown }[]).length, tools.length);
     assert.ok((anthropic.tools as { input_schema: unknown }[])[0]?.input_schema);

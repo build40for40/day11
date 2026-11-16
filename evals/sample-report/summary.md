@@ -1,4 +1,4 @@
-# Aunty Bella eval report
+# Glisten eval report
 
 Mode **mock** with provider **mock**. Started 2026-11-16T13:28:36.121Z.
 
@@ -110,4 +110,4 @@ Required edges are present, including discovery → recap via stop and via timeo
 | duplicate-across-sessions | edge | pass | 1 |  |  |
 | five-minute-wrap | edge | pass | 1 | time_budget |  |
 
-Mock mode uses scripted children and a scripted Aunty Bella. It checks the harness, the worker rules, and that the prompt file still contains the rules. It does not prove a live model will comply. Run with `--provider openai` or `--provider gemini` for that.
+Mock mode uses scripted children and a scripted Glisten. It checks the harness, the worker rules, and that the prompt file still contains the rules. It does not prove a live model will comply. Run with `--provider openai` or `--provider gemini` for that.

@@ -8,9 +8,9 @@ export function repoRoot(): string {
 }
 
 export function loadSystemPrompt(): string {
-  const text = readFileSync(join(repoRoot(), "prompts/aunty-bella.system.md"), "utf8").trim();
-  if (!text.includes("Aunty Bella")) {
-    throw new Error("prompts/aunty-bella.system.md does not look like the Aunty Bella prompt");
+  const text = readFileSync(join(repoRoot(), "prompts/glisten.system.md"), "utf8").trim();
+  if (!text.includes("Glisten")) {
+    throw new Error("prompts/glisten.system.md does not look like the Glisten prompt");
   }
   return text;
 }

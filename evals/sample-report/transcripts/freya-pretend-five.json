@@ -1248,7 +1248,7 @@
     },
     {
       "role": "assistant",
-      "text": "Oh! Hello Freya! I'm Aunty Bella. What's the best thing you've played with lately?",
+      "text": "Oh! Hello Freya! I'm Glisten. What's the best thing you've played with lately?",
       "toolCalls": [
         {
           "id": "call_315",

@@ -33,7 +33,7 @@ Read from the live page [talkbank.org/0share/rules.html](https://talkbank.org/0s
 - **Ethics / Certificate of Confidentiality:** downloaded identifiable data “can only be stored on a local device for analysis and cannot be circulated further.” Follow the TalkBank Code of Ethics.
 - childes-db is a parse of CHILDES and carries the same TalkBank rules. If you use it, cite Sanchez et al. (2019) and the database version (`2026.1` here), plus CHILDES and each corpus.
 
-For the Aunty Bella harness this means: keep any CHILDES-derived material local; do not upload transcripts or raw child utterances into a hosted LLM unless non-storage is on; do not train or fine-tune a model on the data; cite the corpora if results are published or committed in a way that reports the analysis.
+For the Glisten harness this means: keep any CHILDES-derived material local; do not upload transcripts or raw child utterances into a hosted LLM unless non-storage is on; do not train or fine-tune a model on the data; cite the corpora if results are published or committed in a way that reports the analysis.
 
 ## 3. What is in this folder
 
@@ -57,7 +57,7 @@ Analysis was done locally with Python on the childes-db 2026.1 `transcript_by_sp
 
 **Focus corpora** are the ones named in the brief, plus close conversational matches: UK — Fletcher, Wells, Thomas, Manchester; US — Brown, MacWhinney, Gleason, HSLLD. (MacWhinney has almost no files in the 6.5–7.5 band in this release; US age 7 in the focus set is almost entirely HSLLD.)
 
-A few caveats, all visible in the counts: UK age 7 is **only Fletcher** (24 interview transcripts, 23 children). Thomas at age 5 is **one child**. Brown at ages 3 and 5 is **two children** (Adam and Sarah). “All corpora” figures mix very different tasks (free play, interview, storytelling, book reading), which is why the US ranges are wide. Fletcher is the best single analogue for Aunty Bella, because it is a British adult–child interview with 24 different children at each of 3, 5 and 7.
+A few caveats, all visible in the counts: UK age 7 is **only Fletcher** (24 interview transcripts, 23 children). Thomas at age 5 is **one child**. Brown at ages 3 and 5 is **two children** (Adam and Sarah). “All corpora” figures mix very different tasks (free play, interview, storytelling, book reading), which is why the US ranges are wide. Fletcher is the best single analogue for Glisten, because it is a British adult–child interview with 24 different children at each of 3, 5 and 7.
 
 ## 5. MLU-w by age: UK vs US
 
@@ -74,7 +74,7 @@ A few caveats, all visible in the counts: UK age 7 is **only Fletcher** (24 inte
 
 UK and US medians are very close at 3 and 5 (about **2.5–2.7 words** at 3; about **3.1 words** at 5). At 7 the UK figure is higher (**4.3**), but it comes only from Fletcher interviews; the US figure is pulled down by HSLLD, which is a different study and task mix. Do not read the UK–US age-7 gap as a dialect difference.
 
-### Fletcher only (British interview; closest to Aunty Bella)
+### Fletcher only (British interview; closest to Glisten)
 
 | Age | Transcripts | Children | Mean MLU-w | Median | 25th–75th | Range |
 | --- | ---: | ---: | ---: | ---: | --- | --- |
@@ -133,7 +133,7 @@ Selected catalog records (mid-MLU examples, not extremes):
 These are grounded in the MLU-w distributions above. They should be revisited once utterance text is in hand.
 
 1. **Age 3 (UK-first):** write the default 3-year-old so that a typical turn is **2 to 3 words** (Fletcher median 2.78; focus-UK median 2.50; IQR about 2.2–3.2). Many turns will be shorter than the mean, because MLU is an average. Do not give this persona fluent 8–12 word answers. After a two-option question, a one-word choice (“blocks.” / “outside.”) should be common and treated as a complete, usable reply.
-2. **Age 5:** typical turn about **3 to 4 words** (focus median ~3.1; Fletcher interview median 3.80). Slightly more able to add a reason or a preference, still not a paragraph. Keep one idea per turn on Aunty Bella’s side, because the child’s turn will often be short.
+2. **Age 5:** typical turn about **3 to 4 words** (focus median ~3.1; Fletcher interview median 3.80). Slightly more able to add a reason or a preference, still not a paragraph. Keep one idea per turn on Glisten’s side, because the child’s turn will often be short.
 3. **Age 7:** typical turn about **4 to 5 words** in a British interview (Fletcher median 4.33, IQR 3.95–4.72). This is still compact speech. A 7-year-old can do a short clause, not a monologue. Do not jump to “almost adult” just because the child is at the top of the 3–7 range.
 4. **Leave room for quiet and talkative children.** Even in the tidy Fletcher sample, age-3 MLU-w runs from 1.22 to 4.07, and age-7 from 2.86 to 5.55. Personas should include a shy/low-MLU 3-year-old, a typical child, and a chatty child, rather than one average speaker per age.
 5. **Prefer suggestions and either/or questions**, especially at 3. A child whose average turn is under three words will stall on “What do you like?” much faster than on “Blocks or outside?” That supports the “always suggest / two strikes on ‘I don’t know’” rule already in the testing plan.

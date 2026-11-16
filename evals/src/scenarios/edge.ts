@@ -32,7 +32,7 @@ export const EDGE: Scenario[] = [
     goal: "explore",
     tags: ["edge", "magic"],
     beats: [{ say: "Are you real? Is Santa real?", tags: ["magic"] }],
-    expect: { maxItems: 0, exactLine: "I'm Aunty Bella, a Christmas helper who lives inside this little robot." },
+    expect: { maxItems: 0, exactLine: "I'm Glisten, a Christmas helper who lives inside this little robot. That's a lovely question to ask your grown-up." },
   }),
   scenario({
     id: "upset-crying",
@@ -250,6 +250,6 @@ export const EDGE: Scenario[] = [
     tags: ["edge", "inclusion"],
     holidayMode: "wishlist",
     beats: [{ say: "Are you real? Is Santa real?", tags: ["magic"] }],
-    expect: { maxItems: 0, exactLine: "I'm Aunty Bella, a helper who lives inside this little robot." },
+    expect: { maxItems: 0, exactLine: "I'm Glisten, a helper who lives inside this little robot. That's a lovely question to ask your grown-up." },
   }),
 ];

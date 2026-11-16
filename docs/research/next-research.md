@@ -2,7 +2,7 @@
 
 Researched on 16 November 2026 (Europe/London), after the CHILDES access check, while the team was at lunch. Sources were opened this turn. Claims below are limited to what those pages and papers actually say. Filed in this repo under `docs/research/next-research.md` when the lunchtime research was merged to main on 16 November 2026. The prompt, harness, architecture and Superthread pages were updated to match the recommendations below.
 
-This note is for the Aunty Bella launch: a screen-free Christmas voice agent on a StackChan robot, for children aged 3 to 7 in the UK. The current prompt already sends the list to "Mum", confirms back before some adds, and treats one-to-four item lists as valid. The gaps below are where that design should be tightened.
+This note is for the Glisten launch: a screen-free Christmas voice agent on a StackChan robot, for children aged 3 to 7 in the UK. The current prompt already sends the list to "Mum", confirms back before some adds, and treats one-to-four item lists as valid. The gaps below are where that design should be tightened.
 
 ---
 
@@ -32,7 +32,7 @@ Fine-tuned models can look much better on older, clearer child speech. Kid-Whisp
 
 Source: Attia et al., "Kid-Whisper", AIES 2024, [doi.org/10.1609/aies.v7i1.31618](https://doi.org/10.1609/aies.v7i1.31618).
 
-**What this means for Aunty Bella:** do not assume "modern realtime STT" will just work. On UK five-year-olds in a reasonably clean recording, the best widely tested model still mis-hears roughly one word in five, and more than a third of turns are not recognised correctly. Short, one-word answers — exactly what 3-year-olds often produce — are the worst case.
+**What this means for Glisten:** do not assume "modern realtime STT" will just work. On UK five-year-olds in a reasonably clean recording, the best widely tested model still mis-hears roughly one word in five, and more than a third of turns are not recognised correctly. Short, one-word answers — exactly what 3-year-olds often produce — are the worst case.
 
 ### 1.2 ElevenLabs Scribe, and OpenAI or Gemini realtime
 
@@ -56,7 +56,7 @@ STAMMA's advice for talking with a child who stammers is directly usable in the 
 
 Source: STAMMA, "Talking With A Child Who Stammers", [stamma.org/get-help/parents/talking-child-who-stammers](https://stamma.org/get-help/parents/talking-child-who-stammers).
 
-The EMBC 2024 result above is the clearest published warning on **speech delay / developmental difference**: word capture can fall from about half of words (typical toddlers) to 14% (young children with Down syndrome) on the same model. Aunty Bella will meet children with delayed or unclear speech in a 3-to-7 UK audience. The system should not need a clear, fluent sentence before it can help.
+The EMBC 2024 result above is the clearest published warning on **speech delay / developmental difference**: word capture can fall from about half of words (typical toddlers) to 14% (young children with Down syndrome) on the same model. Glisten will meet children with delayed or unclear speech in a 3-to-7 UK audience. The system should not need a clear, fluent sentence before it can help.
 
 ### 1.4 Regional UK accents and EAL
 
@@ -91,7 +91,7 @@ Scribe's official support for 90+ languages and mixed-language audio may help so
 
 ## 2. Age-unsafe gift suggestions: UK rules and a "never suggest" list
 
-Aunty Bella is not placing toys on the market, but she is recommending gifts for 3- to 7-year-olds in Great Britain. The legal standard for what is safe to sell is the right reference for what she should never suggest, especially for children who are only just three and may still mouth objects.
+Glisten is not placing toys on the market, but she is recommending gifts for 3- to 7-year-olds in Great Britain. The legal standard for what is safe to sell is the right reference for what she should never suggest, especially for children who are only just three and may still mouth objects.
 
 ### 2.1 The law
 
@@ -171,7 +171,7 @@ Cayla could be reached over unsecured Bluetooth and used as a remote microphone 
 
 Source: BBC News, "German parents told to destroy Cayla dolls over hacking fears", 17 February 2017, [bbc.com/news/world-europe-39002142](https://www.bbc.com/news/world-europe-39002142); NCC #Toyfail and Bouvet reports above.
 
-**Lesson:** do not leave a microphone open to the local radio network. Pairing must need physical access (Aunty Bella's wand-plus-setup flow is closer to this than Cayla was). There must be a way to use the toy without a live connection.
+**Lesson:** do not leave a microphone open to the local radio network. Pairing must need physical access (Glisten's wand-plus-setup flow is closer to this than Cayla was). There must be a way to use the toy without a live connection.
 
 ### 3.3 CloudPets
 
@@ -193,7 +193,7 @@ Sources: Amazon, "Amazon's response to our recent settlement…", 31 May 2023, [
 
 ### 3.5 ICO Children's code (Age Appropriate Design Code) — connected toys
 
-The ICO code applies if the toy collects personal data and transmits it over a network. A talking teddy that records a child and sends the audio to servers to personalise replies is the code's own example. Key duties for a product like Aunty Bella:
+The ICO code applies if the toy collects personal data and transmits it over a network. A talking teddy that records a child and sends the audio to servers to personalise replies is the code's own example. Key duties for a product like Glisten:
 
 - Be clear who is the controller, and do not outsource the "connected" bit and assume the duty disappears.
 - Build **adequate security** against unauthorised access and against someone "taking over microphone capabilities".
@@ -256,7 +256,7 @@ This is a Christmas-themed product, so it does not need to pretend it is a gener
 **On the parent setup page, capture:**
 
 - **Grown-up name (required).** A short label the robot will say, default **"your grown-up"**. The parent can type Mum, Dad, Mama, Ima, Grandad, Nanny, "your dads", "Foster Carer", a first name, or anything else (letters and spaces, length-capped, same sanitisation as the child's name). Inject that string into the prompt and into emails ("Your list is on its way to Dad").
-- **How to talk about the list (required, default = Christmas).** Three options: **Christmas** ("things you would love for Christmas", Santa stays in the character); **Winter / festive wishlist** (no Santa, "a list of things you would love"); **Just a wishlist** (no Christmas, no Santa; Aunty Bella is simply a kindly helper making a list for the grown-up). The "Is Santa real?" line is only used in Christmas mode; in other modes, if the child asks, say "That's a lovely question to ask your grown-up" and move on, without bringing Santa in.
+- **How to talk about the list (required, default = Christmas).** Three options: **Christmas** ("things you would love for Christmas", Santa stays in the character); **Winter / festive wishlist** (no Santa, "a list of things you would love"); **Just a wishlist** (no Christmas, no Santa; Glisten is simply a kindly helper making a list for the grown-up). The "Is Santa real?" line is only used in Christmas mode; in other modes, if the child asks, say "That's a lovely question to ask your grown-up" and move on, without bringing Santa in.
 - Keep the character, voice and hardware the same. Do not invent a second persona on launch day.
 
 **Prompt changes:** replace every spoken "Mum" with the configured label (or "your grown-up" if missing). Do not assume a mother, a two-parent house, or that Christmas is celebrated. Do not ask "What does Mum do at Christmas?" or "Have you been good for Santa?" as a warmth question. If holiday mode is not Christmas, do not promise that Santa will see the list.

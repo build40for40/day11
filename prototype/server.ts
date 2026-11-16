@@ -35,7 +35,7 @@ const mode: Mode = openaiKey ? ((process.env.MODE as Mode | undefined) ?? "chain
 const wands: Record<string, string> = JSON.parse(process.env.WANDS ?? "{}");
 const run = promisify(execFile);
 
-const basePrompt = await readFile(new URL("../prompts/aunty-bella.system.md", import.meta.url), "utf8");
+const basePrompt = await readFile(new URL("../prompts/glisten.system.md", import.meta.url), "utf8");
 
 function systemPrompt(kid: string): string {
   return `${basePrompt}\n\nPROTOTYPE: you have no tools in this chat. The child is called ${kid}. Reply in English with one or two short spoken sentences and nothing else. You cannot end the chat yourself. If the child says bye or wants to stop, say a short warm goodbye and tell them to tap their wand on your head to finish.`;
@@ -384,7 +384,7 @@ class Realtime {
         this.events.onHeard(event.transcript ?? "");
         break;
       case "response.done":
-        if (this.spoken) console.log(`  bella: ${this.spoken}`);
+        if (this.spoken) console.log(`  glisten: ${this.spoken}`);
         this.spoken = "";
         this.events.onDone();
         break;
@@ -462,7 +462,7 @@ server.on("connection", (socket) => {
     const turn = live ?? begin();
     live = null;
     turn.sentences.flush();
-    if (turn.sentences.full) console.log(`  bella: ${turn.sentences.full}`);
+    if (turn.sentences.full) console.log(`  glisten: ${turn.sentences.full}`);
     if (ending && !turn.spoke) turn.reply.say(GOODBYE);
     await turn.reply.end();
     if (ending) {
@@ -559,7 +559,7 @@ server.on("connection", (socket) => {
         turn.spoke = true;
         turn.reply.say(
           known
-            ? `Hello ${kid}! It's Aunty Bella. What would you love for Christmas?`
+            ? `Hello ${kid}! It's Glisten. What would you love for Christmas?`
             : "Hello! I don't know this wand yet. Ask a grown-up to set me up.",
         );
         await finish();

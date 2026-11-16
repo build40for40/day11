@@ -255,7 +255,7 @@ async function openAndPlay(input: {
       if (input.mode === "live" && input.adapter) {
         const history = input.transcript
           .filter((entry) => entry.text && (entry.role === "assistant" || entry.role === "kid"))
-          .map((entry) => `${entry.role === "assistant" ? "Aunty Bella" : "Child"}: ${entry.text}`)
+          .map((entry) => `${entry.role === "assistant" ? "Glisten" : "Child"}: ${entry.text}`)
           .join("\n");
         const persona = personaById(input.scenario.personaId);
         say = await liveKidLine(input.adapter, persona, history, beat);

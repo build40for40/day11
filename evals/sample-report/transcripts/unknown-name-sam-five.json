@@ -1332,7 +1332,7 @@
     },
     {
       "role": "assistant",
-      "text": "Oh! Hello! I'm Aunty Bella. What's your name?",
+      "text": "Oh! Hello! I'm Glisten. What's your name?",
       "toolCalls": [
         {
           "id": "call_377",

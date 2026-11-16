@@ -20,7 +20,7 @@ function failedChecks(scenario: ScenarioResult): string {
 
 export function renderMarkdown(result: SuiteResult): string {
   const lines = [
-    "# Aunty Bella eval report",
+    "# Glisten eval report",
     "",
     `Mode **${result.mode}** with provider **${result.provider}**. Started ${result.startedAt}.`,
     "",
@@ -59,7 +59,7 @@ export function renderMarkdown(result: SuiteResult): string {
       `| ${scenario.id} | ${scenario.set} | ${scenario.passed ? "pass" : "fail"} | ${scenario.metrics.items} | ${scenario.endReason ?? ""} | ${failedChecks(scenario)} |`,
     );
   }
-  lines.push("", "Mock mode uses scripted children and a scripted Aunty Bella. It checks the harness, the worker rules, and that the prompt file still contains the rules. It does not prove a live model will comply. Run with `--provider openai`, `--provider gemini`, or `--provider anthropic` for that.");
+  lines.push("", "Mock mode uses scripted children and a scripted Glisten. It checks the harness, the worker rules, and that the prompt file still contains the rules. It does not prove a live model will comply. Run with `--provider openai`, `--provider gemini`, or `--provider anthropic` for that.");
   lines.push("");
   return lines.join("\n");
 }

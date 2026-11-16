@@ -24,4 +24,4 @@ For listening and writing notes by hand only. Do not download videos or captions
 5. Echoing the adult or only answering a choice
 
 ## Better data source
-Record consenting friends' or family kids (with a parent present), asking Aunty Bella's real questions, and transcribe with ElevenLabs Scribe.
+Record consenting friends' or family kids (with a parent present), asking Glisten's real questions, and transcribe with ElevenLabs Scribe.

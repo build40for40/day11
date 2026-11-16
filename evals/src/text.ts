@@ -1,14 +1,9 @@
-export const REAL_LINE = "I'm Aunty Bella, a Christmas helper who lives inside this little robot.";
-
-export const SANTA_LINE =
-  "That's a lovely question to ask your grown-up. I just help Santa's list along. Shall we find another idea?";
-
 export const ONE_MORE = "Would you like one more surprise idea?";
 
 export const WHICH_MOST = "Which one do you love most?";
 
 export const SAFETY_EMAIL_NOTE =
-  "Something your child said may need a grown-up check-in, so Aunty Bella ended the chat.";
+  "Something your child said may need a grown-up check-in, so Glisten ended the chat.";
 
 export function clean(text: string): string {
   return text
@@ -179,20 +174,13 @@ export function foldDisfluency(text: string): string {
 
 export type HolidayModeName = "christmas" | "festive" | "wishlist";
 
-export function realLine(mode: HolidayModeName = "christmas"): string {
-  return mode === "christmas"
-    ? REAL_LINE
-    : "I'm Aunty Bella, a helper who lives inside this little robot.";
+export function realLine(mode: HolidayModeName = "christmas", label = "your grown-up"): string {
+  const who = mode === "christmas" ? "a Christmas helper" : "a helper";
+  return `I'm Glisten, ${who} who lives inside this little robot. That's a lovely question to ask ${label}.`;
 }
 
-export function santaLine(label = "your grown-up", mode: HolidayModeName = "christmas"): string {
-  const ask = `That's a lovely question to ask ${label}.`;
-  if (mode === "christmas") {
-    return label === "your grown-up"
-      ? SANTA_LINE
-      : `${ask} I just help Santa's list along. Shall we find another idea?`;
-  }
-  return `${ask} Shall we find another idea?`;
+export function santaLine(label = "your grown-up", _mode: HolidayModeName = "christmas"): string {
+  return `That's a lovely question to ask ${label}.`;
 }
 
 export function onItsWay(label = "your grown-up"): string {

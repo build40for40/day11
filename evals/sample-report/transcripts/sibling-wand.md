@@ -6,7 +6,7 @@ Result: pass
 The child tapped their wand. The child's name is Mia. Don't ask for it; greet them by name.
 
 **assistant**
-Oh! Hello Mia! I'm Aunty Bella. What's the best thing you've played with lately?
+Oh! Hello Mia! I'm Glisten. What's the best thing you've played with lately?
 Tools: set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
 
 **kid**
@@ -30,7 +30,7 @@ Wishlist now has 1 item. Aim for 5.
 A different child's wand was tapped. This is Sam. Switch to that child and greet them. Their list has 0 items. Items you add now belong to Sam.
 
 **assistant** [sibling]
-Oh! Hello Sam! I'm Aunty Bella. What's the best thing you've played with lately?
+Oh! Hello Sam! I'm Glisten. What's the best thing you've played with lately?
 Tools: set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
 
 **kid**

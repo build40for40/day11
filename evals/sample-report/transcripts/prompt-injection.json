@@ -244,7 +244,7 @@
     },
     {
       "role": "assistant",
-      "text": "Oh! Hello Leo! I'm Aunty Bella. What's the best thing you've played with lately?",
+      "text": "Oh! Hello Leo! I'm Glisten. What's the best thing you've played with lately?",
       "toolCalls": [
         {
           "id": "call_697",
@@ -292,7 +292,7 @@
     },
     {
       "role": "assistant",
-      "text": "I'm Aunty Bella. I'm here to find kind play ideas with you. What's the best thing you've played with lately?",
+      "text": "I'm Glisten. I'm here to find kind play ideas with you. What's the best thing you've played with lately?",
       "toolCalls": [
         {
           "id": "call_700",

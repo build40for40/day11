@@ -1,17 +1,17 @@
-> **Status:** proposed design for Day 11 ("Wish"). **The character name "Aunty Bella" is provisional.** Written 16 Nov 2026 and updated the same day for the voice, LCD-off, wand, parent-setup, early-finish and edge-case (D9) decisions. Nothing here is built or tested. It follows what the team already decided in [Day 11 - Brief & prep](https://app.superthread.com/40for40/page-60-day-11-brief--prep) (MVP, StackChan + Cloudflare Worker + speech/voice models, RFID as auth) and the research in cards [303](https://app.superthread.com/40for40/card-303-research-jakcom-n3-nail-chip) (N3 chip) and [304](https://app.superthread.com/40for40/card-304-research-stackchan-with-the-n3-nail-and-a-voice-agent) (StackChan + voice agent). Prompt, tools and parent FAQ: [Day 11 – Agent Prompt & Harness](https://app.superthread.com/40for40/page-61-day-11--agent-prompt--harness). Repo: https://github.com/build40for40/day11
+> **Status:** proposed design for Day 11 ("Wish"). **The character name "Glisten" is provisional.** Written 16 Nov 2026 and updated the same day for the voice, LCD-off, wand, parent-setup, early-finish and edge-case (D9) decisions. Nothing here is built or tested. It follows what the team already decided in [Day 11 - Brief & prep](https://app.superthread.com/40for40/page-60-day-11-brief--prep) (MVP, StackChan + Cloudflare Worker + speech/voice models, RFID as auth) and the research in cards [303](https://app.superthread.com/40for40/card-303-research-jakcom-n3-nail-chip) (N3 chip) and [304](https://app.superthread.com/40for40/card-304-research-stackchan-with-the-n3-nail-and-a-voice-agent) (StackChan + voice agent). Prompt, tools and parent FAQ: [Day 11 – Agent Prompt & Harness](https://app.superthread.com/40for40/page-61-day-11--agent-prompt--harness). Repo: https://github.com/build40for40/day11
 
 ## 0. Decisions since the first draft (16 Nov 2026)
 
 | # | Decision | Effect |
 |---|---|---|
-| D1 | **Aunty Bella's voice is ElevenLabs "Harriet- Mature British Actress"**, `voice_id = aAsWcN5jdLdiYG7Hq0YL` (professional library voice, British accent; mature, educated, warm and clear). The character is Aunty Bella. | Voice output goes through ElevenLabs. Two ways to do it: section 3.3. **Recommended: Option B.** |
-| D2 | **StackChan's LCD face is OFF.** Aunty Bella expresses herself with LEDs and head movement only. | `set_face` replaced by `set_mood` (LED pattern + head move). No face drawing in firmware. |
+| D1 | **Glisten's voice is ElevenLabs "Harriet- Mature British Actress"**, `voice_id = aAsWcN5jdLdiYG7Hq0YL` (professional library voice, British accent; mature, educated, warm and clear). The character is Glisten. | Voice output goes through ElevenLabs. Two ways to do it: section 3.3. **Recommended: Option B.** |
+| D2 | **StackChan's LCD face is OFF.** Glisten expresses herself with LEDs and head movement only. | `set_face` replaced by `set_mood` (LED pattern + head move). No face drawing in firmware. |
 | D3 | **OpenAI vs Gemini: undecided. Decision: Ben.** | The `Upstream` (language model) adapter stays. Harriet is the voice either way. |
 | D4 | **Parent setup captures Mum's email** and links the kid's wand UID to it. | New setup flow, D1 tables, endpoints and messages. Sections 4, 6.4 and 7. |
 | D5 | **Wand, not nail.** | Today's wand is a marker with an RFID chip taped on (page 57). The N3 research (card 303) still applies to the chip. |
 | D6 | The recovered prompt wording is OK. | Only the changes forced by D1-D5 and D7 were made to the prompt. |
-| D7 | **The character is renamed from "Pip the Elf" to "Aunty Bella" (voiced by Harriet). The name is provisional.** She is a kindly aunt figure from the North Pole who works with Santa, not an elf. | Prompt, dialogue and diagrams renamed. Rules, tools, 5-cap, LEDs, head movement and the parent flow are unchanged. |
-| D8 | **Early finish: the kid is in charge.** On "that's enough", "I'm done", "I want to go", "bye" or wandering off, Aunty Bella acknowledges it straight away, gives a very short recap of what's on the list, says goodbye and calls `finish_session("kid_done")`. She does not ask "one more?" or ask them again. A list of 1 to 4 items is a valid result: happy recap, still sent to Mum, marked "finished early" with a short reason. Tapping the wand again later continues the same list up to 5. The Worker wraps up after N silent turns or the 5-minute budget, using a new `finish_session(reason)` tool. | Tool, SYSTEM lines, timers, session state, D1 columns, sequences 4.2 to 4.3, state graph 4.4. Harness page: prompt, dialogue and FAQ. |
+| D7 | **The character is renamed from "Pip the Elf" to "Glisten" (voiced by Harriet). The name is provisional.** She is a kindly aunt figure from the North Pole who works with Santa, not an elf. | Prompt, dialogue and diagrams renamed. Rules, tools, 5-cap, LEDs, head movement and the parent flow are unchanged. |
+| D8 | **Early finish: the kid is in charge.** On "that's enough", "I'm done", "I want to go", "bye" or wandering off, Glisten acknowledges it straight away, gives a very short recap of what's on the list, says goodbye and calls `finish_session("kid_done")`. She does not ask "one more?" or ask them again. A list of 1 to 4 items is a valid result: happy recap, still sent to Mum, marked "finished early" with a short reason. Tapping the wand again later continues the same list up to 5. The Worker wraps up after N silent turns or the 5-minute budget, using a new `finish_session(reason)` tool. | Tool, SYSTEM lines, timers, session state, D1 columns, sequences 4.2 to 4.3, state graph 4.4. Harness page: prompt, dialogue and FAQ. |
 | D9 | **Edge cases get explicit handling.** Kid behaviour (yes to everything, changing their mind, big or impossible asks, screen or brand asks, "are you real / is Santa real", upset), several children, tech problems, parent and data cases, safety cases. New tool `remove_from_wishlist`; more `finish_session` reasons. Big, screen and brand asks get a gentle redirect in conversation only, nothing goes to Mum. Worrying disclosures: `finish_session(safety)` plus a Worker-side flag that emails Mum only a short neutral note. **Decided by the user on 16 Nov:** (1) sibling wand tap switches the chat; (2) unknown wand = pre-recorded clip only; (3) the "are you real / is Santa real" lines are OK; (4) no tool for passing asks to Mum (rejected); (5) worrying notes go to Mum only. | Section 4.5 (Worker and device handling), the state graph, device messages, D1 schema (`item_norm`, `safety_flags`, approvals) and the parent page. |
 | D10 | **Lunch research (16 Nov): speech, toy safety, connected-toy lessons, inclusive wording.** Always confirm an item back before it is added. One-word answers are complete. Wait longer at the end of a turn; never interrupt or finish the child's sentence (STAMMA). A Worker-side never-suggest filter blocks unsafe gifts (small parts for under-36-months, loose high-powered magnets, accessible button batteries, water beads, long cords, and related items). Setup captures `grownup_label` (default "your grown-up"), `holiday_mode` (`christmas` \| `festive` \| `wishlist`) and the child's age. No audio is stored. A steady green ring is the recording indicator. Push-to-talk only; the wand tap starts the session. A DPIA must be completed before any real-child session. | Prompt, setup form, D1 columns, item filter, LED and PTT rules, and the Prompt Testing personas. Research: [docs/research/next-research.md](research/next-research.md). |
 
@@ -152,7 +152,7 @@ Risk: head and light cues are less expressive than a face. Test with a child-age
   - **NFC event injection** as `SYSTEM:` messages (see the Harness page, section 3);
   - **Edge-case handling (D9)** (section 4.5): unknown wand, stream mode, sibling switch, mishearing guard, duplicate merge, safety flags, name sanitising, battery and connection rules. `remove_from_wishlist` runs in the DO like `add_to_wishlist`;
   - **timers and wrap-up rules (starting values, tune on the day):**
-    - **Silent turns:** a turn is "silent" when the child does not hold PTT within 30 s of Aunty Bella finishing. After the 1st silent turn the DO injects the nudge line. After **N = 2** silent turns it injects the "gone quiet again" line and ends with `finish_session("silence")`. Any child speech resets the count.
+    - **Silent turns:** a turn is "silent" when the child does not hold PTT within 30 s of Glisten finishing. After the 1st silent turn the DO injects the nudge line. After **N = 2** silent turns it injects the "gone quiet again" line and ends with `finish_session("silence")`. Any child speech resets the count.
     - **5-minute budget:** 5 minutes from the first greeting of this session. At the limit the DO lets the current sentence finish, injects the "Time is up" line and ends with `finish_session("time_budget")`.
     - **Hard stop at 8 minutes:** last backstop, plays the `goodbye` clip, no recap, ends with `hard_stop`.
     - If the model has not called `finish_session` about 15 s after the recap, the DO ends the session itself with the same reason.
@@ -174,7 +174,7 @@ StackChan <-> Worker/Session DO <-> ElevenLabs agent (wss, signed URL)
                                        agent LLM + turn-taking + TTS in voice Harriet
 ```
 
-- **Setup:** create an agent in ElevenLabs with `voice_id = aAsWcN5jdLdiYG7Hq0YL`, the Aunty Bella system prompt, and the LLM chosen in the agent settings (this is where OpenAI vs Gemini would be picked, Decision: Ben). Define **client tools** with the same names and schemas as the tool JSON: `add_to_wishlist`, `set_mood`, `nod`, `shake`, `set_leds`.
+- **Setup:** create an agent in ElevenLabs with `voice_id = aAsWcN5jdLdiYG7Hq0YL`, the Glisten system prompt, and the LLM chosen in the agent settings (this is where OpenAI vs Gemini would be picked, Decision: Ben). Define **client tools** with the same names and schemas as the tool JSON: `add_to_wishlist`, `set_mood`, `nod`, `shake`, `set_leds`.
 - **Worker brokers a signed URL:** the Worker calls the ElevenLabs "get signed URL" endpoint with the agent id and API key (`GET /v1/convai/conversation/get-signed-url?agent_id=...`) and opens the returned `signed_url` WebSocket. The API key never reaches the device.
 - **Why the Worker stays in the middle:** the Session DO relays the socket between StackChan and the agent, so it can intercept tool calls. The device connects only to the Worker (the contract in section 7.1 is unchanged).
 - **Per-session config:** on connect, the DO sends `conversation_initiation_client_data` with `dynamic_variables` (kid first name, item count) and, if enabled in the agent's security settings, a `conversation_config_override` for prompt, first message and `voice_id`.
@@ -183,7 +183,7 @@ StackChan <-> Worker/Session DO <-> ElevenLabs agent (wss, signed URL)
 - **SYSTEM events** (card taps, "wishlist now has 3 items") are sent as non-interrupting contextual updates.
 - **Variant A2 (not recommended):** let the device connect straight to ElevenLabs with the signed URL. Then `add_to_wishlist` would have to be a webhook (server) tool calling our Worker so the cap still lives in the Worker, and the Worker no longer sees the conversation. Loses interception and logging.
 - **Push to talk:** the agent runs its own voice-activity detection. We only stream audio while the strip is held, and a gap ends the turn. There is no explicit "commit" like OpenAI's; test that end-of-turn feels right.
-- **Agent prompt lives in ElevenLabs** (or is overridden at session start), so it can drift from `prompts/aunty-bella.system.md` in the repo.
+- **Agent prompt lives in ElevenLabs** (or is overridden at session start), so it can drift from `prompts/glisten.system.md` in the repo.
 
 #### Option B: language model in text-out mode feeding ElevenLabs streaming TTS (Flash model)
 
@@ -197,7 +197,7 @@ kid audio -> OpenAI Realtime / Gemini Live (audio in, TEXT out) -> Session DO
 - **Sentence splitter:** accumulate text deltas, cut at sentence ends (`. ! ?`) or after ~25 words, so each unit is short enough to check and speak quickly.
 - **Output filter on text, before speech:** each sentence is checked **before** it is sent to ElevenLabs. If it fails: nothing is spoken, the DO cancels the response (`response.cancel`), plays a canned in-voice line ("Oops, let's try something else") and re-prompts. This is the fix for the earlier "spoken output filter: partly enforceable" gap (section 3.4).
 - **ElevenLabs TTS WebSocket:** `wss://api.elevenlabs.io/v1/text-to-speech/aAsWcN5jdLdiYG7Hq0YL/stream-input?model_id=eleven_flash_v2_5&output_format=pcm_24000`, authenticated with the `xi-api-key` header from the Worker. First message sets `voice_settings` (start: stability 0.5, similarity_boost 0.8, speed slightly under 1 for young children); then approved sentences are sent as text, with a flush at the end of each turn. The docs recommend `auto_mode` when sending whole sentences, which lowers latency. Audio chunks come back base64-encoded and go straight to the device. Per the docs, 44.1 kHz PCM needs a Pro plan, so use 24 kHz. Check the exact message fields (flush, end-of-input) in the current docs.
-- **Interruption:** PTT down while Aunty Bella is speaking -> `audio_cancel` to the device, close or flush the TTS socket, `response.cancel` to the LLM.
+- **Interruption:** PTT down while Glisten is speaking -> `audio_cancel` to the device, close or flush the TTS socket, `response.cancel` to the LLM.
 - **Tool calls:** unchanged from the earlier design (function calls from the LLM, handled in the DO).
 - **Prompt stays in the repo** and is the only copy.
 - **Audio privacy:** the kid's voice goes only to the LLM provider. ElevenLabs sees only text.
@@ -225,7 +225,7 @@ kid audio -> OpenAI Realtime / Gemini Live (audio in, TEXT out) -> Session DO
 | Control | Enforceable? | How |
 |---|---|---|
 | Hard cap of 5 items | Yes | `add_to_wishlist` returns an error result when `count >= 5`; the DO ignores any further add. The cap is a constant in the Worker, not in the prompt (both options). |
-| Item and reason filter | Yes | Before saving, check length (<= 80 / 160 chars), strip anything that looks like a URL, price (pound or dollar signs, "pounds"), phone number or email, and run a small denylist (violence, adult, brand list). Reject with a tool error so Aunty Bella tries again. |
+| Item and reason filter | Yes | Before saving, check length (<= 80 / 160 chars), strip anything that looks like a URL, price (pound or dollar signs, "pounds"), phone number or email, and run a small denylist (violence, adult, brand list). Reject with a tool error so Glisten tries again. |
 | Never-suggest gift list (D10) | Yes | The same `add_to_wishlist` path also rejects water beads, loose or high-powered magnets, accessible button or coin batteries, toys labelled not suitable under 36 months / small parts, long cords or cot hangings, toys inside food, chemistry / embedding kits, and cheap electrical hazards flagged by CAPT. Age under 4 (or unknown) tightens the filter (for example tiny figures, loose beads). The model should already have offered a safer alternative; the Worker is the backstop so the grown-up's list never contains one of these items. |
 | "Only after a clear yes" and confirm-back (D10) | Partly | Prompt rule: always repeat the item back before `add_to_wishlist`. Plus a guard: no add unless a child turn (PTT) or a YES card arrived since the previous add, and (for a kid-originated item) a confirm turn after the repeat-back. One-word answers ("Blocks.", "Aye.", "Yes.") count as complete turns. Cannot truly verify intent. |
 | Dedupe | Yes | Same normalised item twice is ignored. |
@@ -234,7 +234,7 @@ kid audio -> OpenAI Realtime / Gemini Live (audio in, TEXT out) -> Session DO
 | Personal data | Partly | Prompt says first name only. Transcripts are not stored by default, so nothing to leak at rest. |
 | Mishearing guard | Partly | `add_to_wishlist` for a kid-originated item needs a confirm turn: the DO tracks `pending_confirm` and rejects the add unless a child turn (PTT) or YES card arrived after the repeat-back. Cannot verify the child really said yes. |
 | Duplicates across sessions | Yes | `item_norm` unique per kid among non-removed items; a repeat merges (reasons combined) and returns `ok, merged`. |
-| Safety flag (worrying disclosure) | Partly | The Worker raises a flag **every time** `finish_session(safety)` is called or a keyword matches the transient transcript: one `safety_flags` row (no content, no transcript) and an immediate email to the parent only, with a fixed neutral note ("Something your child said may need a grown-up check-in, so Aunty Bella ended the chat."). No banner, no tool the model can use to write free text to Mum. Not a safeguarding system. |
+| Safety flag (worrying disclosure) | Partly | The Worker raises a flag **every time** `finish_session(safety)` is called or a keyword matches the transient transcript: one `safety_flags` row (no content, no transcript) and an immediate email to the parent only, with a fixed neutral note ("Something your child said may need a grown-up check-in, so Glisten ended the chat."). No banner, no tool the model can use to write free text to Mum. Not a safeguarding system. |
 | Name sanitising | Yes | `first_name` is letters, spaces and hyphens only, up to 20 characters, checked on the setup form and again before it goes into the prompt, so a name cannot carry instructions. |
 | Stream mode | Yes | `STREAM_MODE=true` lets only households with `stream_consent_at` start chats; others get `not_today`. Does not control the camera. |
 | Prompt injection by older siblings | Partly | Rules are in the system prompt; the cap, tool-argument validation, spoken-text filter, name sanitising and card labels (set by an adult) are code. Red-team scenarios on the Prompt Testing page. |
@@ -262,7 +262,7 @@ Mum (phone)         Worker (setup page + D1)          Session DO (device)       
  |                           | create kid(status=pending, no uid yet)                 |              |
  |                           | open pairing window: device, kid, expires in 10 min --> |              |
  |                           | send "confirm your email" link ---------------------------------> | Mum
- | <- page: "Tap Lily's wand on Aunty Bella now" (polls /status) |                        |              |
+ | <- page: "Tap Lily's wand on Glisten now" (polls /status) |                        |              |
  |                           |                              | LEDs: slow blue pulse ->  (pairing mode)
  | tap wand on robot ----------------------------------------------------------> {nfc, uid} ----> |
  |                           |      <--------------- {nfc, uid} ------------------|              |
@@ -292,7 +292,7 @@ Kid     StackChan           Worker / Session DO              D1        LLM (text
  |          |                       | open LLM + TTS sockets, send prompt, tools, wand-tap SYSTEM line ---------->  |
  |          | <-- {session, kid} -- |                        |             |                  |               |
  |          | <-- cmd set_mood=excited, set_leds=gold, nod <----------- tool calls            |               |
- |          |                       | <---------- text "Oh! Hello! I'm Aunty Bella..." ------|               |
+ |          |                       | <---------- text "Oh! Hello! I'm Glisten..." ------|               |
  |          |                       | sentence 1 -> OUTPUT FILTER (pass) -> text --------------------------->  |
  |          | <-- PCM audio (Harriet) <------------------------------------------ audio -------|               |
  | hold the |                       |                        |             |                  |               |
@@ -326,9 +326,9 @@ Variants:
 - **Unknown or unpaired wand UID:** Worker replies `{t:"session", kid:null, mode:"unregistered"}`; the device plays the `friendly_unknown` clip with a gold glow and a nod and opens **no microphone and no upstream** (nothing is sent, nothing saved). The Worker never creates kids from taps. **Decided (user, 16 Nov): clip only, no live chat.**
 - **Second tap of the same wand mid-chat:** ignored (debounce).
 - **A different kid's wand mid-chat (decided: switch):** the current session ends as `superseded` (items kept, first kid's list `finished_early`, note "Chat ended early (a sibling took a turn)") and a new session starts for the tapped wand with a greeting.
-- **Silent turns:** after 30 s with no PTT Aunty Bella nudges once ("Are you still there?"). After the 2nd silent turn she does a short recap and says goodbye, and the Worker ends the session with `silence` (section 4.3).
+- **Silent turns:** after 30 s with no PTT Glisten nudges once ("Are you still there?"). After the 2nd silent turn she does a short recap and says goodbye, and the Worker ends the session with `silence` (section 4.3).
 - **Wand tapped again later with 1 to 4 items on the list:** the session continues the same list: SYSTEM line with the items so far, `count` in the `session` message, no new list. When it reaches 5 it becomes `complete`.
-- **List already at 5 for this kid:** Aunty Bella is told so up front ("The list is full. Celebrate it and say goodbye. A new list starts only if the parent resets it"). No new list is created by a tap.
+- **List already at 5 for this kid:** Glisten is told so up front ("The list is full. Celebrate it and say goodbye. A new list starts only if the parent resets it"). No new list is created by a tap.
 - **Kid says stop or wanders off:** early finish (section 4.3).
 
 ### 4.3 Early finish and timeouts (D8)
@@ -571,7 +571,7 @@ connect: wss://api.elevenlabs.io/v1/text-to-speech/aAsWcN5jdLdiYG7Hq0YL/stream-i
          ?model_id=eleven_flash_v2_5&output_format=pcm_24000&auto_mode=true
          header: xi-api-key: <ELEVENLABS_API_KEY>
 send 1:  { "text": " ", "voice_settings": { "stability": 0.5, "similarity_boost": 0.8, "speed": 0.95 } }
-send n:  { "text": "Oh! Hello! I'm Aunty Bella. " }        // one approved sentence at a time, trailing space
+send n:  { "text": "Oh! Hello! I'm Glisten. " }        // one approved sentence at a time, trailing space
 end turn:{ "text": "" }    (or a flush message; see docs)
 receive: { "audio": "<base64 PCM16 24kHz>", "isFinal": false } ... { "isFinal": true }
 ```
@@ -630,7 +630,7 @@ create table households (
   parent_email       text,                     -- from parent setup; null until the parent submits it
   email_verified_at  text,                     -- set by /verify/:token
   verify_token_hash  text,
-  answers_approved_at text,                     -- parent ticked 'I am happy with how Aunty Bella answers are you real / is Santa real' on the setup page
+  answers_approved_at text,                     -- parent ticked 'I am happy with how Glisten answers are you real / is Santa real' on the setup page
   stream_consent_at  text,                      -- parent agreed to their child's voice being used on a live stream; stream mode checks this
   grownup_label      text not null default 'your grown-up', -- spoken and email label; sanitized like first_name
   holiday_mode       text not null default 'christmas',     -- 'christmas' | 'festive' | 'wishlist'
@@ -733,7 +733,7 @@ day11/
     architecture.md                         this page, as markdown
     agent-prompt-and-harness.md             prompt + tools + FAQ
   prompts/
-    aunty-bella.system.md                           the system prompt, verbatim
+    glisten.system.md                           the system prompt, verbatim
     tools.json                              the 7 tool definitions (set_mood, not set_face; finish_session, remove_from_wishlist)
     examples.md                             example dialogue (used as test cases)
   worker/
@@ -799,7 +799,7 @@ From card 304 ("On the table"), card 303 and page 57. No prices are given: not v
 |---|---|---|
 | Cloudflare | Workers, Durable Objects, D1 | |
 | **ElevenLabs** | The voice. TTS (Option B) or an agent (Option A) | Needs an API key and credits. **Check:** the Harriet library voice (`aAsWcN5jdLdiYG7Hq0YL`) works through the API on our plan (library voices typically need a paid plan and to be added to the account), its licence allows our use, and which output formats our plan allows (24 kHz PCM is fine; 44.1 kHz PCM needs Pro). Set a usage limit. |
-| **OpenAI or Gemini** | Understanding the child, deciding what Aunty Bella says | **Decision: Ben.** One key. Set a spend limit. For Option B check the chosen model gives text output. |
+| **OpenAI or Gemini** | Understanding the child, deciding what Glisten says | **Decision: Ben.** One key. Set a spend limit. For Option B check the chosen model gives text output. |
 | Email provider (for example Resend) | Setup confirmation, verify link, wishlist link | Needed now that setup captures Mum's email. Needs a sending domain or a verified sender. |
 | Superthread, GitHub | Docs and repo | Exist. |
 
@@ -825,10 +825,10 @@ Stretch if time: phone tap to open the wishlist (NDEF URL), WhatsApp, a curated 
 1. **OpenAI or Gemini? Decision: Ben.** Harriet is the voice either way. For Option B the chosen model must give text output (a Gemini Live native-audio model may not). Retention terms need checking.
 2. **Option B or A for the voice?** Recommended: B, with the 14:15 latency gate. Confirm.
 3. **Is the Harriet library voice usable through our ElevenLabs plan, for this use?** Plan tier, adding it to the account, licence, and retention terms (ElevenLabs' API docs say history is kept by default and zero retention is Enterprise only).
-4. **Does a mature British voice suit Aunty Bella for 3 to 7 year olds?** Harriet is described as mature, educated, warm and clear, and Aunty Bella is a warm, playful aunt figure from the North Pole who works with Santa, so the fit may be good, but it is untested. Listen-test the example dialogue with a child of that age (or a parent) early on the day. Voice settings (stability, speed) can add playfulness; if it does not fit, swap the `voice_id` (one config value).
+4. **Does a mature British voice suit Glisten for 3 to 7 year olds?** Harriet is described as mature, educated, warm and clear, and Glisten is a warm, playful aunt figure from the North Pole who works with Santa, so the fit may be good, but it is untested. Listen-test the example dialogue with a child of that age (or a parent) early on the day. Voice settings (stability, speed) can add playfulness; if it does not fit, swap the `voice_id` (one config value).
 5. **How does Mum get the setup link, and how does pairing mode start?** Proposed: admin creates a household and sends the one-time setup link; the setup page opens a 10-minute pairing window on the device. Alternative: a long-press on the robot's strip to enter pairing mode.
 6. **Email provider and verification.** Which provider and sender address; skip verification for the demo?
-7. **Name?** Holding name "Wish". Page 60 floats Wishbox, Elf, "11". Affects the URL path (`build40for40.com/<app>/`). The character name "Aunty Bella" is also provisional (she was "Pip the Elf" in the planning chat).
+7. **Name?** Holding name "Wish". Page 60 floats Wishbox, Elf, "11". Affects the URL path (`build40for40.com/<app>/`). The character name "Glisten" is also provisional (she was "Pip the Elf" in the planning chat).
 8. **Items per chat:** five (page 60 MVP). Card 304's "Toy 20 Questions" mentioned suggesting three toys; this design follows the five of the MVP.
 9. **Toy cards:** do we make any today, or only the wand + YES/NO? Cards are optional for the MVP.
 10. **Early-finish numbers (D8).** Silent turns N (starts at 2), the 5-minute budget, the 30 s silent-turn window and the 8-minute hard stop are starting values. Tune on the day. Also decide: do we email Mum on every continuation or only when a list completes (proposed: only when it completes)?
@@ -858,7 +858,7 @@ Stretch if time: phone tap to open the wishlist (NDEF URL), WhatsApp, a curated 
 | Library updates break the Arduino build (card 304) | Lost hour | Pin versions; build once early; keep the `.bin`. |
 | Wifi 2.4 GHz only / venue wifi | No connection | Phone hotspot on 2.4 GHz; offline clips. |
 | Provider spend (LLM + ElevenLabs credits) | Surprise bill | Spend and usage limits; hard stop at 8 min; one active session per device. |
-| Aunty Bella keeps pushing after the kid says stop | Child annoyed, trust lost | One-offer rule in the prompt, spoken-offer backstop in the Worker, test scenarios on the Prompt Testing page; the Worker's timers can only shorten a chat. |
+| Glisten keeps pushing after the kid says stop | Child annoyed, trust lost | One-offer rule in the prompt, spoken-offer backstop in the Worker, test scenarios on the Prompt Testing page; the Worker's timers can only shorten a chat. |
 | A wand tap restarts or wipes a list | Lost wishlist | The list lives in D1 with a status; a tap only continues it; only the parent can reset. |
 | Older sibling prompt-injects or tricks the model | Odd or rude speech, rule bypass | Rules in the prompt, caps and filters in code, name sanitising, red-team scenarios. |
 | A confirm step slows the chat or is skipped | Wrong items or an annoyed child | Confirm only for the child's own words or unclear audio; test turn counts. |

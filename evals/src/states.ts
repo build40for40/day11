@@ -22,7 +22,7 @@ export function featuresFromTurn(text: string, tools: ExecutedTool[], stimulus: 
     finishReason === "safety" ||
     finishReason === "upset";
   return {
-    greeting: /i'm aunty bella/i.test(text),
+    greeting: /i'm glisten/i.test(text),
     warmup: /played with lately|lovely to meet you/i.test(text),
     suggestion: /would you like|how about/i.test(text),
     added,

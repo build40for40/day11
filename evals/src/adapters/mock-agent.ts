@@ -24,7 +24,6 @@ import {
   isUpset,
   onItsWay,
   realLine,
-  santaLine,
 } from "../text.js";
 import { brandsIn, neverSuggestReason } from "../tools/filter.js";
 
@@ -253,12 +252,12 @@ function greet(session: Session, again = false): ModelTurn {
   }
   if (name) {
     return {
-      text: `Oh! Hello ${name}! I'm Aunty Bella. What's the best thing you've played with lately?`,
+      text: `Oh! Hello ${name}! I'm Glisten. What's the best thing you've played with lately?`,
       toolCalls: tools,
     };
   }
   return {
-    text: "Oh! Hello! I'm Aunty Bella. What's your name?",
+    text: "Oh! Hello! I'm Glisten. What's your name?",
     toolCalls: tools,
   };
 }
@@ -317,7 +316,7 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
   }
   if (isInjection(kid)) {
     return {
-      text: "I'm Aunty Bella. I'm here to find kind play ideas with you. What's the best thing you've played with lately?",
+      text: "I'm Glisten. I'm here to find kind play ideas with you. What's the best thing you've played with lately?",
       toolCalls: [mood("thinking")],
     };
   }
@@ -381,10 +380,7 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
     };
   }
   if (kid && (isRealQuestion(kid) || isSantaQuestion(kid))) {
-    const parts = [];
-    if (isRealQuestion(kid)) parts.push(realLine(session.holidayMode));
-    if (isSantaQuestion(kid)) parts.push(santaLine(session.grownupLabel, session.holidayMode));
-    return { text: parts.join(" "), toolCalls: [mood("happy")] };
+    return { text: realLine(session.holidayMode, session.grownupLabel), toolCalls: [mood("happy")] };
   }
   if (kid && isRude(kid)) {
     return {

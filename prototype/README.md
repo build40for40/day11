@@ -29,7 +29,7 @@ MODE=hybrid npm run server
 
 ## Deploy the Worker
 
-Merging to `main` deploys it when `prototype/worker/`, `prompts/` or the package files change (`.github/workflows/deploy.yml`). The Worker bundles `prompts/aunty-bella.system.md`, so a prompt change needs a deploy to reach the robot. To deploy by hand:
+Merging to `main` deploys it when `prototype/worker/`, `prompts/` or the package files change (`.github/workflows/deploy.yml`). The Worker bundles `prompts/glisten.system.md`, so a prompt change needs a deploy to reach the robot. To deploy by hand:
 
 ```bash
 npm run wrangler -- deploy --config prototype/worker/wrangler.jsonc

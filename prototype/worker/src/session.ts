@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import basePrompt from "../../../prompts/aunty-bella.system.md";
+import basePrompt from "../../../prompts/glisten.system.md";
 import { Reply, SentenceSplitter, type Speak } from "./audio";
 import { Realtime } from "./realtime";
 
@@ -117,7 +117,7 @@ class Conversation {
     const turn = this.live ?? this.begin();
     this.live = null;
     turn.sentences.flush();
-    if (turn.sentences.full) console.log(`  bella: ${turn.sentences.full}`);
+    if (turn.sentences.full) console.log(`  glisten: ${turn.sentences.full}`);
     if (this.ending && !turn.spoke) turn.reply.say(GOODBYE);
     await turn.reply.end();
     if (this.ending) {
@@ -162,7 +162,7 @@ class Conversation {
         turn.spoke = true;
         turn.reply.say(
           known
-            ? `Hello ${this.kid}! It's Aunty Bella. What would you love for Christmas?`
+            ? `Hello ${this.kid}! It's Glisten. What would you love for Christmas?`
             : "Hello! I don't know this wand yet. Ask a grown-up to set me up.",
         );
         await this.finish();
