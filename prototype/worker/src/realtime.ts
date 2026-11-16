@@ -2,38 +2,49 @@ import { base64, MIC_RATE, REPLY_RATE, resample } from "./audio";
 
 export const SILENCE_ENDS_TURN_MS = 500;
 const SPEECH_THRESHOLD = 0.75;
-export const FINISH_TOOL = {
-  name: "finish_session",
-  description: "End the chat. Call this when the child says bye, says they are done or wants to stop.",
-  parameters: { type: "object", properties: { reason: { type: "string" } } },
-};
+
+export type Tool = { name: string; description: string; parameters: object };
+export type Brief = { instructions: string; tools: Tool[] };
+export type ToolResult = { output: string; then: "reply" | "reply_if_silent" | "stop"; brief?: Brief };
 
 type RealtimeEvents = {
   onSpeechStart: () => void;
   onSpeechStop: () => void;
   onHeard: (transcript: string) => void;
   onText: (text: string) => void;
-  onFinish: () => void;
+  onTool: (name: string, args: Record<string, unknown>) => Promise<ToolResult>;
   onDone: () => void;
 };
+
+type OutputItem = { type: string; name?: string; call_id?: string; arguments?: string };
 
 type RealtimeEvent = {
   type: string;
   delta?: string;
   transcript?: string;
-  call_id?: string;
+  response?: { output?: OutputItem[] };
   error?: { message: string };
 };
+
+function parsed(json: string | undefined): Record<string, unknown> {
+  try {
+    const value: unknown = JSON.parse(json || "{}");
+    return value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+  } catch {
+    return {};
+  }
+}
 
 export class Realtime {
   private socket: WebSocket | null = null;
   private ready: Promise<void>;
   private closed = false;
+  private spoke = false;
 
   constructor(
     apiKey: string,
     model: string,
-    private instructions: string,
+    private brief: Brief,
     private events: RealtimeEvents,
   ) {
     this.ready = this.connect(apiKey, model);
@@ -51,22 +62,22 @@ export class Realtime {
     socket.addEventListener("close", (event) => console.log(`  realtime closed ${event.code} ${event.reason}`));
     this.socket = socket;
     if (this.closed) return socket.close(1000);
-    this.configure(this.instructions);
+    this.configure(this.brief);
   }
 
   private send(event: unknown): void {
     if (this.socket?.readyState === WebSocket.READY_STATE_OPEN) this.socket.send(JSON.stringify(event));
   }
 
-  configure(instructions: string): void {
-    this.instructions = instructions;
+  configure(brief: Brief): void {
+    this.brief = brief;
     this.send({
       type: "session.update",
       session: {
         type: "realtime",
-        instructions,
+        instructions: brief.instructions,
         output_modalities: ["text"],
-        tools: [{ type: "function", ...FINISH_TOOL }],
+        tools: brief.tools.map((tool) => ({ type: "function", ...tool })),
         audio: {
           input: {
             format: { type: "audio/pcm", rate: REPLY_RATE },
@@ -86,6 +97,7 @@ export class Realtime {
   }
 
   private handle(event: RealtimeEvent): void {
+    if (this.closed) return;
     switch (event.type) {
       case "input_audio_buffer.speech_started":
         this.events.onSpeechStart();
@@ -94,25 +106,45 @@ export class Realtime {
         this.events.onSpeechStop();
         break;
       case "response.output_text.delta":
+        if (event.delta?.trim()) this.spoke = true;
         this.events.onText(event.delta ?? "");
         break;
-      case "response.function_call_arguments.done":
-        this.send({
-          type: "conversation.item.create",
-          item: { type: "function_call_output", call_id: event.call_id, output: "ended" },
-        });
-        this.events.onFinish();
-        break;
       case "conversation.item.input_audio_transcription.completed":
-        console.log(`  kid: ${event.transcript?.trim()}`);
         this.events.onHeard(event.transcript ?? "");
         break;
       case "response.done":
-        this.events.onDone();
+        void this.settle(event.response?.output?.filter((item) => item.type === "function_call") ?? []);
         break;
       case "error":
         console.error("  realtime error:", event.error?.message);
         break;
+    }
+  }
+
+  private async settle(calls: OutputItem[]): Promise<void> {
+    const spoke = this.spoke;
+    this.spoke = false;
+    const results: ToolResult[] = [];
+    for (const call of calls) {
+      const result = await this.events
+        .onTool(call.name ?? "", parsed(call.arguments))
+        .catch((): ToolResult => ({ output: "That did not work. Say so briefly and carry on.", then: "reply" }));
+      results.push(result);
+      this.send({
+        type: "conversation.item.create",
+        item: { type: "function_call_output", call_id: call.call_id, output: result.output },
+      });
+    }
+    if (this.closed) return;
+    const brief = results.findLast((result) => result.brief)?.brief;
+    if (brief) this.configure(brief);
+    const stop = results.some((result) => result.then === "stop");
+    const reply = results.some((result) => result.then === "reply" || (result.then === "reply_if_silent" && !spoke));
+    if (reply && !stop) {
+      this.events.onText(" ");
+      this.send({ type: "response.create" });
+    } else {
+      this.events.onDone();
     }
   }
 
