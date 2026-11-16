@@ -83,10 +83,11 @@ async function agentTurn(input: {
     const turn =
       input.mode === "mock" || !input.adapter
         ? mockAuntyTurn(input.messages, input.session)
-        : await input.adapter.complete({ system: input.system, messages: input.messages, tools: input.tools });
-    input.messages.push({ role: "assistant", content: turn.text, toolCalls: turn.toolCalls });
+        : await input.adapter.complete({ system: input.system, messages: input.messages, tools: input.tools, purpose: "agent" });
+    input.messages.push({ role: "assistant", content: turn.text, toolCalls: turn.toolCalls, providerBlocks: turn.providerBlocks });
     const executed = [];
     const side: TranscriptEntry[] = [];
+    const systemNotes: string[] = [];
     for (const tool of turn.toolCalls) {
       const result = applyTool(input.session, tool, input.source, "model");
       executed.push({ ...tool, result });
@@ -97,7 +98,7 @@ async function agentTurn(input: {
         content: JSON.stringify(result),
       });
       if (result.system) {
-        input.messages.push({ role: "user", content: `SYSTEM: ${result.system}` });
+        systemNotes.push(result.system);
         side.push({ role: "system", text: result.system });
       }
       if (result.email) {
@@ -106,6 +107,9 @@ async function agentTurn(input: {
           text: `Emailed the grown-up only (${result.email.reason}, ${result.email.status}).`,
         });
       }
+    }
+    for (const note of systemNotes) {
+      input.messages.push({ role: "user", content: `SYSTEM: ${note}` });
     }
     if (!input.session.ended && activeItems(input.session).length >= 5) {
       workerFinish(input.session, "complete");
@@ -384,7 +388,48 @@ export async function runSuite(options: RunOptions): Promise<import("./types.js"
   const startedAt = new Date().toISOString();
   const scenarios = [];
   for (const scenario of options.scenarios) {
-    scenarios.push(await runScenario(scenario, { ...options, system, tools }));
+    const index = scenarios.length + 1;
+    const started = Date.now();
+    try {
+      const result = await runScenario(scenario, { ...options, system, tools });
+      const seconds = Math.round((Date.now() - started) / 1000);
+      console.log(`${index}/${options.scenarios.length} ${result.id} ${result.passed ? "pass" : "fail"} (${seconds}s)`);
+      scenarios.push(result);
+    } catch (error) {
+      const seconds = Math.round((Date.now() - started) / 1000);
+      const message = error instanceof Error ? error.message : String(error);
+      console.log(`${index}/${options.scenarios.length} ${scenario.id} error (${seconds}s): ${message}`);
+      const failed: ScenarioResult = {
+        id: scenario.id,
+        title: scenario.title,
+        set: scenario.set,
+        personaId: scenario.personaId,
+        passed: false,
+        checks: [{ id: "run_error", pass: false, detail: message, safety: false }],
+        wishlist: {},
+        activeKidId: scenario.personaId,
+        emails: [],
+        clips: [],
+        transitions: [],
+        states: ["greet"],
+        transcript: [],
+        judge: { mode: "heuristic", scores: { warmth: null, oneIdea: null, grounded: null, noStereotype: null, frustration: null, yesToEverything: null, noPromises: null, gentleRedirect: null, magic: null, upset: null, earlyFinish: null, injection: null, safetyEscalation: null, siblingSwitch: null }, notes: message, assumptionErrors: 0 },
+        parent: { mode: "heuristic", wouldBuy: null, plasticTat: false, matchesKid: true, notes: message },
+        metrics: {
+          kidTurns: 0,
+          agentTurns: 0,
+          items: 0,
+          turnsPerItem: null,
+          questionsPerTurn: 0,
+          suggestions: 0,
+          rejections: 0,
+          rejectionRate: null,
+          firstSuggestionTurn: null,
+          assumptionErrors: 0,
+        },
+      };
+      scenarios.push(failed);
+    }
   }
   const { summarise } = await import("./scoring/summary.js");
   return summarise({ mode: options.mode, provider: options.provider, startedAt, scenarios });

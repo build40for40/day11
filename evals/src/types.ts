@@ -38,11 +38,14 @@ export interface ModelMessage {
   toolCalls?: ToolCall[];
   toolCallId?: string;
   name?: string;
+  /** Provider-specific content blocks to replay on the next turn (e.g. Anthropic thinking). */
+  providerBlocks?: unknown;
 }
 
 export interface ModelTurn {
   text: string;
   toolCalls: ToolCall[];
+  providerBlocks?: unknown;
 }
 
 export interface WishlistItem {

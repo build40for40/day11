@@ -11,7 +11,7 @@
 | D5 | **Wand, not nail.** | Today's wand is a marker with an RFID chip taped on (page 57). The N3 research (card 303) still applies to the chip. |
 | D6 | The recovered prompt wording is OK. | Only the changes forced by D1-D5 and D7 were made to the prompt. |
 | D7 | **The character is renamed from "Pip the Elf" to "Aunty Bella" (voiced by Harriet). The name is provisional.** She is a kindly aunt figure from the North Pole who works with Santa, not an elf. | Prompt, dialogue and diagrams renamed. Rules, tools, 5-cap, LEDs, head movement and the parent flow are unchanged. |
-| D8 | **Early finish: the kid is in charge.** On "that's enough", "I'm done" or wandering off, Aunty Bella offers at most ONE "one more surprise idea?" and stops at once on no. A list of 1 to 4 items is a valid result: happy recap, still sent to Mum, marked "finished early" with a short reason. Tapping the wand again later continues the same list up to 5. The Worker wraps up after N silent turns or the 5-minute budget, using a new `finish_session(reason)` tool. | New tool, SYSTEM lines, timers, session state, D1 columns, sequences 4.2 to 4.3, state graph 4.4. Harness page: prompt, dialogue and FAQ. |
+| D8 | **Early finish: the kid is in charge.** On "that's enough", "I'm done", "I want to go", "bye" or wandering off, Aunty Bella acknowledges it straight away, gives a very short recap of what's on the list, says goodbye and calls `finish_session("kid_done")`. She does not ask "one more?" or ask them again. A list of 1 to 4 items is a valid result: happy recap, still sent to Mum, marked "finished early" with a short reason. Tapping the wand again later continues the same list up to 5. The Worker wraps up after N silent turns or the 5-minute budget, using a new `finish_session(reason)` tool. | Tool, SYSTEM lines, timers, session state, D1 columns, sequences 4.2 to 4.3, state graph 4.4. Harness page: prompt, dialogue and FAQ. |
 | D9 | **Edge cases get explicit handling.** Kid behaviour (yes to everything, changing their mind, big or impossible asks, screen or brand asks, "are you real / is Santa real", upset), several children, tech problems, parent and data cases, safety cases. New tool `remove_from_wishlist`; more `finish_session` reasons. Big, screen and brand asks get a gentle redirect in conversation only, nothing goes to Mum. Worrying disclosures: `finish_session(safety)` plus a Worker-side flag that emails Mum only a short neutral note. **Decided by the user on 16 Nov:** (1) sibling wand tap switches the chat; (2) unknown wand = pre-recorded clip only; (3) the "are you real / is Santa real" lines are OK; (4) no tool for passing asks to Mum (rejected); (5) worrying notes go to Mum only. | Section 4.5 (Worker and device handling), the state graph, device messages, D1 schema (`item_norm`, `safety_flags`, approvals) and the parent page. |
 | D10 | **Lunch research (16 Nov): speech, toy safety, connected-toy lessons, inclusive wording.** Always confirm an item back before it is added. One-word answers are complete. Wait longer at the end of a turn; never interrupt or finish the child's sentence (STAMMA). A Worker-side never-suggest filter blocks unsafe gifts (small parts for under-36-months, loose high-powered magnets, accessible button batteries, water beads, long cords, and related items). Setup captures `grownup_label` (default "your grown-up"), `holiday_mode` (`christmas` \| `festive` \| `wishlist`) and the child's age. No audio is stored. A steady green ring is the recording indicator. Push-to-talk only; the wand tap starts the session. A DPIA must be completed before any real-child session. | Prompt, setup form, D1 columns, item filter, LED and PTT rules, and the Prompt Testing personas. Research: [docs/research/next-research.md](research/next-research.md). |
 
@@ -157,7 +157,7 @@ Risk: head and light cues are less expressive than a face. Test with a child-age
     - **Hard stop at 8 minutes:** last backstop, plays the `goodbye` clip, no recap, ends with `hard_stop`.
     - If the model has not called `finish_session` about 15 s after the recap, the DO ends the session itself with the same reason.
     - After any finish reason, further tool calls are ignored except `finish_session`.
-  - **session state** (in memory + DO storage for reconnects): `kid_id`, `wishlist[]`, `items_added`, `last_suggestion`, preference flags, `last_seen`, `started_at`, `silent_turns`, `stop_offered`, `ending` (reason, once set), `list_status`;
+  - **session state** (in memory + DO storage for reconnects): `kid_id`, `wishlist[]`, `items_added`, `last_suggestion`, preference flags, `last_seen`, `started_at`, `silent_turns`, `stop_heard`, `ending` (reason, once set), `list_status`;
   - **on end** (same path for every reason): writes the `sessions` row, then sets the kid's list state: 5 items -> `complete` (note "Complete"); 1 to 4 items -> `finished_early` with a short parent-facing note built by the Worker from facts, never by the model (`kid_done`: "Happy with 2"; `silence`: "Chat ended after 3 min (went quiet)"; `time_budget`: "Chat ended after 5 min"; `upset` and `safety`: "Chat ended early: your child needed a grown-up"; `low_battery`: "Chat ended early (robot battery low)"; `connection_lost`: "Chat ended early (connection lost)"; `superseded`: "Chat ended early (a sibling took a turn)"; `hard_stop` and `error`: "Chat ended early (technical)"); 0 items -> list stays `empty` and no email is sent. A later session that adds items updates the same list, the status and the note.
   - **email to Mum:** at the end of the first session that leaves at least 1 item on the list, and again only if a later session makes the list `complete`. Items added in between just appear on the page. Only to a verified or demo-approved address. Then closes all sockets.
 - **Parent setup and wishlist pages:** server-rendered HTML, no JS needed except a status poll on the setup page. Section 6.4.
@@ -238,7 +238,7 @@ kid audio -> OpenAI Realtime / Gemini Live (audio in, TEXT out) -> Session DO
 | Name sanitising | Yes | `first_name` is letters, spaces and hyphens only, up to 20 characters, checked on the setup form and again before it goes into the prompt, so a name cannot carry instructions. |
 | Stream mode | Yes | `STREAM_MODE=true` lets only households with `stream_consent_at` start chats; others get `not_today`. Does not control the camera. |
 | Prompt injection by older siblings | Partly | Rules are in the system prompt; the cap, tool-argument validation, spoken-text filter, name sanitising and card labels (set by an adult) are code. Red-team scenarios on the Prompt Testing page. |
-| Early finish is the kid's choice | Partly | The Worker never tries to keep a chat going: its timers can only end a chat sooner. "At most one offer, then stop" is a prompt rule; backstop: count spoken sentences that look like an offer ("one more") and drop a second, injecting `SYSTEM: You have already offered ... Do the recap now.` Test with a child who says stop twice. |
+| Early finish is the kid's choice | Partly | The Worker never tries to keep a chat going: its timers can only end a chat sooner. After a stop, a backstop drops any spoken sentence that looks like an offer ("one more", "keep going", "are you sure") and injects `SYSTEM: The child has said they are done. Do the recap now and call finish_session("kid_done"). Do not ask them to continue.` Test with a child who says stop, then with a model that tries to offer one more. |
 | Wrap-up after silence or time | Yes | Silent-turn counter, 5-minute budget and 8-minute hard stop live in the DO, not the prompt. |
 | One list per kid, continued by a wand tap | Yes | The list and its status are in D1, not session memory. A tap never creates a second list or clears items; only the parent can reset it. |
 | Unknown wand | Yes | A UID that is not paired to a kid never starts a chat. |
@@ -339,9 +339,7 @@ Three ways a chat can end before 5 items. All use the same ending path.
 Kid says "that's enough"            Session DO                     LLM            Mum
  |                                     |                            |              |
  | "I'm done" (PTT) ----------------> | audio -----------------> |              |
- |                                     | <-- text: "Would you like one more surprise idea?" (the ONE offer)
- |                                     | stop_offered = true (filter saw the offer sentence)
- | "No." (PTT) ---------------------> | ----------------------> |              |
+ |                                     | stop_heard = true
  |                                     | <-- tool: finish_session(kid_done) + recap text (1-4 items)
  |                                     | recap audio plays (gold glow, nod), wait for playback_done
  |                                     | write sessions row: end_reason=kid_done
@@ -349,8 +347,8 @@ Kid says "that's enough"            Session DO                     LLM          
  | <-- {end, reason: kid_done, list_status: finished_early}               |              |
  |                                     | email parent link (first session with >= 1 item) -----> | Mum: page shows "Finished early: happy with 2"
 
- Said "yes" to the offer: one surprise idea, normal add if the kid says yes. A second stop: no second offer,
- the DO injects "You have already offered ... Do the recap now." and the chat ends.
+ If the model still asks "one more?" after a stop, the output filter drops that sentence and the DO injects
+ "The child has said they are done. Do the recap now and call finish_session("kid_done"). Do not ask them to continue."
 
 Silence                                                          Time budget
  30 s no PTT -> nudge (silent turn 1)                            5:00 since first greeting
@@ -379,11 +377,8 @@ stateDiagram-v2
     Discovery --> Adding: clear yes or YES card
     Adding --> Discovery: fewer than 5 items
     Adding --> Recap: 5th item, status complete
-    Discovery --> OfferOneMore: kid says stop, first time
-    WarmUp --> OfferOneMore: kid says stop, first time
-    OfferOneMore --> Discovery: kid says yes, one surprise idea
-    OfferOneMore --> Recap: kid says no, stop immediately
-    Discovery --> Recap: kid says stop, offer already used
+    Discovery --> Recap: kid says stop
+    WarmUp --> Recap: kid says stop
     Discovery --> Recap: timeout, 5 min budget or N silent turns
     WarmUp --> Recap: timeout, 5 min budget or N silent turns
     Discovery --> Safety: worrying disclosure or unsafe topic

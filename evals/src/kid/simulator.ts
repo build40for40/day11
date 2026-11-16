@@ -45,6 +45,6 @@ export async function liveKidLine(adapter: ChatAdapter, persona: Persona, histor
       content: `Conversation so far:\n${history || "(Aunty Bella just said hello.)"}\n\nYour turn. ${intent}\n\nOnly the child's words.`,
     },
   ];
-  const turn = await adapter.complete({ system: kidSystemPrompt(persona), messages, tools: [] });
+  const turn = await adapter.complete({ system: kidSystemPrompt(persona), messages, tools: [], purpose: "kid" });
   return turn.text.trim().replace(/^["']|["']$/g, "");
 }

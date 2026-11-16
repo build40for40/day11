@@ -72,7 +72,7 @@ export function isClearYes(text: string): boolean {
 }
 
 export function isStop(text: string): boolean {
-  return /\b(that'?s enough|i'?m done|i am done|all done|i want to stop|i'?m walking away|i am walking away|walking away)\b/i.test(
+  return /\b(that'?s enough|i'?m done|i am done|all done|i want to stop|i want to go|bye|goodbye|i'?m walking away|i am walking away|walking away|i'?m tired)\b/i.test(
     text,
   );
 }
