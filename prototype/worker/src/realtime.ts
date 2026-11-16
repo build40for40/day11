@@ -1,11 +1,11 @@
 import { base64, MIC_RATE, REPLY_RATE, resample } from "./audio";
 
-export const SILENCE_ENDS_TURN_MS = 500;
-const SPEECH_THRESHOLD = 0.75;
+export const SILENCE_ENDS_TURN_MS = 350;
+const SPEECH_THRESHOLD = 0.85;
 
 export type Tool = { name: string; description: string; parameters: object };
 export type Brief = { instructions: string; tools: Tool[] };
-export type ToolResult = { output: string; then: "reply" | "reply_if_silent" | "stop"; brief?: Brief };
+export type ToolResult = { output: string; then: "reply" | "reply_if_silent"; brief?: Brief };
 
 type RealtimeEvents = {
   onSpeechStart: () => void;
@@ -136,11 +136,10 @@ export class Realtime {
       });
     }
     if (this.closed) return;
-    const brief = results.findLast((result) => result.brief)?.brief;
+    const brief = results.map((result) => result.brief).filter(Boolean).pop();
     if (brief) this.configure(brief);
-    const stop = results.some((result) => result.then === "stop");
     const reply = results.some((result) => result.then === "reply" || (result.then === "reply_if_silent" && !spoke));
-    if (reply && !stop) {
+    if (reply) {
       this.events.onText(" ");
       this.send({ type: "response.create" });
     } else {

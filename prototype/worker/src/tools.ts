@@ -1,13 +1,6 @@
 import type { Tool } from "./realtime";
 
-const FINISH: Tool = {
-  name: "finish_session",
-  description: "End the chat. Call this after your goodbye, when the speaker says bye, says they are done or wants to stop.",
-  parameters: { type: "object", properties: { reason: { type: "string" } } },
-};
-
 export const CHAT_TOOLS: Tool[] = [
-  FINISH,
   {
     name: "remember",
     description:
@@ -42,7 +35,6 @@ export const CHAT_TOOLS: Tool[] = [
 ];
 
 export const SETUP_TOOLS: Tool[] = [
-  FINISH,
   {
     name: "save_wand",
     description: "Save the child's name and profile to this wand. Call it only after the grown-up has confirmed your read back.",
