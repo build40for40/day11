@@ -43,6 +43,9 @@ describe("item filter", () => {
   it("rejects the never-suggest list", () => {
     assert.match(filterItemAndReason("water beads") ?? "", /never-suggest/i);
     assert.match(filterItemAndReason("a buckyball magnet set") ?? "", /never-suggest/i);
+    assert.match(filterItemAndReason("magnet balls") ?? "", /never-suggest/i);
+    assert.match(filterItemAndReason("small loose magnets") ?? "", /never-suggest/i);
+    assert.equal(filterItemAndReason("sealed magnetic tiles", undefined, 3), undefined);
     assert.match(filterItemAndReason("a toy with a button battery") ?? "", /never-suggest/i);
     assert.match(filterItemAndReason("tiny figures", undefined, 3) ?? "", /never-suggest/i);
     assert.equal(filterItemAndReason("tiny figures", undefined, 5), undefined);

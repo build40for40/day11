@@ -30,7 +30,7 @@ const REASON_MAX = 160;
 
 const NEVER_SUGGEST: { id: string; pattern: RegExp }[] = [
   { id: "water-beads", pattern: /\bwater beads?\b|\bswellable beads?\b/i },
-  { id: "high-power-magnets", pattern: /\b(buckyballs?|neo magnets?|rare[- ]earth magnets?|loose magnets?|high[- ]powered magnets?|magnet sets?|magnetic putty)\b/i },
+  { id: "high-power-magnets", pattern: /\b(buckyballs?|neo magnets?|rare[- ]earth magnets?|small loose magnets?|loose magnets?|high[- ]powered magnets?|magnet sets?|magnet balls?|magnetic putty)\b/i },
   { id: "button-batteries", pattern: /\b((?:button|coin) (?:battery|batteries|cells?))\b/i },
   { id: "small-parts-warning", pattern: /\b(not suitable for children under (36 months|3 years|three years)|small parts)\b/i },
   { id: "long-cords", pattern: /\b(cot hangings?|cot mobiles?|pull[- ]cords?|long (cords?|ties?|loops?))\b/i },
