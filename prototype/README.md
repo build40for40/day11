@@ -2,7 +2,7 @@
 
 A throwaway end-to-end test of the proposed shape in [../docs/architecture.md](../docs/architecture.md): the StackChan stays thin and a server does the thinking. It isn't the app. Results are in [../docs/stackchan.md](../docs/stackchan.md).
 
-- `firmware/`: Arduino sketch for the K151. A wand tap starts a conversation. It then streams 16kHz PCM16 from the mic over a WebSocket, plays the 24kHz PCM16 reply as it arrives and reopens the mic afterwards. Lifting the wand and tapping it again ends the conversation. The head strip is ignored, because a wand tap sets it off, except that holding it for two seconds while idle restarts the robot.
+- `firmware/`: Arduino sketch for the K151. A wand tap starts a conversation. It then streams 16kHz PCM16 from the mic over a WebSocket, plays the 24kHz PCM16 reply as it arrives and reopens the mic afterwards. Lifting the wand and tapping it again ends the conversation. The head strip is ignored: a wand tap sets it off, and it fires by itself.
 - `server.ts`: a local Node WebSocket server for trying things on a laptop. It maps the UID to a kid and streams the reply back as it is generated.
 - `worker/`: the same `hybrid` mode as a Cloudflare Worker with one Durable Object per device, deployed at `build40for40.com/glissen/api`. The device connects to `/glissen/api/ws` with a device token.
 
@@ -43,7 +43,7 @@ Fill in `prototype/worker/.dev.vars` from `.dev.vars.example`, then:
 npm run worker:dev
 ```
 
-That serves the Worker on port 8790 on every network interface. At boot the robot looks for a server at `LOCAL_HOST` and uses it when one answers, otherwise it goes to the deployed Worker. The screen says which: "Ready (local)" or "Ready (cloud)". If the connection drops for 8 seconds the robot restarts and looks again, so stopping the local server sends it back to the cloud. To move it from the cloud to a local server you just started, hold the head strip for two seconds or reset it.
+That serves the Worker on port 8790 on every network interface. At boot the robot looks for a server at `LOCAL_HOST` and uses it when one answers, otherwise it goes to the deployed Worker. The screen says which: "Ready (local)" or "Ready (cloud)". If the robot sees the connection drop it restarts after 8 seconds and looks again. It doesn't always notice a server that has gone away, so reset the robot after restarting the local server.
 
 The secrets `OPENAI_API_KEY`, `ELEVENLABS_API_KEY`, `DEVICE_TOKEN` and the optional `WANDS` are set once with `npm run wrangler -- secret put <NAME> --config prototype/worker/wrangler.jsonc`. Every deploy disconnects a chat in progress.
 
