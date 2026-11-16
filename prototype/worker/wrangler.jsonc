@@ -5,9 +5,15 @@
   "main": "./src/index.ts",
   "rules": [{ "type": "Text", "globs": ["**/*.md"], "fallthrough": false }],
   "durable_objects": {
-    "bindings": [{ "name": "SESSIONS", "class_name": "DeviceSession" }]
+    "bindings": [
+      { "name": "SESSIONS", "class_name": "DeviceSession" },
+      { "name": "WAND", "class_name": "Wand" }
+    ]
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DeviceSession"] }],
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["DeviceSession"] },
+    { "tag": "v2", "new_sqlite_classes": ["Wand"] }
+  ],
   "vars": {
     "OPENAI_REALTIME_MODEL": "gpt-realtime"
   },

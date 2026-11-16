@@ -1,6 +1,7 @@
 import type { Env } from "./session";
 
 export { DeviceSession } from "./session";
+export { Wand } from "./wand";
 
 const ROUTES = new Set(["/ws", "/glissen/api/ws"]);
 const DEVICE_ID = /^[A-Za-z0-9_-]{1,64}$/;

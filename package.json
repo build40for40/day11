@@ -5,7 +5,7 @@
   "scripts": {
     "eval": "tsx evals/src/cli.ts",
     "eval:mock": "tsx evals/src/cli.ts --mock",
-    "test": "node --experimental-sqlite --import tsx --test evals/src/*.test.ts evals/src/kid/*.test.ts evals/src/tools/*.test.ts evals/src/scoring/*.test.ts evals/src/adapters/*.test.ts worker/test/*.test.ts",
+    "test": "node --experimental-sqlite --import tsx --test evals/src/*.test.ts evals/src/kid/*.test.ts evals/src/tools/*.test.ts evals/src/scoring/*.test.ts evals/src/adapters/*.test.ts worker/test/*.test.ts prototype/worker/src/*.test.ts",
     "typecheck": "tsc --noEmit && tsc --noEmit -p prototype/worker && tsc --noEmit -p worker",
     "server": "node --env-file-if-exists=.env --import tsx prototype/server.ts",
     "wrangler": "env -u CLOUDFLARE_API_KEY -u CLOUDFLARE_EMAIL wrangler --profile 40for40",

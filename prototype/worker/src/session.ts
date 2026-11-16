@@ -1,14 +1,20 @@
 import { DurableObject } from "cloudflare:workers";
 import basePrompt from "../../../prompts/aunty-bella.system.md";
+import setupPrompt from "../../../prompts/wand-setup.system.md";
 import { Reply, SentenceSplitter, type Speak } from "./audio";
-import { Realtime } from "./realtime";
+import { type Gate, newGate, passesGate } from "./gate";
+import type { WandRecord } from "./memory";
+import { type Brief, Realtime, type ToolResult } from "./realtime";
+import { CHAT_TOOLS, SETUP_TOOLS } from "./tools";
+import type { Wand } from "./wand";
 
 export interface Env {
   SESSIONS: DurableObjectNamespace<DeviceSession>;
   OPENAI_API_KEY: string;
   ELEVENLABS_API_KEY?: string;
   DEVICE_TOKEN?: string;
-  WANDS?: string;
+  WAND: DurableObjectNamespace<Wand>;
+  LOG_TRANSCRIPTS?: string;
   OPENAI_REALTIME_MODEL?: string;
 }
 
@@ -18,10 +24,34 @@ type DeviceMessage = { t: string; uid?: string };
 const HARRIET = "aAsWcN5jdLdiYG7Hq0YL";
 const GIVE_UP_LISTENING_MS = 30000;
 const LONGEST_TURN_MS = 4000;
-const GOODBYE = "Bye bye! Tap your wand when you want to chat again.";
+const LONGEST_SETUP_TURN_MS = 12000;
+const SETUP_GREETING = "Hello! This wand is new, so I need a grown-up to set it up. What is the child's first name?";
+const SETUP_DONE = "All done. Tap the wand on my head to start a chat.";
 
-function systemPrompt(kid: string): string {
-  return `${basePrompt}\n\nPROTOTYPE: you have no tools in this chat. The child is called ${kid}. Reply in English with one or two short spoken sentences and nothing else. You cannot end the chat yourself. If the child says bye or wants to stop, say a short warm goodbye and tell them to tap their wand on your head to finish.`;
+function chatBrief(record: WandRecord): Brief {
+  const about = record.profile ? `What their grown-up told you about them: ${record.profile}` : "";
+  const memory = record.memory
+    ? `What you remember from earlier chats with ${record.name}:\n${record.memory}`
+    : `You have not chatted with ${record.name} before, so you remember nothing yet.`;
+  return {
+    instructions: `${basePrompt}
+
+PROTOTYPE: the only tools you have in this chat are remember, rewrite_memory and start_wand_setup. Ignore every other tool named above. The child is called ${record.name}. ${about} You have already said hello and asked what they would love for Christmas. Reply in English with one or two short spoken sentences and nothing else. You cannot end the chat yourself. If the child says bye or wants to stop, say a short warm goodbye and tell them to tap their wand on your head to finish.
+
+MEMORY: ${memory}
+Use it naturally, the way a kindly aunt remembers, and never say you have a memory or notes.
+Keeping the memory up to date is part of your job. Every time the child tells you something new about themselves or what they like, dislike or want (a favourite toy, a pet, the name of something they own, an idea they said yes or no to), call remember in that same turn with one short line, as well as answering them. If the memory above is long, repeats itself or is out of date, call rewrite_memory with a shorter, tidier version. Never store a surname, an address, a school or anything worrying.
+
+WAND SETUP: if the speaker asks to set up, reset or repair this wand or its RFID chip, or to change the child's name, call start_wand_setup and do what its result says. Do not ask the question yourself and never work out the answer yourself.`,
+    tools: CHAT_TOOLS,
+  };
+}
+
+function setupBrief(record: WandRecord | null): Brief {
+  const context = record
+    ? `This wand is already set up. The name on it is ${record.name}. About them: ${record.profile || "nothing yet"}. The grown-up asked to set it up again and has passed the grown-up check, so start at step 1 by asking whether to keep the name ${record.name} or change it.`
+    : `This wand is new. The robot has already said: "${SETUP_GREETING}" Carry on from the grown-up's answer.`;
+  return { instructions: `${setupPrompt}\n\n## This wand\n${context}`, tools: SETUP_TOOLS };
 }
 
 function voice(env: Env): Speak {
@@ -43,7 +73,12 @@ function voice(env: Env): Speak {
 }
 
 class Conversation {
-  private kid = "my friend";
+  private mode: "chat" | "setup" = "chat";
+  private wand: DurableObjectStub<Wand> | null = null;
+  private record: WandRecord | null = null;
+  private gate: Gate | null = null;
+  private gateLocked = false;
+  private heardSinceGate = false;
   private listening = false;
   private busy = false;
   private ending = false;
@@ -51,33 +86,40 @@ class Conversation {
   private live: Turn | null = null;
   private giveUp: number | null = null;
   private tooLong: number | null = null;
-  private readonly wands: Record<string, string>;
   private readonly speak: Speak;
-  private readonly realtime: Realtime;
+  private realtime: Realtime | null = null;
 
   constructor(
     private socket: WebSocket,
-    env: Env,
+    private env: Env,
   ) {
-    this.wands = JSON.parse(env.WANDS || "{}");
     this.speak = voice(env);
-    this.realtime = new Realtime(env.OPENAI_API_KEY, env.OPENAI_REALTIME_MODEL ?? "gpt-realtime", systemPrompt(this.kid), {
+    socket.addEventListener("message", (event) => this.receive(event.data));
+  }
+
+  private connect(brief: Brief): Realtime {
+    return new Realtime(this.env.OPENAI_API_KEY, this.env.OPENAI_REALTIME_MODEL ?? "gpt-realtime", brief, {
       onSpeechStart: () => this.speechStarted(),
       onSpeechStop: () => {
-        if (this.listening) this.speechStopped();
+        if (!this.listening) return;
+        this.heardSinceGate = true;
+        this.speechStopped();
       },
-      onHeard: () => {},
+      onHeard: (transcript) => this.transcript("heard", transcript),
       onText: (text) => {
         const turn = this.live ?? this.begin();
-        turn.spoke = true;
+        if (text.trim()) turn.spoke = true;
         turn.sentences.add(text);
       },
-      onFinish: () => {},
+      onTool: (name, args) => this.useTool(name, args),
       onDone: () => {
         if (this.live || this.ending || this.stoppedAt) void this.guarded("turn", () => this.finish());
       },
     });
-    socket.addEventListener("message", (event) => this.receive(event.data));
+  }
+
+  private transcript(who: string, text: string): void {
+    if (this.env.LOG_TRANSCRIPTS) console.log(`  ${who}: ${text.trim()}`);
   }
 
   private send(data: string | ArrayBuffer): void {
@@ -92,12 +134,15 @@ class Conversation {
     clearTimeout(this.giveUp);
     clearTimeout(this.tooLong);
     console.log("  speech started");
-    this.tooLong = setTimeout(() => {
-      if (!this.listening) return;
-      console.log("  no pause heard, answering anyway");
-      this.speechStopped();
-      this.realtime.respondNow();
-    }, LONGEST_TURN_MS);
+    this.tooLong = setTimeout(
+      () => {
+        if (!this.listening) return;
+        console.log("  no pause heard, answering anyway");
+        this.speechStopped();
+        this.realtime?.respondNow();
+      },
+      this.mode === "setup" ? LONGEST_SETUP_TURN_MS : LONGEST_TURN_MS,
+    );
   }
 
   private speechStopped(): void {
@@ -117,12 +162,13 @@ class Conversation {
     const turn = this.live ?? this.begin();
     this.live = null;
     turn.sentences.flush();
-    if (turn.sentences.full) console.log(`  bella: ${turn.sentences.full}`);
-    if (this.ending && !turn.spoke) turn.reply.say(GOODBYE);
+    if (turn.sentences.full.trim()) this.transcript("said", turn.sentences.full);
+    if (this.ending && !turn.spoke) turn.reply.say(SETUP_DONE);
     await turn.reply.end();
     if (this.ending) {
-      console.log("  conversation ended by the child");
-      this.tell({ t: "end", reason: "kid_done" });
+      console.log("  setup finished");
+      this.realtime?.close();
+      this.tell({ t: "end", reason: "setup_done" });
     }
     this.ending = false;
   }
@@ -143,46 +189,111 @@ class Conversation {
     }
   }
 
+  private async tapped(uid: string): Promise<void> {
+    this.realtime?.close();
+    this.wand = this.env.WAND.get(this.env.WAND.idFromName(uid));
+    this.record = await this.wand.load();
+    this.mode = this.record ? "chat" : "setup";
+    this.gate = null;
+    this.gateLocked = false;
+    this.ending = false;
+    this.live = null;
+    this.stoppedAt = 0;
+    this.realtime = this.connect(this.record ? chatBrief(this.record) : setupBrief(null));
+    this.tell({ t: "session", state: this.record ? "started" : "setup", kid_name: this.record?.name ?? "" });
+    const turn = this.begin();
+    turn.spoke = true;
+    turn.reply.say(
+      this.record ? `Hello ${this.record.name}! It's Aunty Bella. What would you love for Christmas?` : SETUP_GREETING,
+    );
+    await this.finish();
+  }
+
+  private async useTool(name: string, args: Record<string, unknown>): Promise<ToolResult> {
+    console.log(`  tool: ${name}`);
+    const text = (value: unknown) => (typeof value === "string" ? value : "");
+    if (!this.wand) return { output: "No wand has been tapped.", then: "reply" };
+
+    if (this.mode === "chat" && name === "remember") {
+      await this.wand.remember(text(args.note));
+      return { output: "Remembered.", then: "reply_if_silent" };
+    }
+    if (this.mode === "chat" && name === "rewrite_memory") {
+      await this.wand.rewriteMemory(text(args.memory));
+      return { output: "Memory rewritten.", then: "reply_if_silent" };
+    }
+    if (this.mode === "chat" && name === "start_wand_setup") return this.askForSetup(args.answer);
+
+    if (this.mode === "setup" && name === "save_wand") {
+      const saved = await this.wand.saveProfile(text(args.name), text(args.about), args.wipe_memory === true);
+      if (!saved) return { output: "Nothing was saved because the first name was missing. Ask for it again.", then: "reply" };
+      this.record = saved;
+      this.ending = true;
+      return {
+        output: "Saved. In one or two short sentences, say the wand is ready and the child can tap it on the robot's head to start chatting.",
+        then: "reply",
+      };
+    }
+    if (this.mode === "setup" && name === "erase_wand") {
+      await this.wand.erase();
+      this.record = null;
+      this.ending = true;
+      return { output: "Erased. In one short sentence, say everything about this wand has been deleted.", then: "reply" };
+    }
+    return { output: "That tool is not available right now.", then: "reply" };
+  }
+
+  private askForSetup(answer: unknown): ToolResult {
+    if (this.gateLocked) {
+      return { output: "Setup is locked for the rest of this chat. Say so kindly in one sentence and go back to gifts.", then: "reply" };
+    }
+    if (!this.gate || !this.heardSinceGate || typeof answer !== "number") {
+      this.gate ??= newGate();
+      this.heardSinceGate = false;
+      return {
+        output: `Say exactly this and nothing else: "That bit is for grown-ups. ${this.gate.question}" When the speaker answers, call start_wand_setup again with the number they said. Never give or hint at the answer.`,
+        then: "reply",
+      };
+    }
+    if (!passesGate(this.gate, answer)) {
+      this.gateLocked = true;
+      return { output: "That was the wrong answer, so setup stays locked for this chat. Say kindly that it needs a grown-up, then go back to gifts.", then: "reply" };
+    }
+    this.mode = "setup";
+    return { output: "Correct. Setup mode is on. Follow your new instructions from step 1.", then: "reply", brief: setupBrief(this.record) };
+  }
+
+  private stopListening(): void {
+    this.listening = false;
+    clearTimeout(this.giveUp);
+    clearTimeout(this.tooLong);
+  }
+
   private receive(data: string | ArrayBuffer): void {
     if (typeof data !== "string") {
-      if (this.listening) this.realtime.append(new Uint8Array(data)).catch(() => {});
+      if (this.listening) this.realtime?.append(new Uint8Array(data)).catch(() => {});
       return;
     }
     const message = JSON.parse(data) as DeviceMessage;
     console.log("device:", message.t);
 
     if (message.t === "nfc" && message.uid) {
-      const known = this.wands[message.uid] ?? (Object.keys(this.wands).length ? undefined : "my friend");
-      this.kid = known ?? "my friend";
-      this.realtime.configure(systemPrompt(this.kid));
-      this.tell({ t: "session", state: known ? "started" : "unregistered", kid_name: this.kid });
-      void this.guarded("greeting", async () => {
-        this.stoppedAt = 0;
-        const turn = this.begin();
-        turn.spoke = true;
-        turn.reply.say(
-          known
-            ? `Hello ${this.kid}! It's Aunty Bella. What would you love for Christmas?`
-            : "Hello! I don't know this wand yet. Ask a grown-up to set me up.",
-        );
-        await this.finish();
-        if (!known) this.tell({ t: "end", reason: "unregistered" });
-      });
+      const uid = message.uid;
+      void this.guarded("greeting", () => this.tapped(uid));
     } else if (message.t === "listening") {
       this.listening = true;
       this.stoppedAt = 0;
-      this.realtime.clear();
+      this.realtime?.clear();
       clearTimeout(this.giveUp);
       this.giveUp = setTimeout(() => {
         console.log("  nobody spoke, ending");
-        this.listening = false;
+        this.stopListening();
+        this.realtime?.close();
         this.tell({ t: "end", reason: "silence" });
       }, GIVE_UP_LISTENING_MS);
     } else if (message.t === "stop") {
-      this.listening = false;
-      clearTimeout(this.giveUp);
-      clearTimeout(this.tooLong);
-      this.realtime.clear();
+      this.stopListening();
+      this.realtime?.close();
     }
   }
 
@@ -192,9 +303,8 @@ class Conversation {
   }
 
   dispose(): void {
-    clearTimeout(this.giveUp);
-    clearTimeout(this.tooLong);
-    this.realtime.close();
+    this.stopListening();
+    this.realtime?.close();
   }
 }
 
