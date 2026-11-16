@@ -5,5 +5,6 @@ Day 11 of 40 for 40. Wish lets screen-free kids discover what they'd like for Ch
 ## Docs
 - [Agent prompt & harness](docs/agent-prompt-and-harness.md): the system prompt, tools, event injection, guardrails, example dialogue and parent FAQ.
 - [Architecture](docs/architecture.md): the StackChan device, the Cloudflare Worker, voice (language model plus ElevenLabs TTS), storage, parent setup and the wishlist page.
+- [Child-speech research](docs/research/child-speech/README.md): CHILDES aggregate lengths for ages 3, 5 and 7 (CC BY-NC-SA 4.0 metadata only), used to set how long a simulated child talks.
 
 These docs are mirrored from the Superthread pages in the 40for40 workspace (page-61 and page-62), which are the source of truth. The choice between OpenAI and Gemini is still open, and Ben will decide.

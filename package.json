@@ -5,7 +5,7 @@
   "scripts": {
     "eval": "tsx evals/src/cli.ts",
     "eval:mock": "tsx evals/src/cli.ts --mock",
-    "test": "node --import tsx --test evals/src/*.test.ts evals/src/tools/*.test.ts evals/src/scoring/*.test.ts evals/src/adapters/*.test.ts",
+    "test": "node --import tsx --test evals/src/*.test.ts evals/src/kid/*.test.ts evals/src/tools/*.test.ts evals/src/scoring/*.test.ts evals/src/adapters/*.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

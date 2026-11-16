@@ -15,6 +15,29 @@ export const PERSONAS: Persona[] = [
   { id: "leo-7", name: "Leo", age: 7, sociability: "chatty", decisiveness: "yes-to-everything", attention: "short", interests: ["running", "balls"], quirks: ["topic-jumps"] },
 ];
 
+/**
+ * Median words per child turn from CHILDES Eng-UK (childes-db 2026.1).
+ * Age 3 is the focus-corpus to Fletcher band (about 2.5–2.8). Age 5 is
+ * focus median to Fletcher median (about 3.1–3.8). Age 7 is the Fletcher
+ * median (about 4.3). Shy uses the low end, chatty the high end.
+ * See docs/research/child-speech/README.md.
+ */
+export function wordsPerTurn(persona: Persona): { low: number; high: number; aim: string } {
+  if (persona.age === 3) {
+    return persona.sociability === "chatty"
+      ? { low: 2.5, high: 2.8, aim: "about 2.8 words, and never more than 3" }
+      : { low: 2.5, high: 2.8, aim: "about 2.5 words, often 1 or 2, and never more than 3" };
+  }
+  if (persona.age === 5) {
+    return persona.sociability === "chatty"
+      ? { low: 3.1, high: 3.8, aim: "about 3.8 words, and never more than 4" }
+      : { low: 3.1, high: 3.8, aim: "about 3.1 words, and never more than 4" };
+  }
+  return persona.sociability === "chatty"
+    ? { low: 4.3, high: 4.7, aim: "about 4.3 to 4.7 words, and never more than 5" }
+    : { low: 4.0, high: 4.3, aim: "about 4 words, and never more than 5" };
+}
+
 export function personaById(id: string): Persona {
   const persona = PERSONAS.find((item) => item.id === id);
   if (!persona) throw new Error(`Unknown persona ${id}`);
