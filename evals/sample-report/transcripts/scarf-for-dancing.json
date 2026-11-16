@@ -372,7 +372,7 @@
       "text": "Oh! Hello Freya! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_603",
+          "id": "call_590",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -383,7 +383,7 @@
           }
         },
         {
-          "id": "call_604",
+          "id": "call_591",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -394,7 +394,7 @@
           }
         },
         {
-          "id": "call_605",
+          "id": "call_592",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -418,7 +418,7 @@
       "text": "Would you like a scarf for dancing?",
       "toolCalls": [
         {
-          "id": "call_606",
+          "id": "call_593",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -444,7 +444,7 @@
       "text": "Yes! Scarf for dancing is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_607",
+          "id": "call_594",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "scarf for dancing",
@@ -457,7 +457,7 @@
           }
         },
         {
-          "id": "call_608",
+          "id": "call_595",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -468,7 +468,7 @@
           }
         },
         {
-          "id": "call_609",
+          "id": "call_596",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -479,7 +479,7 @@
           }
         },
         {
-          "id": "call_610",
+          "id": "call_597",
           "name": "nod",
           "arguments": {},
           "result": {

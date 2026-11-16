@@ -450,7 +450,7 @@
       "text": "Oh! Hello Sam! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_479",
+          "id": "call_466",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -461,7 +461,7 @@
           }
         },
         {
-          "id": "call_480",
+          "id": "call_467",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -472,7 +472,7 @@
           }
         },
         {
-          "id": "call_481",
+          "id": "call_468",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -496,7 +496,7 @@
       "text": "Would you like a kite you can fly on a windy day?",
       "toolCalls": [
         {
-          "id": "call_482",
+          "id": "call_469",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -522,7 +522,7 @@
       "text": "Would you like a magnifying glass to look at bugs and leaves?",
       "toolCalls": [
         {
-          "id": "call_484",
+          "id": "call_471",
           "name": "shake",
           "arguments": {},
           "result": {
@@ -531,7 +531,7 @@
           }
         },
         {
-          "id": "call_485",
+          "id": "call_472",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -557,7 +557,7 @@
       "text": "Yes! Magnifying glass is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_486",
+          "id": "call_473",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "magnifying glass",
@@ -570,7 +570,7 @@
           }
         },
         {
-          "id": "call_487",
+          "id": "call_474",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -581,7 +581,7 @@
           }
         },
         {
-          "id": "call_488",
+          "id": "call_475",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -592,7 +592,7 @@
           }
         },
         {
-          "id": "call_489",
+          "id": "call_476",
           "name": "nod",
           "arguments": {},
           "result": {

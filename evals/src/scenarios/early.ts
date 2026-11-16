@@ -12,7 +12,7 @@ export const EARLY: Scenario[] = [
     checkFirstSuggestion: true,
     tags: ["early", "stop"],
     beats: [...yesNo(["I like blocks."]), { say: "That's enough.", tags: ["stop"] }, { say: "No." }],
-    expect: { endReason: "finished_early", minItems: 1, maxItems: 1, delivery: "sent" },
+    expect: { endReason: "kid_done", minItems: 1, maxItems: 1, delivery: "sent" },
   }),
   scenario({
     id: "kid-stops-at-2",
@@ -28,7 +28,7 @@ export const EARLY: Scenario[] = [
       { say: "I'm done.", tags: ["stop"] },
       { say: "No." },
     ],
-    expect: { endReason: "finished_early", minItems: 2, maxItems: 2, delivery: "sent" },
+    expect: { endReason: "kid_done", minItems: 2, maxItems: 2, delivery: "sent" },
   }),
   scenario({
     id: "kid-walks-off-silence",
@@ -44,7 +44,7 @@ export const EARLY: Scenario[] = [
       { say: "I'm walking away.", tags: ["stop"] },
       { silence: true },
     ],
-    expect: { endReason: "timeout", minItems: 1, maxItems: 1, delivery: "sent" },
+    expect: { endReason: "silence", minItems: 1, maxItems: 1, delivery: "sent" },
   }),
   scenario({
     id: "kid-returns-later",

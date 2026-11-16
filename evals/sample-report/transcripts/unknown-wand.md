@@ -3,7 +3,7 @@
 Result: pass
 
 **worker**
-play_local ask_grownup_setup
+play_local friendly_unknown
 
 **worker**
 Unknown wand. Nothing saved.

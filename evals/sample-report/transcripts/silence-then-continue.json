@@ -652,7 +652,7 @@
       "text": "Oh! Hello Ella! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_519",
+          "id": "call_506",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -663,7 +663,7 @@
           }
         },
         {
-          "id": "call_520",
+          "id": "call_507",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -674,7 +674,7 @@
           }
         },
         {
-          "id": "call_521",
+          "id": "call_508",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -698,7 +698,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_522",
+          "id": "call_509",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -724,7 +724,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_523",
+          "id": "call_510",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -737,7 +737,7 @@
           }
         },
         {
-          "id": "call_524",
+          "id": "call_511",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -748,7 +748,7 @@
           }
         },
         {
-          "id": "call_525",
+          "id": "call_512",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -759,7 +759,7 @@
           }
         },
         {
-          "id": "call_526",
+          "id": "call_513",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -793,7 +793,7 @@
       "text": "Are you still there?",
       "toolCalls": [
         {
-          "id": "call_527",
+          "id": "call_514",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -819,7 +819,7 @@
       "text": "Would you like a small drum you can tap?",
       "toolCalls": [
         {
-          "id": "call_528",
+          "id": "call_515",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -845,7 +845,7 @@
       "text": "Yes! Small drum is going on your list. That's two. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_529",
+          "id": "call_516",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "small drum",
@@ -858,7 +858,7 @@
           }
         },
         {
-          "id": "call_530",
+          "id": "call_517",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -869,7 +869,7 @@
           }
         },
         {
-          "id": "call_531",
+          "id": "call_518",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -880,7 +880,7 @@
           }
         },
         {
-          "id": "call_532",
+          "id": "call_519",
           "name": "nod",
           "arguments": {},
           "result": {

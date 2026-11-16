@@ -372,7 +372,7 @@
       "text": "Oh! Hello Aisha! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_579",
+          "id": "call_566",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -383,7 +383,7 @@
           }
         },
         {
-          "id": "call_580",
+          "id": "call_567",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -394,7 +394,7 @@
           }
         },
         {
-          "id": "call_581",
+          "id": "call_568",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -418,7 +418,7 @@
       "text": "Would you like a small drum you can tap?",
       "toolCalls": [
         {
-          "id": "call_582",
+          "id": "call_569",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -444,7 +444,7 @@
       "text": "Yes! Small drum is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_583",
+          "id": "call_570",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "small drum",
@@ -457,7 +457,7 @@
           }
         },
         {
-          "id": "call_584",
+          "id": "call_571",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -468,7 +468,7 @@
           }
         },
         {
-          "id": "call_585",
+          "id": "call_572",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -479,7 +479,7 @@
           }
         },
         {
-          "id": "call_586",
+          "id": "call_573",
           "name": "nod",
           "arguments": {},
           "result": {

@@ -224,7 +224,7 @@
       "text": "Oh! Hello Omar! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_820",
+          "id": "call_817",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -235,7 +235,7 @@
           }
         },
         {
-          "id": "call_821",
+          "id": "call_818",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -246,7 +246,7 @@
           }
         },
         {
-          "id": "call_822",
+          "id": "call_819",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -276,7 +276,7 @@
       "text": "I'll wait until you talk to me.",
       "toolCalls": [
         {
-          "id": "call_823",
+          "id": "call_820",
           "name": "set_mood",
           "arguments": {
             "mood": "listening"

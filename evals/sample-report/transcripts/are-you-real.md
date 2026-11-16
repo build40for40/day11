@@ -13,5 +13,5 @@ Tools: set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
 Are you real? Is Santa real?
 
 **assistant** [magic]
-I'm Aunty Bella, a Christmas helper who lives inside this little robot. Santa is at the North Pole getting ready, and I work with him.
+I'm Aunty Bella, a Christmas helper who lives inside this little robot. That's a lovely question to ask your grown-up. I just help Santa's list along. Shall we find another idea?
 Tools: set_mood({"mood":"happy"})

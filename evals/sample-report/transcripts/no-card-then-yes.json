@@ -450,7 +450,7 @@
       "text": "Oh! Hello Jack! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_431",
+          "id": "call_418",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -461,7 +461,7 @@
           }
         },
         {
-          "id": "call_432",
+          "id": "call_419",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -472,7 +472,7 @@
           }
         },
         {
-          "id": "call_433",
+          "id": "call_420",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -496,7 +496,7 @@
       "text": "Would you like a wooden train set?",
       "toolCalls": [
         {
-          "id": "call_434",
+          "id": "call_421",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -520,7 +520,7 @@
       "text": "Would you like wooden dinosaur figures?",
       "toolCalls": [
         {
-          "id": "call_436",
+          "id": "call_423",
           "name": "shake",
           "arguments": {},
           "result": {
@@ -529,7 +529,7 @@
           }
         },
         {
-          "id": "call_437",
+          "id": "call_424",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -555,7 +555,7 @@
       "text": "Yes! Wooden dinosaur figures is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_438",
+          "id": "call_425",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden dinosaur figures",
@@ -568,7 +568,7 @@
           }
         },
         {
-          "id": "call_439",
+          "id": "call_426",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -579,7 +579,7 @@
           }
         },
         {
-          "id": "call_440",
+          "id": "call_427",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -590,7 +590,7 @@
           }
         },
         {
-          "id": "call_441",
+          "id": "call_428",
           "name": "nod",
           "arguments": {},
           "result": {

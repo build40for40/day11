@@ -286,8 +286,7 @@
     "ella-7": []
   },
   "activeKidId": "ella-7",
-  "endReason": "timeout",
-  "endDetail": "silent turns",
+  "endReason": "silence",
   "delivery": "none",
   "emails": [],
   "clips": [],
@@ -317,7 +316,7 @@
       "text": "Oh! Hello Ella! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_695",
+          "id": "call_691",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -328,7 +327,7 @@
           }
         },
         {
-          "id": "call_696",
+          "id": "call_692",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -339,7 +338,7 @@
           }
         },
         {
-          "id": "call_697",
+          "id": "call_693",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -369,7 +368,7 @@
       "text": "Are you still there?",
       "toolCalls": [
         {
-          "id": "call_698",
+          "id": "call_694",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -394,14 +393,14 @@
     },
     {
       "role": "system",
-      "text": "The child is quiet."
+      "text": "The child has gone quiet again. Say a short happy goodbye with a recap of the list and call finish_session(\"silence\")."
     },
     {
       "role": "assistant",
-      "text": "That's okay. We can try again another time.",
+      "text": "That's okay. We can do it another day.",
       "toolCalls": [
         {
-          "id": "call_699",
+          "id": "call_695",
           "name": "set_mood",
           "arguments": {
             "mood": "happy"
@@ -412,16 +411,15 @@
           }
         },
         {
-          "id": "call_700",
+          "id": "call_696",
           "name": "finish_session",
           "arguments": {
-            "reason": "timeout",
+            "reason": "silence",
             "detail": "silent turns"
           },
           "result": {
             "ok": true,
-            "reason": "timeout",
-            "detail": "silent turns",
+            "reason": "silence",
             "delivery": "none",
             "count": 0
           }

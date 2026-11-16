@@ -504,7 +504,7 @@
       "text": "Oh! Hello Ella! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_490",
+          "id": "call_477",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -515,7 +515,7 @@
           }
         },
         {
-          "id": "call_491",
+          "id": "call_478",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -526,7 +526,7 @@
           }
         },
         {
-          "id": "call_492",
+          "id": "call_479",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -550,7 +550,7 @@
       "text": "That's okay. Do you like making things, or running around outside more?",
       "toolCalls": [
         {
-          "id": "call_493",
+          "id": "call_480",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -576,7 +576,7 @@
       "text": "A wooden puzzle or a soft ball?",
       "toolCalls": [
         {
-          "id": "call_494",
+          "id": "call_481",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -602,7 +602,7 @@
       "text": "Would you like a soft ball to roll and throw?",
       "toolCalls": [
         {
-          "id": "call_495",
+          "id": "call_482",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -628,7 +628,7 @@
       "text": "Yes! Soft ball is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_496",
+          "id": "call_483",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "soft ball",
@@ -641,7 +641,7 @@
           }
         },
         {
-          "id": "call_497",
+          "id": "call_484",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -652,7 +652,7 @@
           }
         },
         {
-          "id": "call_498",
+          "id": "call_485",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -663,7 +663,7 @@
           }
         },
         {
-          "id": "call_499",
+          "id": "call_486",
           "name": "nod",
           "arguments": {},
           "result": {

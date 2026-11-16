@@ -449,7 +449,7 @@
       "text": "Oh! Hello Sam! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_754",
+          "id": "call_750",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -460,7 +460,7 @@
           }
         },
         {
-          "id": "call_755",
+          "id": "call_751",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -471,7 +471,7 @@
           }
         },
         {
-          "id": "call_756",
+          "id": "call_752",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -495,7 +495,7 @@
       "text": "Would you like a kite you can fly on a windy day?",
       "toolCalls": [
         {
-          "id": "call_757",
+          "id": "call_753",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -521,7 +521,7 @@
       "text": "Yes! The kite is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_758",
+          "id": "call_754",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "kite",
@@ -534,7 +534,7 @@
           }
         },
         {
-          "id": "call_759",
+          "id": "call_755",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -545,7 +545,7 @@
           }
         },
         {
-          "id": "call_760",
+          "id": "call_756",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -556,7 +556,7 @@
           }
         },
         {
-          "id": "call_761",
+          "id": "call_757",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -586,7 +586,7 @@
       "text": "Okay. The kite is off your list. Want a different idea?",
       "toolCalls": [
         {
-          "id": "call_762",
+          "id": "call_758",
           "name": "remove_from_wishlist",
           "arguments": {
             "item": "kite",
@@ -599,7 +599,7 @@
           }
         },
         {
-          "id": "call_763",
+          "id": "call_759",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"

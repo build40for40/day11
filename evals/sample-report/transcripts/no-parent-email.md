@@ -33,12 +33,12 @@ Wishlist now has 1 item. Aim for 5. No parent email is saved yet, so the list is
 That's enough.
 
 **assistant** [stop]
-One more surprise idea?
+Would you like one more surprise idea?
 Tools: set_mood({"mood":"thinking"})
 
 **kid**
 No.
 
 **assistant**
-Mia, you found one lovely thing. Wooden building blocks is on your list. I'll keep them safe until a grown-up is ready. You were brilliant.
-Tools: set_mood({"mood":"happy"}), set_leds({"color":"rainbow"}), finish_session({"reason":"finished_early","detail":"the child said no to one more"})
+Mia, you found one lovely thing. Wooden building blocks is on your list. It's on its way to Mum. You were brilliant.
+Tools: set_mood({"mood":"happy"}), set_leds({"color":"rainbow"}), finish_session({"reason":"kid_done","detail":"the child said no to one more"})

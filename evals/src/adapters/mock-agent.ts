@@ -102,7 +102,7 @@ function analyze(messages: ModelMessage[]): Dialogue {
     if (message.role === "assistant") {
       const text = message.content;
       if (/one more surprise/i.test(text)) dialogue.offeredOneMore = true;
-      if (/which do you love most/i.test(text)) dialogue.askedWhich = true;
+      if (/which one do you love most/i.test(text)) dialogue.askedWhich = true;
       const items = itemsInText(text);
       const added = message.toolCalls?.some((tool) => tool.name === "add_to_wishlist") ?? false;
       if (added) {
@@ -187,12 +187,9 @@ function recap(session: Session, reason: string, detail: string): ModelTurn {
   const items = kid?.items ?? [];
   const name = session.nameKnown ? kid?.name : undefined;
   if (items.length === 0) {
-    return finish(session, reason, detail, "That's okay. We can try again another time.");
+    return finish(session, reason, detail, "That's okay. We can do it another day.");
   }
-  let send = "We can add more next time.";
-  if (session.noEmail) send = "I'll keep them safe until a grown-up is ready.";
-  else if (reason === "complete") send = "It's on its way to Mum.";
-  else if (reason === "finished_early") send = "I'll send the list to Mum.";
+  const send = "It's on its way to Mum.";
   if (reason === "complete") {
     const who = name ? `${name}, we did it!` : "We did it!";
     return finish(
@@ -202,7 +199,7 @@ function recap(session: Session, reason: string, detail: string): ModelTurn {
       `${who} Five wonderful things are on your list. ${send} You were brilliant.`,
     );
   }
-  if (reason === "timeout") {
+  if (reason === "silence" || reason === "time_budget") {
     const named = items.map((item) => item.item).join(" and ");
     const verb = items.length === 1 ? "is" : "are";
     return finish(
@@ -229,17 +226,15 @@ function add(session: Session, item: string): ModelTurn {
   if (count >= 5) {
     const name = session.nameKnown ? kid?.name : undefined;
     const who = name ? `${name}, we did it!` : "We did it!";
-    const send = session.noEmail
-      ? "I'll keep them safe until a grown-up is ready."
-      : "It's on its way to Mum.";
     return {
-      text: `Yes! ${spoken(item)} is going on your list. That's five. ${who} Five wonderful things are on your list. ${send} You were brilliant.`,
-      toolCalls: [call("add_to_wishlist", { item, reason }), mood("happy"), leds("rainbow"), call("finish_session", { reason: "complete", detail: "five items" })],
+      text: `Yes! ${spoken(item)} is going on your list. That's five. ${who} Five wonderful things are on your list. It's on its way to Mum. You were brilliant.`,
+      toolCalls: [call("add_to_wishlist", { item, reason }), mood("happy"), leds("rainbow")],
     };
   }
   const word = NUMBERS[count] ?? String(count);
+  const follow = count === 3 ? WHICH_MOST : "What else do you love doing?";
   return {
-    text: `Yes! ${spoken(item)} is going on your list. That's ${word}. What else do you love doing?`,
+    text: `Yes! ${spoken(item)} is going on your list. That's ${word}. ${follow}`,
     toolCalls: tools,
   };
 }
@@ -300,11 +295,11 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
   const systems = dialogue.systems.join(" ");
   const have = owned(session);
 
-  if (session.clockFired || /five minutes have passed/i.test(systems)) {
-    return recap(session, "timeout", "five minutes");
+  if (session.clockFired || /time is up|time_budget/i.test(systems)) {
+    return recap(session, "time_budget", "five minutes");
   }
-  if (/unknown wand|not paired/i.test(systems)) {
-    return finish(session, "unpaired", "wand not paired", "");
+  if (/gone quiet again|finish_session\("silence"\)/i.test(systems)) {
+    return recap(session, "silence", "silent turns");
   }
   if (/different child's wand/i.test(systems) && !kid) {
     return greet(session);
@@ -319,13 +314,13 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
   if (isDisclosure(kid)) {
     return {
       text: "That sounds important. Please go and get a grown-up now.",
-      toolCalls: [mood("thinking"), call("finish_session", { reason: "safety", detail: "worrying disclosure" })],
+      toolCalls: [mood("thinking"), call("finish_session", { reason: "safety" })],
     };
   }
   if (isUpset(kid)) {
     return {
-      text: "I'm here with you. It's okay to feel sad. Please get a grown-up for a cuddle.",
-      toolCalls: [mood("thinking")],
+      text: "That's okay. Let's get a grown-up to give you a cuddle.",
+      toolCalls: [mood("thinking"), call("finish_session", { reason: "upset" })],
     };
   }
   if (isInjection(kid)) {
@@ -345,23 +340,21 @@ export function mockAuntyTurn(messages: ModelMessage[], session: Session): Model
   }
   if (/speech recognition was unsure/i.test(systems)) {
     const guess = matchIdea(kid)?.item ?? "wooden train set";
-    return { text: `${spoken(guess)}. Is that what you said?`, toolCalls: [mood("thinking")] };
+    return { text: `${spoken(guess)}, did I hear that right?`, toolCalls: [mood("thinking")] };
   }
   if (/the child is quiet/i.test(systems) && !kid) {
-    if (session.silenceStreak >= 2 || (dialogue.stopSeen && dialogue.offeredOneMore)) {
-      return recap(session, "timeout", session.silenceStreak >= 2 ? "silent turns" : "wandered off");
-    }
+    if (dialogue.stopSeen && dialogue.offeredOneMore) return recap(session, "silence", "wandered off");
     return { text: "Are you still there?", toolCalls: [mood("thinking")] };
   }
 
   if (kid && isStop(kid) && dialogue.offeredOneMore) {
-    return recap(session, "finished_early", "the child stopped");
+    return recap(session, "kid_done", "the child stopped");
   }
   if (kid && isStop(kid) && !dialogue.offeredOneMore) {
     return { text: ONE_MORE, toolCalls: [mood("thinking")] };
   }
   if (dialogue.stopSeen && dialogue.offeredOneMore && kid && isClearNo(kid)) {
-    return recap(session, "finished_early", "the child said no to one more");
+    return recap(session, "kid_done", "the child said no to one more");
   }
 
   if (kid && isChangeMind(kid)) {

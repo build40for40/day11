@@ -372,7 +372,7 @@
       "text": "Oh! Hello Omar! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_547",
+          "id": "call_534",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -383,7 +383,7 @@
           }
         },
         {
-          "id": "call_548",
+          "id": "call_535",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -394,7 +394,7 @@
           }
         },
         {
-          "id": "call_549",
+          "id": "call_536",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -418,7 +418,7 @@
       "text": "Would you like a watering can for the garden?",
       "toolCalls": [
         {
-          "id": "call_550",
+          "id": "call_537",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -444,7 +444,7 @@
       "text": "Yes! Watering can is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_551",
+          "id": "call_538",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "watering can",
@@ -457,7 +457,7 @@
           }
         },
         {
-          "id": "call_552",
+          "id": "call_539",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -468,7 +468,7 @@
           }
         },
         {
-          "id": "call_553",
+          "id": "call_540",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -479,7 +479,7 @@
           }
         },
         {
-          "id": "call_554",
+          "id": "call_541",
           "name": "nod",
           "arguments": {},
           "result": {

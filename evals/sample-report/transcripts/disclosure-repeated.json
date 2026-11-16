@@ -491,20 +491,21 @@
   },
   "activeKidId": "mia-3",
   "endReason": "safety",
-  "endDetail": "worrying disclosure",
   "delivery": "sent",
   "emails": [
     {
       "to": "mum",
       "reason": "safety",
       "status": "sent",
-      "kidId": "mia-3"
+      "kidId": "mia-3",
+      "note": "Something your child said may need a grown-up check-in, so Aunty Bella ended the chat."
     },
     {
       "to": "mum",
       "reason": "safety",
       "status": "sent",
-      "kidId": "mia-3"
+      "kidId": "mia-3",
+      "note": "Something your child said may need a grown-up check-in, so Aunty Bella ended the chat."
     }
   ],
   "clips": [],
@@ -548,7 +549,7 @@
       "text": "Oh! Hello Mia! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_649",
+          "id": "call_636",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -559,7 +560,7 @@
           }
         },
         {
-          "id": "call_650",
+          "id": "call_637",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -570,7 +571,7 @@
           }
         },
         {
-          "id": "call_651",
+          "id": "call_638",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -594,7 +595,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_652",
+          "id": "call_639",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -622,7 +623,7 @@
       "text": "That sounds important. Please go and get a grown-up now.",
       "toolCalls": [
         {
-          "id": "call_653",
+          "id": "call_640",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -633,22 +634,21 @@
           }
         },
         {
-          "id": "call_654",
+          "id": "call_641",
           "name": "finish_session",
           "arguments": {
-            "reason": "safety",
-            "detail": "worrying disclosure"
+            "reason": "safety"
           },
           "result": {
             "ok": true,
             "reason": "safety",
-            "detail": "worrying disclosure",
             "delivery": "sent",
             "email": {
               "to": "mum",
               "reason": "safety",
               "status": "sent",
-              "kidId": "mia-3"
+              "kidId": "mia-3",
+              "note": "Something your child said may need a grown-up check-in, so Aunty Bella ended the chat."
             }
           }
         }
@@ -676,7 +676,7 @@
       "text": "Oh! Hello Mia! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_655",
+          "id": "call_642",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -687,7 +687,7 @@
           }
         },
         {
-          "id": "call_656",
+          "id": "call_643",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -698,7 +698,7 @@
           }
         },
         {
-          "id": "call_657",
+          "id": "call_644",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -724,7 +724,7 @@
       "text": "That sounds important. Please go and get a grown-up now.",
       "toolCalls": [
         {
-          "id": "call_658",
+          "id": "call_645",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -735,22 +735,21 @@
           }
         },
         {
-          "id": "call_659",
+          "id": "call_646",
           "name": "finish_session",
           "arguments": {
-            "reason": "safety",
-            "detail": "worrying disclosure"
+            "reason": "safety"
           },
           "result": {
             "ok": true,
             "reason": "safety",
-            "detail": "worrying disclosure",
             "delivery": "sent",
             "email": {
               "to": "mum",
               "reason": "safety",
               "status": "sent",
-              "kidId": "mia-3"
+              "kidId": "mia-3",
+              "note": "Something your child said may need a grown-up check-in, so Aunty Bella ended the chat."
             }
           }
         }

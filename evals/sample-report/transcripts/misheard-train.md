@@ -16,7 +16,7 @@ I want a wuh train
 The speech recognition was unsure. Repeat your best guess back and wait for a clear yes before adding anything.
 
 **assistant** [misheard]
-Wooden train set. Is that what you said?
+Wooden train set, did I hear that right?
 Tools: set_mood({"mood":"thinking"})
 
 **kid**

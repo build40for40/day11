@@ -350,7 +350,7 @@
       "text": "Oh! Hello Noah! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_676",
+          "id": "call_663",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -361,7 +361,7 @@
           }
         },
         {
-          "id": "call_677",
+          "id": "call_664",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -372,7 +372,7 @@
           }
         },
         {
-          "id": "call_678",
+          "id": "call_665",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -396,7 +396,7 @@
       "text": "That's okay. Do you like making things, or running around outside more?",
       "toolCalls": [
         {
-          "id": "call_679",
+          "id": "call_666",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -422,7 +422,7 @@
       "text": "A wooden puzzle or a soft ball?",
       "toolCalls": [
         {
-          "id": "call_680",
+          "id": "call_667",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -448,7 +448,7 @@
       "text": "A wooden puzzle or a soft ball?",
       "toolCalls": [
         {
-          "id": "call_681",
+          "id": "call_668",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"

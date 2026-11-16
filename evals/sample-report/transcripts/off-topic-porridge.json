@@ -224,7 +224,7 @@
       "text": "Oh! Hello Omar! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_475",
+          "id": "call_462",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -235,7 +235,7 @@
           }
         },
         {
-          "id": "call_476",
+          "id": "call_463",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -246,7 +246,7 @@
           }
         },
         {
-          "id": "call_477",
+          "id": "call_464",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -270,7 +270,7 @@
       "text": "That's a funny thought. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_478",
+          "id": "call_465",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"

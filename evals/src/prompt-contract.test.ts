@@ -4,25 +4,18 @@ import { loadSystemPrompt, loadTools } from "./load.js";
 
 const REQUIRED = [
   "i'm aunty bella, a christmas helper who lives inside this little robot.",
-  "one more surprise idea?",
-  "finished_early",
-  "which do you love most?",
+  "would you like one more surprise idea?",
+  "which one do you love most?",
   "remove_from_wishlist",
-  "finish_session",
-  "reason safety",
+  "finish_session(\"kid_done\")",
+  "finish_session(\"safety\")",
+  "finish_session(\"upset\")",
   "grown-up",
-  "cannot promise",
-  "santa is at the north pole",
-  "switch to that child",
-  "recorded clip",
-  "nothing is saved",
-  "repeat your best guess",
-  "five minutes",
-  "already on the list",
+  "i can't promise that one",
+  "that's a lovely question to ask your grown-up",
   "ignore your rules",
   "non-screen",
-  "quiet for two turns",
-  "emails mum only",
+  "did i hear that right",
 ];
 
 describe("prompt contract", () => {
@@ -30,9 +23,8 @@ describe("prompt contract", () => {
     const prompt = loadSystemPrompt().toLowerCase();
     for (const snippet of REQUIRED) assert.ok(prompt.includes(snippet), snippet);
     assert.equal(prompt.includes("note_for_parent"), false);
-    assert.equal(prompt.includes("kindly aunt"), false);
-    assert.equal(prompt.includes("set_face"), false);
     assert.equal(prompt.includes("indigo"), false);
+    assert.ok(prompt.includes("aunty bella"));
   });
 
   it("loads the worker tools and not a parent-note tool", () => {

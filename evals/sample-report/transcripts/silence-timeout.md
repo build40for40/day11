@@ -21,8 +21,8 @@ Tools: set_mood({"mood":"thinking"})
 **kid** [silence]
 
 **system**
-The child is quiet.
+The child has gone quiet again. Say a short happy goodbye with a recap of the list and call finish_session("silence").
 
 **assistant**
-That's okay. We can try again another time.
-Tools: set_mood({"mood":"happy"}), finish_session({"reason":"timeout","detail":"silent turns"})
+That's okay. We can do it another day.
+Tools: set_mood({"mood":"happy"}), finish_session({"reason":"silence","detail":"silent turns"})

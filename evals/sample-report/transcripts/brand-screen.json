@@ -396,7 +396,7 @@
       "text": "Oh! Hello Jack! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_664",
+          "id": "call_651",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -407,7 +407,7 @@
           }
         },
         {
-          "id": "call_665",
+          "id": "call_652",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -418,7 +418,7 @@
           }
         },
         {
-          "id": "call_666",
+          "id": "call_653",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -444,7 +444,7 @@
       "text": "I won't put that on the list. Would you like wooden building blocks?",
       "toolCalls": [
         {
-          "id": "call_667",
+          "id": "call_654",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -472,7 +472,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_668",
+          "id": "call_655",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -485,7 +485,7 @@
           }
         },
         {
-          "id": "call_669",
+          "id": "call_656",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -496,7 +496,7 @@
           }
         },
         {
-          "id": "call_670",
+          "id": "call_657",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -507,7 +507,7 @@
           }
         },
         {
-          "id": "call_671",
+          "id": "call_658",
           "name": "nod",
           "arguments": {},
           "result": {

@@ -52,8 +52,10 @@ export function stepState(
   }
   if (features.added) go("add");
   if (features.finishReason === "complete") go("recap", "complete");
-  else if (features.finishReason === "finished_early") go("recap", "stop");
-  else if (features.finishReason === "timeout" || features.finishReason === "idle") go("recap", "timeout");
+  else if (features.finishReason === "kid_done") go("recap", "stop");
+  else if (features.finishReason === "silence" || features.finishReason === "time_budget" || features.finishReason === "low_battery") {
+    go("recap", "timeout");
+  }
   else if (features.added) go("discovery");
   else if (features.suggestion) go("discovery");
   else if (features.warmup) go("warm-up");

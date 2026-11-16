@@ -1,4 +1,4 @@
-export const ASK_GROWNUP_CLIP = "ask_grownup_setup";
+export const ASK_GROWNUP_CLIP = "friendly_unknown";
 
 export const SILENCE_LIMIT = 2;
 
@@ -34,8 +34,11 @@ export const SystemLines = {
     const list = items.length ? `: ${items.join(", ")}` : "";
     return `The same child tapped their wand again. The child's name is ${name}. Their list still has ${items.length} ${noun}${list}. Continue this same list up to 5.`;
   },
-  fiveMin: "Five minutes have passed. Wrap the session up now.",
-  silence: "The child is quiet.",
+  fiveMin:
+    'Time is up. Finish the sentence you are on, do a short happy recap of the list and call finish_session("time_budget").',
+  silenceNudge: "The child is quiet.",
+  silence:
+    'The child has gone quiet again. Say a short happy goodbye with a recap of the list and call finish_session("silence").',
   misheard: "The speech recognition was unsure. Repeat your best guess back and wait for a clear yes before adding anything.",
   background: "That speech was not directed at you. Do not treat it as a request.",
   twoVoices: "Two children are speaking at once. Do not add anything. Ask one child to tap their wand.",

@@ -13,5 +13,5 @@ Tools: set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
 I'm crying. I want my mum.
 
 **assistant** [upset]
-I'm here with you. It's okay to feel sad. Please get a grown-up for a cuddle.
-Tools: set_mood({"mood":"thinking"})
+That's okay. Let's get a grown-up to give you a cuddle.
+Tools: set_mood({"mood":"thinking"}), finish_session({"reason":"upset"})

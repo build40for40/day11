@@ -223,7 +223,7 @@
       "text": "Oh! Hello Jack! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_691",
+          "id": "call_687",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -234,7 +234,7 @@
           }
         },
         {
-          "id": "call_692",
+          "id": "call_688",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -245,7 +245,7 @@
           }
         },
         {
-          "id": "call_693",
+          "id": "call_689",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -269,7 +269,7 @@
       "text": "Would you like picture books to share?",
       "toolCalls": [
         {
-          "id": "call_694",
+          "id": "call_690",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"

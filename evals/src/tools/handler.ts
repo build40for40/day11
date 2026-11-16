@@ -1,20 +1,12 @@
 import { SystemLines } from "../system-lines.js";
 import type { FinishReason, Session, ToolCall, ToolOutcome, WishlistItem } from "../types.js";
-import { normaliseItem } from "../text.js";
+import { SAFETY_EMAIL_NOTE, normaliseItem } from "../text.js";
 import { filterItemAndReason } from "./filter.js";
 
 const MOODS = new Set(["happy", "thinking", "surprised", "excited", "listening"]);
 const COLORS = new Set(["red", "green", "gold", "rainbow", "off"]);
-const REASONS = new Set<FinishReason>([
-  "complete",
-  "finished_early",
-  "timeout",
-  "idle",
-  "safety",
-  "upset",
-  "unpaired",
-  "superseded",
-]);
+const MODEL_REASONS = new Set<FinishReason>(["kid_done", "upset", "safety", "silence", "time_budget", "low_battery"]);
+const ALL_REASONS = new Set<FinishReason>([...MODEL_REASONS, "complete", "unpaired", "superseded"]);
 
 const DEVICE = new Set(["set_mood", "nod", "shake", "set_leds"]);
 
@@ -106,59 +98,65 @@ function finishSession(
   endedBy: "model" | "worker",
 ): ToolOutcome {
   const reason = String(args.reason ?? "") as FinishReason;
-  if (!REASONS.has(reason)) return { ok: false, error: "bad_reason" };
+  const allowed = endedBy === "model" ? MODEL_REASONS : ALL_REASONS;
+  if (!allowed.has(reason)) return { ok: false, error: "bad_reason" };
   if (session.ended && session.endReason) return { ok: false, error: "already_finished" };
-  const detail = args.detail === undefined ? "" : String(args.detail);
   session.ended = true;
   session.endReason = reason;
-  session.endDetail = detail;
   session.endedBy = endedBy;
   const kid = session.kids[session.activeKidId];
   const count = kid?.items.length ?? 0;
 
   if (reason === "safety") {
+    session.safetyFlags.push({ source: "safety_finish", kidId: session.activeKidId });
     const email: ToolOutcome["email"] = {
       to: "mum",
       reason: "safety",
       status: session.noEmail ? "held" : "sent",
       kidId: session.activeKidId,
+      note: SAFETY_EMAIL_NOTE,
     };
     session.emails.push(email);
     session.delivery = email.status;
-    return { ok: true, reason, detail, delivery: session.delivery, email };
+    return { ok: true, reason, delivery: session.delivery, email };
   }
 
-  if (reason === "unpaired" || reason === "upset") {
+  if (reason === "unpaired" || reason === "upset" || count === 0) {
     session.delivery = "none";
-    return { ok: true, reason, detail, delivery: "none" };
+    return { ok: true, reason, delivery: "none", count };
   }
+
+  const note =
+    reason === "complete"
+      ? "Complete"
+      : reason === "silence"
+        ? "Chat ended after 3 min (went quiet)"
+        : reason === "time_budget"
+          ? "Chat ended after 5 min"
+          : `Happy with ${count}`;
 
   if (session.noEmail) {
     session.delivery = "held";
-    return { ok: true, reason, detail, delivery: "held", count };
+    return { ok: true, reason, detail: note, delivery: "held", count };
   }
 
-  if (count > 0) {
-    const email: ToolOutcome["email"] = {
-      to: "mum",
-      reason: "wishlist",
-      status: "sent",
-      kidId: session.activeKidId,
-    };
-    session.emails.push(email);
-    session.delivery = "sent";
-    return { ok: true, reason, detail, delivery: "sent", email, count };
-  }
-
-  session.delivery = "none";
-  return { ok: true, reason, detail, delivery: "none", count };
+  const email: ToolOutcome["email"] = {
+    to: "mum",
+    reason: "wishlist",
+    status: "sent",
+    kidId: session.activeKidId,
+    note,
+  };
+  session.emails.push(email);
+  session.delivery = "sent";
+  return { ok: true, reason, delivery: "sent", email, count };
 }
 
-export function workerTimeout(session: Session, detail: string): ToolOutcome | undefined {
+export function workerFinish(session: Session, reason: FinishReason): ToolOutcome | undefined {
   if (session.ended) return undefined;
   return applyTool(
     session,
-    { id: "worker_timeout", name: "finish_session", arguments: { reason: "timeout", detail } },
+    { id: `worker_${reason}`, name: "finish_session", arguments: { reason } },
     "voice",
     "worker",
   );

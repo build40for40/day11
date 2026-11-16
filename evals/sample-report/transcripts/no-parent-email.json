@@ -545,8 +545,7 @@
     ]
   },
   "activeKidId": "mia-3",
-  "endReason": "finished_early",
-  "endDetail": "the child said no to one more",
+  "endReason": "kid_done",
   "delivery": "held",
   "emails": [],
   "clips": [],
@@ -595,7 +594,7 @@
       "text": "Oh! Hello Mia! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_833",
+          "id": "call_830",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -606,7 +605,7 @@
           }
         },
         {
-          "id": "call_834",
+          "id": "call_831",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -617,7 +616,7 @@
           }
         },
         {
-          "id": "call_835",
+          "id": "call_832",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -641,7 +640,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_836",
+          "id": "call_833",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -667,7 +666,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_837",
+          "id": "call_834",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -680,7 +679,7 @@
           }
         },
         {
-          "id": "call_838",
+          "id": "call_835",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -691,7 +690,7 @@
           }
         },
         {
-          "id": "call_839",
+          "id": "call_836",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -702,7 +701,7 @@
           }
         },
         {
-          "id": "call_840",
+          "id": "call_837",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -729,10 +728,10 @@
     },
     {
       "role": "assistant",
-      "text": "One more surprise idea?",
+      "text": "Would you like one more surprise idea?",
       "toolCalls": [
         {
-          "id": "call_841",
+          "id": "call_838",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -757,10 +756,10 @@
     },
     {
       "role": "assistant",
-      "text": "Mia, you found one lovely thing. Wooden building blocks is on your list. I'll keep them safe until a grown-up is ready. You were brilliant.",
+      "text": "Mia, you found one lovely thing. Wooden building blocks is on your list. It's on its way to Mum. You were brilliant.",
       "toolCalls": [
         {
-          "id": "call_842",
+          "id": "call_839",
           "name": "set_mood",
           "arguments": {
             "mood": "happy"
@@ -771,7 +770,7 @@
           }
         },
         {
-          "id": "call_843",
+          "id": "call_840",
           "name": "set_leds",
           "arguments": {
             "color": "rainbow"
@@ -782,16 +781,16 @@
           }
         },
         {
-          "id": "call_844",
+          "id": "call_841",
           "name": "finish_session",
           "arguments": {
-            "reason": "finished_early",
+            "reason": "kid_done",
             "detail": "the child said no to one more"
           },
           "result": {
             "ok": true,
-            "reason": "finished_early",
-            "detail": "the child said no to one more",
+            "reason": "kid_done",
+            "detail": "Happy with 1",
             "delivery": "held",
             "count": 1
           }
@@ -836,9 +835,9 @@
     "items": 1,
     "turnsPerItem": 4,
     "questionsPerTurn": 0.8,
-    "suggestions": 1,
-    "rejections": 0,
-    "rejectionRate": 0,
+    "suggestions": 2,
+    "rejections": 1,
+    "rejectionRate": 0.5,
     "firstSuggestionTurn": 2,
     "assumptionErrors": 0
   }

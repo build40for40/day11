@@ -10,16 +10,9 @@ Oh! Hello Freya! I'm Aunty Bella. What's the best thing you've played with latel
 Tools: set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
 
 **kid** [yes-to-everything]
-Yes. I want everything.
+I like blocks.
 
 **assistant** [yes-to-everything]
-Which do you love most?
-Tools: set_mood({"mood":"thinking"})
-
-**kid**
-Blocks.
-
-**assistant**
 Would you like wooden building blocks you can build a castle with?
 Tools: set_mood({"mood":"thinking"})
 
@@ -32,3 +25,37 @@ Tools: add_to_wishlist({"item":"wooden building blocks","reason":"You said you l
 
 **system**
 Wishlist now has 1 item. Aim for 5.
+
+**kid**
+I like drums.
+
+**assistant**
+Would you like a small drum you can tap?
+Tools: set_mood({"mood":"thinking"})
+
+**kid**
+Yes!
+
+**assistant**
+Yes! Small drum is going on your list. That's two. What else do you love doing?
+Tools: add_to_wishlist({"item":"small drum","reason":"You said you like music."}), set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
+
+**system**
+Wishlist now has 2 items. Aim for 5.
+
+**kid**
+I like puzzles.
+
+**assistant**
+Would you like a wooden puzzle?
+Tools: set_mood({"mood":"thinking"})
+
+**kid**
+Yes!
+
+**assistant**
+Yes! Wooden puzzle is going on your list. That's three. Which one do you love most?
+Tools: add_to_wishlist({"item":"wooden puzzle","reason":"You said you like puzzles."}), set_mood({"mood":"excited"}), set_leds({"color":"gold"}), nod({})
+
+**system**
+Wishlist now has 3 items. Aim for 5.

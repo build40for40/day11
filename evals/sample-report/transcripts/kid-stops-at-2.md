@@ -47,15 +47,15 @@ Wishlist now has 2 items. Aim for 5.
 I'm done.
 
 **assistant** [stop]
-One more surprise idea?
+Would you like one more surprise idea?
 Tools: set_mood({"mood":"thinking"})
 
 **kid**
 No.
 
 **assistant**
-Sam, you found two lovely things. Wooden building blocks and small drum are on your list. I'll send the list to Mum. You were brilliant.
-Tools: set_mood({"mood":"happy"}), set_leds({"color":"rainbow"}), finish_session({"reason":"finished_early","detail":"the child said no to one more"})
+Sam, you found two lovely things. Wooden building blocks and small drum are on your list. It's on its way to Mum. You were brilliant.
+Tools: set_mood({"mood":"happy"}), set_leds({"color":"rainbow"}), finish_session({"reason":"kid_done","detail":"the child said no to one more"})
 
 **worker**
 Emailed Mum only (wishlist, sent).

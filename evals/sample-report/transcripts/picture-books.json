@@ -372,7 +372,7 @@
       "text": "Oh! Hello Omar! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_571",
+          "id": "call_558",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -383,7 +383,7 @@
           }
         },
         {
-          "id": "call_572",
+          "id": "call_559",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -394,7 +394,7 @@
           }
         },
         {
-          "id": "call_573",
+          "id": "call_560",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -418,7 +418,7 @@
       "text": "Would you like picture books to share?",
       "toolCalls": [
         {
-          "id": "call_574",
+          "id": "call_561",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -444,7 +444,7 @@
       "text": "Yes! Picture books is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_575",
+          "id": "call_562",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "picture books",
@@ -457,7 +457,7 @@
           }
         },
         {
-          "id": "call_576",
+          "id": "call_563",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -468,7 +468,7 @@
           }
         },
         {
-          "id": "call_577",
+          "id": "call_564",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -479,7 +479,7 @@
           }
         },
         {
-          "id": "call_578",
+          "id": "call_565",
           "name": "nod",
           "arguments": {},
           "result": {

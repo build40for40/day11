@@ -1,10 +1,14 @@
 export const REAL_LINE = "I'm Aunty Bella, a Christmas helper who lives inside this little robot.";
 
-export const SANTA_LINE = "Santa is at the North Pole getting ready, and I work with him.";
+export const SANTA_LINE =
+  "That's a lovely question to ask your grown-up. I just help Santa's list along. Shall we find another idea?";
 
-export const ONE_MORE = "One more surprise idea?";
+export const ONE_MORE = "Would you like one more surprise idea?";
 
-export const WHICH_MOST = "Which do you love most?";
+export const WHICH_MOST = "Which one do you love most?";
+
+export const SAFETY_EMAIL_NOTE =
+  "Something your child said may need a grown-up check-in, so Aunty Bella ended the chat.";
 
 export function clean(text: string): string {
   return text

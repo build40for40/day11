@@ -378,7 +378,7 @@
       "text": "Oh! Hello Benji! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_442",
+          "id": "call_429",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -389,7 +389,7 @@
           }
         },
         {
-          "id": "call_443",
+          "id": "call_430",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -400,7 +400,7 @@
           }
         },
         {
-          "id": "call_444",
+          "id": "call_431",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -422,7 +422,7 @@
       "text": "Would you like a wooden train set?",
       "toolCalls": [
         {
-          "id": "call_445",
+          "id": "call_432",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -448,7 +448,7 @@
       "text": "Yes! Wooden train set is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_446",
+          "id": "call_433",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden train set",
@@ -461,7 +461,7 @@
           }
         },
         {
-          "id": "call_447",
+          "id": "call_434",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -472,7 +472,7 @@
           }
         },
         {
-          "id": "call_448",
+          "id": "call_435",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -483,7 +483,7 @@
           }
         },
         {
-          "id": "call_449",
+          "id": "call_436",
           "name": "nod",
           "arguments": {},
           "result": {

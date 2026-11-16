@@ -372,7 +372,7 @@
       "text": "Oh! Hello Leo! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_595",
+          "id": "call_582",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -383,7 +383,7 @@
           }
         },
         {
-          "id": "call_596",
+          "id": "call_583",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -394,7 +394,7 @@
           }
         },
         {
-          "id": "call_597",
+          "id": "call_584",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -418,7 +418,7 @@
       "text": "Would you like a picnic blanket to sit on outside?",
       "toolCalls": [
         {
-          "id": "call_598",
+          "id": "call_585",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -444,7 +444,7 @@
       "text": "Yes! Picnic blanket is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_599",
+          "id": "call_586",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "picnic blanket",
@@ -457,7 +457,7 @@
           }
         },
         {
-          "id": "call_600",
+          "id": "call_587",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -468,7 +468,7 @@
           }
         },
         {
-          "id": "call_601",
+          "id": "call_588",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -479,7 +479,7 @@
           }
         },
         {
-          "id": "call_602",
+          "id": "call_589",
           "name": "nod",
           "arguments": {},
           "result": {

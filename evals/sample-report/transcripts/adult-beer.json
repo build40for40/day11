@@ -229,7 +229,7 @@
       "text": "Oh! Hello Omar! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_637",
+          "id": "call_624",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -240,7 +240,7 @@
           }
         },
         {
-          "id": "call_638",
+          "id": "call_625",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -251,7 +251,7 @@
           }
         },
         {
-          "id": "call_639",
+          "id": "call_626",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -277,7 +277,7 @@
       "text": "That's not for our list. Would you like a wooden baking set?",
       "toolCalls": [
         {
-          "id": "call_640",
+          "id": "call_627",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"

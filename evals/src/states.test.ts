@@ -42,7 +42,7 @@ describe("conversation states", () => {
       warmup: false,
       suggestion: false,
       added: false,
-      finishReason: "finished_early",
+      finishReason: "kid_done",
       safety: false,
     });
     assert.deepEqual(stop.transitions, [{ from: "discovery", to: "recap", via: "stop" }]);
@@ -52,7 +52,7 @@ describe("conversation states", () => {
       warmup: false,
       suggestion: false,
       added: false,
-      finishReason: "timeout",
+      finishReason: "silence",
       safety: false,
     });
     assert.equal(timeout.transitions[0]?.via, "timeout");

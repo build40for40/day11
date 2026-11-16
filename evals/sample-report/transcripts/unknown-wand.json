@@ -56,7 +56,7 @@
   "delivery": "none",
   "emails": [],
   "clips": [
-    "ask_grownup_setup"
+    "friendly_unknown"
   ],
   "transitions": [],
   "states": [
@@ -65,8 +65,8 @@
   "transcript": [
     {
       "role": "worker",
-      "text": "play_local ask_grownup_setup",
-      "clip": "ask_grownup_setup"
+      "text": "play_local friendly_unknown",
+      "clip": "friendly_unknown"
     },
     {
       "role": "worker",

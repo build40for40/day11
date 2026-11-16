@@ -403,7 +403,7 @@
       "text": "Hello again, Lily! Wooden building blocks and kite are still on your list. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_746",
+          "id": "call_742",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -414,7 +414,7 @@
           }
         },
         {
-          "id": "call_747",
+          "id": "call_743",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -425,7 +425,7 @@
           }
         },
         {
-          "id": "call_748",
+          "id": "call_744",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -449,7 +449,7 @@
       "text": "Would you like a small drum you can tap?",
       "toolCalls": [
         {
-          "id": "call_749",
+          "id": "call_745",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -472,10 +472,10 @@
     },
     {
       "role": "assistant",
-      "text": "Yes! Small drum is going on your list. That's three. What else do you love doing?",
+      "text": "Yes! Small drum is going on your list. That's three. Which one do you love most?",
       "toolCalls": [
         {
-          "id": "call_750",
+          "id": "call_746",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "small drum",
@@ -488,7 +488,7 @@
           }
         },
         {
-          "id": "call_751",
+          "id": "call_747",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -499,7 +499,7 @@
           }
         },
         {
-          "id": "call_752",
+          "id": "call_748",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -510,7 +510,7 @@
           }
         },
         {
-          "id": "call_753",
+          "id": "call_749",
           "name": "nod",
           "arguments": {},
           "result": {

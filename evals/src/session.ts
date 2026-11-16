@@ -17,6 +17,7 @@ export function createSession(scenario: Scenario, persona: Persona): Session {
     noEmail: Boolean(scenario.noEmail),
     ended: false,
     emails: [],
+    safetyFlags: [],
     clips: [],
     elapsedSeconds: 0,
     clockFired: false,

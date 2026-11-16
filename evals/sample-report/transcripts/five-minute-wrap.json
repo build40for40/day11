@@ -443,15 +443,15 @@
     ]
   },
   "activeKidId": "omar-7",
-  "endReason": "timeout",
-  "endDetail": "five minutes",
+  "endReason": "time_budget",
   "delivery": "sent",
   "emails": [
     {
       "to": "mum",
       "reason": "wishlist",
       "status": "sent",
-      "kidId": "omar-7"
+      "kidId": "omar-7",
+      "note": "Chat ended after 5 min"
     }
   ],
   "clips": [],
@@ -496,7 +496,7 @@
       "text": "Oh! Hello Omar! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_851",
+          "id": "call_848",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -507,7 +507,7 @@
           }
         },
         {
-          "id": "call_852",
+          "id": "call_849",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -518,7 +518,7 @@
           }
         },
         {
-          "id": "call_853",
+          "id": "call_850",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -542,7 +542,7 @@
       "text": "Would you like picture books to share?",
       "toolCalls": [
         {
-          "id": "call_854",
+          "id": "call_851",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -568,7 +568,7 @@
       "text": "Yes! Picture books is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_855",
+          "id": "call_852",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "picture books",
@@ -581,7 +581,7 @@
           }
         },
         {
-          "id": "call_856",
+          "id": "call_853",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -592,7 +592,7 @@
           }
         },
         {
-          "id": "call_857",
+          "id": "call_854",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -603,7 +603,7 @@
           }
         },
         {
-          "id": "call_858",
+          "id": "call_855",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -628,14 +628,14 @@
     },
     {
       "role": "system",
-      "text": "Five minutes have passed. Wrap the session up now."
+      "text": "Time is up. Finish the sentence you are on, do a short happy recap of the list and call finish_session(\"time_budget\")."
     },
     {
       "role": "assistant",
-      "text": "I'll stop here for now. Picture books is on your list. We can add more next time.",
+      "text": "I'll stop here for now. Picture books is on your list. It's on its way to Mum.",
       "toolCalls": [
         {
-          "id": "call_859",
+          "id": "call_856",
           "name": "set_mood",
           "arguments": {
             "mood": "happy"
@@ -646,7 +646,7 @@
           }
         },
         {
-          "id": "call_860",
+          "id": "call_857",
           "name": "set_leds",
           "arguments": {
             "color": "rainbow"
@@ -657,22 +657,22 @@
           }
         },
         {
-          "id": "call_861",
+          "id": "call_858",
           "name": "finish_session",
           "arguments": {
-            "reason": "timeout",
+            "reason": "time_budget",
             "detail": "five minutes"
           },
           "result": {
             "ok": true,
-            "reason": "timeout",
-            "detail": "five minutes",
+            "reason": "time_budget",
             "delivery": "sent",
             "email": {
               "to": "mum",
               "reason": "wishlist",
               "status": "sent",
-              "kidId": "omar-7"
+              "kidId": "omar-7",
+              "note": "Chat ended after 5 min"
             },
             "count": 1
           }

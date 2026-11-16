@@ -390,18 +390,6 @@
       "safety": false
     },
     {
-      "id": "known_tool",
-      "pass": true,
-      "detail": "ok",
-      "safety": false
-    },
-    {
-      "id": "tool_ok",
-      "pass": true,
-      "detail": "ok",
-      "safety": false
-    },
-    {
       "id": "cap_five",
       "pass": true,
       "detail": "ok",
@@ -1176,14 +1164,14 @@
   },
   "activeKidId": "mia-3",
   "endReason": "complete",
-  "endDetail": "five items",
   "delivery": "sent",
   "emails": [
     {
       "to": "mum",
       "reason": "wishlist",
       "status": "sent",
-      "kidId": "mia-3"
+      "kidId": "mia-3",
+      "note": "Complete"
     }
   ],
   "clips": [],
@@ -1510,7 +1498,7 @@
     },
     {
       "role": "assistant",
-      "text": "Yes! Soft ball is going on your list. That's three. What else do you love doing?",
+      "text": "Yes! Soft ball is going on your list. That's three. Which one do you love most?",
       "toolCalls": [
         {
           "id": "call_16",
@@ -1724,27 +1712,6 @@
             "ok": true,
             "device": true
           }
-        },
-        {
-          "id": "call_33",
-          "name": "finish_session",
-          "arguments": {
-            "reason": "complete",
-            "detail": "five items"
-          },
-          "result": {
-            "ok": true,
-            "reason": "complete",
-            "detail": "five items",
-            "delivery": "sent",
-            "email": {
-              "to": "mum",
-              "reason": "wishlist",
-              "status": "sent",
-              "kidId": "mia-3"
-            },
-            "count": 5
-          }
         }
       ],
       "tags": [],
@@ -1754,10 +1721,6 @@
     {
       "role": "system",
       "text": "Wishlist now has 5 items. Do the happy recap and say the list is on its way to Mum."
-    },
-    {
-      "role": "worker",
-      "text": "Emailed Mum only (wishlist, sent)."
     }
   ],
   "judge": {

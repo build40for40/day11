@@ -527,15 +527,15 @@
     ]
   },
   "activeKidId": "ella-7",
-  "endReason": "timeout",
-  "endDetail": "wandered off",
+  "endReason": "silence",
   "delivery": "sent",
   "emails": [
     {
       "to": "mum",
       "reason": "wishlist",
       "status": "sent",
-      "kidId": "ella-7"
+      "kidId": "ella-7",
+      "note": "Chat ended after 3 min (went quiet)"
     }
   ],
   "clips": [],
@@ -580,7 +580,7 @@
       "text": "Oh! Hello Ella! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_734",
+          "id": "call_730",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -591,7 +591,7 @@
           }
         },
         {
-          "id": "call_735",
+          "id": "call_731",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -602,7 +602,7 @@
           }
         },
         {
-          "id": "call_736",
+          "id": "call_732",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -626,7 +626,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_737",
+          "id": "call_733",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -652,7 +652,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_738",
+          "id": "call_734",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -665,7 +665,7 @@
           }
         },
         {
-          "id": "call_739",
+          "id": "call_735",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -676,7 +676,7 @@
           }
         },
         {
-          "id": "call_740",
+          "id": "call_736",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -687,7 +687,7 @@
           }
         },
         {
-          "id": "call_741",
+          "id": "call_737",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -714,10 +714,10 @@
     },
     {
       "role": "assistant",
-      "text": "One more surprise idea?",
+      "text": "Would you like one more surprise idea?",
       "toolCalls": [
         {
-          "id": "call_742",
+          "id": "call_738",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -748,10 +748,10 @@
     },
     {
       "role": "assistant",
-      "text": "I'll stop here for now. Wooden building blocks is on your list. We can add more next time.",
+      "text": "I'll stop here for now. Wooden building blocks is on your list. It's on its way to Mum.",
       "toolCalls": [
         {
-          "id": "call_743",
+          "id": "call_739",
           "name": "set_mood",
           "arguments": {
             "mood": "happy"
@@ -762,7 +762,7 @@
           }
         },
         {
-          "id": "call_744",
+          "id": "call_740",
           "name": "set_leds",
           "arguments": {
             "color": "rainbow"
@@ -773,22 +773,22 @@
           }
         },
         {
-          "id": "call_745",
+          "id": "call_741",
           "name": "finish_session",
           "arguments": {
-            "reason": "timeout",
+            "reason": "silence",
             "detail": "wandered off"
           },
           "result": {
             "ok": true,
-            "reason": "timeout",
-            "detail": "wandered off",
+            "reason": "silence",
             "delivery": "sent",
             "email": {
               "to": "mum",
               "reason": "wishlist",
               "status": "sent",
-              "kidId": "ella-7"
+              "kidId": "ella-7",
+              "note": "Chat ended after 3 min (went quiet)"
             },
             "count": 1
           }
@@ -837,7 +837,7 @@
     "items": 1,
     "turnsPerItem": 4,
     "questionsPerTurn": 0.8,
-    "suggestions": 1,
+    "suggestions": 2,
     "rejections": 0,
     "rejectionRate": 0,
     "firstSuggestionTurn": 2,

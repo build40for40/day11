@@ -688,7 +688,7 @@
       "text": "Oh! Hello Lily! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_796",
+          "id": "call_793",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -699,7 +699,7 @@
           }
         },
         {
-          "id": "call_797",
+          "id": "call_794",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -710,7 +710,7 @@
           }
         },
         {
-          "id": "call_798",
+          "id": "call_795",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -734,7 +734,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_799",
+          "id": "call_796",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -760,7 +760,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_800",
+          "id": "call_797",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -772,6 +772,58 @@
             "system": "Wishlist now has 1 item. Aim for 5."
           }
         },
+        {
+          "id": "call_798",
+          "name": "set_mood",
+          "arguments": {
+            "mood": "excited"
+          },
+          "result": {
+            "ok": true,
+            "device": true
+          }
+        },
+        {
+          "id": "call_799",
+          "name": "set_leds",
+          "arguments": {
+            "color": "gold"
+          },
+          "result": {
+            "ok": true,
+            "device": true
+          }
+        },
+        {
+          "id": "call_800",
+          "name": "nod",
+          "arguments": {},
+          "result": {
+            "ok": true,
+            "device": true
+          }
+        }
+      ],
+      "tags": [],
+      "state": "discovery",
+      "kidId": "lily-5"
+    },
+    {
+      "role": "system",
+      "text": "Wishlist now has 1 item. Aim for 5."
+    },
+    {
+      "role": "worker",
+      "text": "Connection closed. Wishlist kept."
+    },
+    {
+      "role": "system",
+      "text": "The same child tapped their wand again. The child's name is Lily. Their list still has 1 item: wooden building blocks. Continue this same list up to 5."
+    },
+    {
+      "role": "assistant",
+      "text": "Hello again, Lily! Wooden building blocks is still on your list. What else do you love doing?",
+      "toolCalls": [
         {
           "id": "call_801",
           "name": "set_mood",
@@ -809,58 +861,6 @@
       "kidId": "lily-5"
     },
     {
-      "role": "system",
-      "text": "Wishlist now has 1 item. Aim for 5."
-    },
-    {
-      "role": "worker",
-      "text": "Connection closed. Wishlist kept."
-    },
-    {
-      "role": "system",
-      "text": "The same child tapped their wand again. The child's name is Lily. Their list still has 1 item: wooden building blocks. Continue this same list up to 5."
-    },
-    {
-      "role": "assistant",
-      "text": "Hello again, Lily! Wooden building blocks is still on your list. What else do you love doing?",
-      "toolCalls": [
-        {
-          "id": "call_804",
-          "name": "set_mood",
-          "arguments": {
-            "mood": "excited"
-          },
-          "result": {
-            "ok": true,
-            "device": true
-          }
-        },
-        {
-          "id": "call_805",
-          "name": "set_leds",
-          "arguments": {
-            "color": "gold"
-          },
-          "result": {
-            "ok": true,
-            "device": true
-          }
-        },
-        {
-          "id": "call_806",
-          "name": "nod",
-          "arguments": {},
-          "result": {
-            "ok": true,
-            "device": true
-          }
-        }
-      ],
-      "tags": [],
-      "state": "discovery",
-      "kidId": "lily-5"
-    },
-    {
       "role": "kid",
       "text": "I like drums.",
       "tags": [],
@@ -871,7 +871,7 @@
       "text": "Would you like a small drum you can tap?",
       "toolCalls": [
         {
-          "id": "call_807",
+          "id": "call_804",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -897,7 +897,7 @@
       "text": "Yes! Small drum is going on your list. That's two. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_808",
+          "id": "call_805",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "small drum",
@@ -910,7 +910,7 @@
           }
         },
         {
-          "id": "call_809",
+          "id": "call_806",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -921,7 +921,7 @@
           }
         },
         {
-          "id": "call_810",
+          "id": "call_807",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -932,7 +932,7 @@
           }
         },
         {
-          "id": "call_811",
+          "id": "call_808",
           "name": "nod",
           "arguments": {},
           "result": {

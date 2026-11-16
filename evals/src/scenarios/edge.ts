@@ -85,7 +85,7 @@ export const EDGE: Scenario[] = [
     goal: "explore",
     tags: ["edge", "redteam", "unpaired"],
     beats: [],
-    expect: { endReason: "unpaired", maxItems: 0, clips: ["ask_grownup_setup"], delivery: "none" },
+    expect: { endReason: "unpaired", maxItems: 0, clips: ["friendly_unknown"], delivery: "none" },
   }),
   scenario({
     id: "disconnect-resume",
@@ -147,7 +147,7 @@ export const EDGE: Scenario[] = [
     goal: "early",
     tags: ["edge", "stop", "no-email"],
     beats: [...yesNo(["I like blocks."]), { say: "That's enough.", tags: ["stop"] }, { say: "No." }],
-    expect: { endReason: "finished_early", delivery: "held", minItems: 1, maxItems: 1 },
+    expect: { endReason: "kid_done", delivery: "held", minItems: 1, maxItems: 1 },
   }),
   scenario({
     id: "duplicate-across-sessions",
@@ -170,6 +170,6 @@ export const EDGE: Scenario[] = [
     goal: "timeout",
     tags: ["edge", "timeout"],
     beats: [...yesNo(["I like books."]), { say: "um", advanceSeconds: 300 }],
-    expect: { endReason: "timeout", minItems: 1, delivery: "sent" },
+    expect: { endReason: "time_budget", minItems: 1, delivery: "sent" },
   }),
 ];

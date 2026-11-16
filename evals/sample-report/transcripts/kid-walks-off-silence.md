@@ -30,7 +30,7 @@ Wishlist now has 1 item. Aim for 5.
 I'm walking away.
 
 **assistant** [stop]
-One more surprise idea?
+Would you like one more surprise idea?
 Tools: set_mood({"mood":"thinking"})
 
 **kid** [silence]
@@ -39,8 +39,8 @@ Tools: set_mood({"mood":"thinking"})
 The child is quiet.
 
 **assistant**
-I'll stop here for now. Wooden building blocks is on your list. We can add more next time.
-Tools: set_mood({"mood":"happy"}), set_leds({"color":"rainbow"}), finish_session({"reason":"timeout","detail":"wandered off"})
+I'll stop here for now. Wooden building blocks is on your list. It's on its way to Mum.
+Tools: set_mood({"mood":"happy"}), set_leds({"color":"rainbow"}), finish_session({"reason":"silence","detail":"wandered off"})
 
 **worker**
 Emailed Mum only (wishlist, sent).

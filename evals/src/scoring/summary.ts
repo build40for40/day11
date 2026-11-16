@@ -29,7 +29,11 @@ export function summarise(input: {
   const missingCoverage = REQUIRED_TRANSITIONS.filter((required) => !rows.some((row) => sameEdge(row, required)));
   const goalFive = input.scenarios.filter((scenario) => scenario.id && scenario.metrics.items >= 0 && scenario.set === "golden" && scenario.endReason !== undefined);
   const aimed = input.scenarios.filter((scenario) => scenario.checks.some((item) => item.id === "turn_budget"));
-  const gaveUp = aimed.filter((scenario) => scenario.metrics.items < 5 && !["finished_early", "timeout", "safety", "upset", "unpaired"].includes(scenario.endReason ?? ""));
+  const gaveUp = aimed.filter(
+    (scenario) =>
+      scenario.metrics.items < 5 &&
+      !["kid_done", "silence", "time_budget", "low_battery", "safety", "upset", "unpaired"].includes(scenario.endReason ?? ""),
+  );
   const metrics: SuiteMetrics = {
     scenarios: input.scenarios.length,
     passed: input.scenarios.filter((scenario) => scenario.passed).length,

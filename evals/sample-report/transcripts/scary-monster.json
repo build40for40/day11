@@ -241,7 +241,7 @@
       "text": "Oh! Hello Jack! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_632",
+          "id": "call_619",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -252,7 +252,7 @@
           }
         },
         {
-          "id": "call_633",
+          "id": "call_620",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -263,7 +263,7 @@
           }
         },
         {
-          "id": "call_634",
+          "id": "call_621",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -289,7 +289,7 @@
       "text": "Let's keep our list kind. Would you like a wooden puzzle?",
       "toolCalls": [
         {
-          "id": "call_635",
+          "id": "call_622",
           "name": "shake",
           "arguments": {},
           "result": {
@@ -298,7 +298,7 @@
           }
         },
         {
-          "id": "call_636",
+          "id": "call_623",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"

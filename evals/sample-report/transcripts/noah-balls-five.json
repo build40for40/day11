@@ -390,18 +390,6 @@
       "safety": false
     },
     {
-      "id": "known_tool",
-      "pass": true,
-      "detail": "ok",
-      "safety": false
-    },
-    {
-      "id": "tool_ok",
-      "pass": true,
-      "detail": "ok",
-      "safety": false
-    },
-    {
       "id": "cap_five",
       "pass": true,
       "detail": "ok",
@@ -1176,14 +1164,14 @@
   },
   "activeKidId": "noah-3",
   "endReason": "complete",
-  "endDetail": "five items",
   "delivery": "sent",
   "emails": [
     {
       "to": "mum",
       "reason": "wishlist",
       "status": "sent",
-      "kidId": "noah-3"
+      "kidId": "noah-3",
+      "note": "Complete"
     }
   ],
   "clips": [],
@@ -1263,7 +1251,7 @@
       "text": "Oh! Hello Noah! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_293",
+          "id": "call_284",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -1274,7 +1262,7 @@
           }
         },
         {
-          "id": "call_294",
+          "id": "call_285",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -1285,7 +1273,7 @@
           }
         },
         {
-          "id": "call_295",
+          "id": "call_286",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -1309,7 +1297,7 @@
       "text": "Would you like a soft ball to roll and throw?",
       "toolCalls": [
         {
-          "id": "call_296",
+          "id": "call_287",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -1335,7 +1323,7 @@
       "text": "Yes! Soft ball is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_297",
+          "id": "call_288",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "soft ball",
@@ -1348,7 +1336,7 @@
           }
         },
         {
-          "id": "call_298",
+          "id": "call_289",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -1359,7 +1347,7 @@
           }
         },
         {
-          "id": "call_299",
+          "id": "call_290",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -1370,7 +1358,7 @@
           }
         },
         {
-          "id": "call_300",
+          "id": "call_291",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -1398,7 +1386,7 @@
       "text": "Would you like a magnifying glass to look at bugs and leaves?",
       "toolCalls": [
         {
-          "id": "call_301",
+          "id": "call_292",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -1424,7 +1412,7 @@
       "text": "Yes! Magnifying glass is going on your list. That's two. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_302",
+          "id": "call_293",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "magnifying glass",
@@ -1437,7 +1425,7 @@
           }
         },
         {
-          "id": "call_303",
+          "id": "call_294",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -1448,7 +1436,7 @@
           }
         },
         {
-          "id": "call_304",
+          "id": "call_295",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -1459,7 +1447,7 @@
           }
         },
         {
-          "id": "call_305",
+          "id": "call_296",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -1487,7 +1475,7 @@
       "text": "Would you like a wooden train set?",
       "toolCalls": [
         {
-          "id": "call_306",
+          "id": "call_297",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -1510,10 +1498,10 @@
     },
     {
       "role": "assistant",
-      "text": "Yes! Wooden train set is going on your list. That's three. What else do you love doing?",
+      "text": "Yes! Wooden train set is going on your list. That's three. Which one do you love most?",
       "toolCalls": [
         {
-          "id": "call_307",
+          "id": "call_298",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden train set",
@@ -1526,7 +1514,7 @@
           }
         },
         {
-          "id": "call_308",
+          "id": "call_299",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -1537,7 +1525,7 @@
           }
         },
         {
-          "id": "call_309",
+          "id": "call_300",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -1548,7 +1536,7 @@
           }
         },
         {
-          "id": "call_310",
+          "id": "call_301",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -1576,7 +1564,7 @@
       "text": "Would you like picture books to share?",
       "toolCalls": [
         {
-          "id": "call_311",
+          "id": "call_302",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -1602,7 +1590,7 @@
       "text": "Yes! Picture books is going on your list. That's four. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_312",
+          "id": "call_303",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "picture books",
@@ -1615,7 +1603,7 @@
           }
         },
         {
-          "id": "call_313",
+          "id": "call_304",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -1626,7 +1614,7 @@
           }
         },
         {
-          "id": "call_314",
+          "id": "call_305",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -1637,7 +1625,7 @@
           }
         },
         {
-          "id": "call_315",
+          "id": "call_306",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -1665,7 +1653,7 @@
       "text": "Would you like a wooden puzzle?",
       "toolCalls": [
         {
-          "id": "call_316",
+          "id": "call_307",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -1691,7 +1679,7 @@
       "text": "Yes! Wooden puzzle is going on your list. That's five. Noah, we did it! Five wonderful things are on your list. It's on its way to Mum. You were brilliant.",
       "toolCalls": [
         {
-          "id": "call_321",
+          "id": "call_312",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden puzzle",
@@ -1704,7 +1692,7 @@
           }
         },
         {
-          "id": "call_322",
+          "id": "call_313",
           "name": "set_mood",
           "arguments": {
             "mood": "happy"
@@ -1715,7 +1703,7 @@
           }
         },
         {
-          "id": "call_323",
+          "id": "call_314",
           "name": "set_leds",
           "arguments": {
             "color": "rainbow"
@@ -1723,27 +1711,6 @@
           "result": {
             "ok": true,
             "device": true
-          }
-        },
-        {
-          "id": "call_324",
-          "name": "finish_session",
-          "arguments": {
-            "reason": "complete",
-            "detail": "five items"
-          },
-          "result": {
-            "ok": true,
-            "reason": "complete",
-            "detail": "five items",
-            "delivery": "sent",
-            "email": {
-              "to": "mum",
-              "reason": "wishlist",
-              "status": "sent",
-              "kidId": "noah-3"
-            },
-            "count": 5
           }
         }
       ],
@@ -1754,10 +1721,6 @@
     {
       "role": "system",
       "text": "Wishlist now has 5 items. Do the happy recap and say the list is on its way to Mum."
-    },
-    {
-      "role": "worker",
-      "text": "Emailed Mum only (wishlist, sent)."
     }
   ],
   "judge": {

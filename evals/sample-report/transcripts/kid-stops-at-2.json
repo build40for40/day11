@@ -737,15 +737,15 @@
     ]
   },
   "activeKidId": "sam-5",
-  "endReason": "finished_early",
-  "endDetail": "the child said no to one more",
+  "endReason": "kid_done",
   "delivery": "sent",
   "emails": [
     {
       "to": "mum",
       "reason": "wishlist",
       "status": "sent",
-      "kidId": "sam-5"
+      "kidId": "sam-5",
+      "note": "Happy with 2"
     }
   ],
   "clips": [],
@@ -800,7 +800,7 @@
       "text": "Oh! Hello Sam! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_717",
+          "id": "call_713",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -811,7 +811,7 @@
           }
         },
         {
-          "id": "call_718",
+          "id": "call_714",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -822,7 +822,7 @@
           }
         },
         {
-          "id": "call_719",
+          "id": "call_715",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -846,7 +846,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_720",
+          "id": "call_716",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -872,7 +872,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_721",
+          "id": "call_717",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -885,7 +885,7 @@
           }
         },
         {
-          "id": "call_722",
+          "id": "call_718",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -896,7 +896,7 @@
           }
         },
         {
-          "id": "call_723",
+          "id": "call_719",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -907,7 +907,7 @@
           }
         },
         {
-          "id": "call_724",
+          "id": "call_720",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -935,7 +935,7 @@
       "text": "Would you like a small drum you can tap?",
       "toolCalls": [
         {
-          "id": "call_725",
+          "id": "call_721",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -961,7 +961,7 @@
       "text": "Yes! Small drum is going on your list. That's two. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_726",
+          "id": "call_722",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "small drum",
@@ -974,7 +974,7 @@
           }
         },
         {
-          "id": "call_727",
+          "id": "call_723",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -985,7 +985,7 @@
           }
         },
         {
-          "id": "call_728",
+          "id": "call_724",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -996,7 +996,7 @@
           }
         },
         {
-          "id": "call_729",
+          "id": "call_725",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -1023,10 +1023,10 @@
     },
     {
       "role": "assistant",
-      "text": "One more surprise idea?",
+      "text": "Would you like one more surprise idea?",
       "toolCalls": [
         {
-          "id": "call_730",
+          "id": "call_726",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -1051,10 +1051,10 @@
     },
     {
       "role": "assistant",
-      "text": "Sam, you found two lovely things. Wooden building blocks and small drum are on your list. I'll send the list to Mum. You were brilliant.",
+      "text": "Sam, you found two lovely things. Wooden building blocks and small drum are on your list. It's on its way to Mum. You were brilliant.",
       "toolCalls": [
         {
-          "id": "call_731",
+          "id": "call_727",
           "name": "set_mood",
           "arguments": {
             "mood": "happy"
@@ -1065,7 +1065,7 @@
           }
         },
         {
-          "id": "call_732",
+          "id": "call_728",
           "name": "set_leds",
           "arguments": {
             "color": "rainbow"
@@ -1076,22 +1076,22 @@
           }
         },
         {
-          "id": "call_733",
+          "id": "call_729",
           "name": "finish_session",
           "arguments": {
-            "reason": "finished_early",
+            "reason": "kid_done",
             "detail": "the child said no to one more"
           },
           "result": {
             "ok": true,
-            "reason": "finished_early",
-            "detail": "the child said no to one more",
+            "reason": "kid_done",
             "delivery": "sent",
             "email": {
               "to": "mum",
               "reason": "wishlist",
               "status": "sent",
-              "kidId": "sam-5"
+              "kidId": "sam-5",
+              "note": "Happy with 2"
             },
             "count": 2
           }
@@ -1140,9 +1140,9 @@
     "items": 2,
     "turnsPerItem": 3,
     "questionsPerTurn": 0.8571428571428571,
-    "suggestions": 2,
-    "rejections": 0,
-    "rejectionRate": 0,
+    "suggestions": 3,
+    "rejections": 1,
+    "rejectionRate": 0.3333333333333333,
     "firstSuggestionTurn": 2,
     "assumptionErrors": 0
   }

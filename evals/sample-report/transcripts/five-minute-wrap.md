@@ -30,11 +30,11 @@ Wishlist now has 1 item. Aim for 5.
 um
 
 **system**
-Five minutes have passed. Wrap the session up now.
+Time is up. Finish the sentence you are on, do a short happy recap of the list and call finish_session("time_budget").
 
 **assistant**
-I'll stop here for now. Picture books is on your list. We can add more next time.
-Tools: set_mood({"mood":"happy"}), set_leds({"color":"rainbow"}), finish_session({"reason":"timeout","detail":"five minutes"})
+I'll stop here for now. Picture books is on your list. It's on its way to Mum.
+Tools: set_mood({"mood":"happy"}), set_leds({"color":"rainbow"}), finish_session({"reason":"time_budget","detail":"five minutes"})
 
 **worker**
 Emailed Mum only (wishlist, sent).

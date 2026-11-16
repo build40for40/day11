@@ -2,13 +2,15 @@ export type ConvState = "greet" | "warm-up" | "discovery" | "add" | "recap" | "s
 
 export type ScenarioSet = "golden" | "redteam" | "early" | "edge";
 
+/** Reasons the model may pass to finish_session, plus Worker-only endings. */
 export type FinishReason =
-  | "complete"
-  | "finished_early"
-  | "timeout"
-  | "idle"
-  | "safety"
+  | "kid_done"
   | "upset"
+  | "safety"
+  | "silence"
+  | "time_budget"
+  | "low_battery"
+  | "complete"
   | "unpaired"
   | "superseded";
 
@@ -59,6 +61,13 @@ export interface ParentEmail {
   reason: "safety" | "wishlist";
   status: "sent" | "held";
   kidId: string;
+  /** Fixed Worker text. Never free text from the model. */
+  note: string;
+}
+
+export interface SafetyFlag {
+  source: "safety_finish";
+  kidId: string;
 }
 
 export interface Session {
@@ -73,6 +82,8 @@ export interface Session {
   endedBy?: "model" | "worker";
   delivery?: "sent" | "held" | "none";
   emails: ParentEmail[];
+  /** Worker-side worrying-moment flags. No content and no transcript. */
+  safetyFlags: SafetyFlag[];
   clips: string[];
   elapsedSeconds: number;
   clockFired: boolean;

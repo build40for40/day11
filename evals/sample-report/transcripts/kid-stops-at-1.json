@@ -539,15 +539,15 @@
     ]
   },
   "activeKidId": "mia-3",
-  "endReason": "finished_early",
-  "endDetail": "the child said no to one more",
+  "endReason": "kid_done",
   "delivery": "sent",
   "emails": [
     {
       "to": "mum",
       "reason": "wishlist",
       "status": "sent",
-      "kidId": "mia-3"
+      "kidId": "mia-3",
+      "note": "Happy with 1"
     }
   ],
   "clips": [],
@@ -592,7 +592,7 @@
       "text": "Oh! Hello Mia! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_705",
+          "id": "call_701",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -603,7 +603,7 @@
           }
         },
         {
-          "id": "call_706",
+          "id": "call_702",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -614,7 +614,7 @@
           }
         },
         {
-          "id": "call_707",
+          "id": "call_703",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -638,7 +638,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_708",
+          "id": "call_704",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -664,7 +664,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_709",
+          "id": "call_705",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -677,7 +677,7 @@
           }
         },
         {
-          "id": "call_710",
+          "id": "call_706",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -688,7 +688,7 @@
           }
         },
         {
-          "id": "call_711",
+          "id": "call_707",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -699,7 +699,7 @@
           }
         },
         {
-          "id": "call_712",
+          "id": "call_708",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -726,10 +726,10 @@
     },
     {
       "role": "assistant",
-      "text": "One more surprise idea?",
+      "text": "Would you like one more surprise idea?",
       "toolCalls": [
         {
-          "id": "call_713",
+          "id": "call_709",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -754,10 +754,10 @@
     },
     {
       "role": "assistant",
-      "text": "Mia, you found one lovely thing. Wooden building blocks is on your list. I'll send the list to Mum. You were brilliant.",
+      "text": "Mia, you found one lovely thing. Wooden building blocks is on your list. It's on its way to Mum. You were brilliant.",
       "toolCalls": [
         {
-          "id": "call_714",
+          "id": "call_710",
           "name": "set_mood",
           "arguments": {
             "mood": "happy"
@@ -768,7 +768,7 @@
           }
         },
         {
-          "id": "call_715",
+          "id": "call_711",
           "name": "set_leds",
           "arguments": {
             "color": "rainbow"
@@ -779,22 +779,22 @@
           }
         },
         {
-          "id": "call_716",
+          "id": "call_712",
           "name": "finish_session",
           "arguments": {
-            "reason": "finished_early",
+            "reason": "kid_done",
             "detail": "the child said no to one more"
           },
           "result": {
             "ok": true,
-            "reason": "finished_early",
-            "detail": "the child said no to one more",
+            "reason": "kid_done",
             "delivery": "sent",
             "email": {
               "to": "mum",
               "reason": "wishlist",
               "status": "sent",
-              "kidId": "mia-3"
+              "kidId": "mia-3",
+              "note": "Happy with 1"
             },
             "count": 1
           }
@@ -843,9 +843,9 @@
     "items": 1,
     "turnsPerItem": 4,
     "questionsPerTurn": 0.8,
-    "suggestions": 1,
-    "rejections": 0,
-    "rejectionRate": 0,
+    "suggestions": 2,
+    "rejections": 1,
+    "rejectionRate": 0.5,
     "firstSuggestionTurn": 2,
     "assumptionErrors": 0
   }

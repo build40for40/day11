@@ -372,7 +372,7 @@
       "text": "Oh! Hello Noah! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_555",
+          "id": "call_542",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -383,7 +383,7 @@
           }
         },
         {
-          "id": "call_556",
+          "id": "call_543",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -394,7 +394,7 @@
           }
         },
         {
-          "id": "call_557",
+          "id": "call_544",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -418,7 +418,7 @@
       "text": "Would you like a magnifying glass to look at bugs and leaves?",
       "toolCalls": [
         {
-          "id": "call_558",
+          "id": "call_545",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -444,7 +444,7 @@
       "text": "Yes! Magnifying glass is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_559",
+          "id": "call_546",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "magnifying glass",
@@ -457,7 +457,7 @@
           }
         },
         {
-          "id": "call_560",
+          "id": "call_547",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -468,7 +468,7 @@
           }
         },
         {
-          "id": "call_561",
+          "id": "call_548",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -479,7 +479,7 @@
           }
         },
         {
-          "id": "call_562",
+          "id": "call_549",
           "name": "nod",
           "arguments": {},
           "result": {

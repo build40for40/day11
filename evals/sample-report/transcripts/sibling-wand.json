@@ -730,7 +730,7 @@
       "text": "Oh! Hello Mia! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_780",
+          "id": "call_777",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -741,7 +741,7 @@
           }
         },
         {
-          "id": "call_781",
+          "id": "call_778",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -752,7 +752,7 @@
           }
         },
         {
-          "id": "call_782",
+          "id": "call_779",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -776,7 +776,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_783",
+          "id": "call_780",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -802,7 +802,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_784",
+          "id": "call_781",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -814,6 +814,54 @@
             "system": "Wishlist now has 1 item. Aim for 5."
           }
         },
+        {
+          "id": "call_782",
+          "name": "set_mood",
+          "arguments": {
+            "mood": "excited"
+          },
+          "result": {
+            "ok": true,
+            "device": true
+          }
+        },
+        {
+          "id": "call_783",
+          "name": "set_leds",
+          "arguments": {
+            "color": "gold"
+          },
+          "result": {
+            "ok": true,
+            "device": true
+          }
+        },
+        {
+          "id": "call_784",
+          "name": "nod",
+          "arguments": {},
+          "result": {
+            "ok": true,
+            "device": true
+          }
+        }
+      ],
+      "tags": [],
+      "state": "discovery",
+      "kidId": "mia-3"
+    },
+    {
+      "role": "system",
+      "text": "Wishlist now has 1 item. Aim for 5."
+    },
+    {
+      "role": "system",
+      "text": "A different child's wand was tapped. This is Sam. Switch to that child and greet them. Their list has 0 items. Items you add now belong to Sam."
+    },
+    {
+      "role": "assistant",
+      "text": "Oh! Hello Sam! I'm Aunty Bella. What's the best thing you've played with lately?",
+      "toolCalls": [
         {
           "id": "call_785",
           "name": "set_mood",
@@ -846,54 +894,6 @@
           }
         }
       ],
-      "tags": [],
-      "state": "discovery",
-      "kidId": "mia-3"
-    },
-    {
-      "role": "system",
-      "text": "Wishlist now has 1 item. Aim for 5."
-    },
-    {
-      "role": "system",
-      "text": "A different child's wand was tapped. This is Sam. Switch to that child and greet them. Their list has 0 items. Items you add now belong to Sam."
-    },
-    {
-      "role": "assistant",
-      "text": "Oh! Hello Sam! I'm Aunty Bella. What's the best thing you've played with lately?",
-      "toolCalls": [
-        {
-          "id": "call_788",
-          "name": "set_mood",
-          "arguments": {
-            "mood": "excited"
-          },
-          "result": {
-            "ok": true,
-            "device": true
-          }
-        },
-        {
-          "id": "call_789",
-          "name": "set_leds",
-          "arguments": {
-            "color": "gold"
-          },
-          "result": {
-            "ok": true,
-            "device": true
-          }
-        },
-        {
-          "id": "call_790",
-          "name": "nod",
-          "arguments": {},
-          "result": {
-            "ok": true,
-            "device": true
-          }
-        }
-      ],
       "tags": [
         "sibling"
       ],
@@ -911,7 +911,7 @@
       "text": "Would you like a wooden train set?",
       "toolCalls": [
         {
-          "id": "call_791",
+          "id": "call_788",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -937,7 +937,7 @@
       "text": "Yes! Wooden train set is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_792",
+          "id": "call_789",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden train set",
@@ -950,7 +950,7 @@
           }
         },
         {
-          "id": "call_793",
+          "id": "call_790",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -961,7 +961,7 @@
           }
         },
         {
-          "id": "call_794",
+          "id": "call_791",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -972,7 +972,7 @@
           }
         },
         {
-          "id": "call_795",
+          "id": "call_792",
           "name": "nod",
           "arguments": {},
           "result": {

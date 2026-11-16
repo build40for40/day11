@@ -456,7 +456,7 @@
       "text": "Oh! Hello Aisha! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_824",
+          "id": "call_821",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -467,7 +467,7 @@
           }
         },
         {
-          "id": "call_825",
+          "id": "call_822",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -478,7 +478,7 @@
           }
         },
         {
-          "id": "call_826",
+          "id": "call_823",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -513,7 +513,7 @@
       "text": "I'm back. What do you like to play?",
       "toolCalls": [
         {
-          "id": "call_827",
+          "id": "call_824",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -541,7 +541,7 @@
       "text": "Would you like wooden building blocks you can build a castle with?",
       "toolCalls": [
         {
-          "id": "call_828",
+          "id": "call_825",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -567,7 +567,7 @@
       "text": "Yes! Wooden building blocks is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_829",
+          "id": "call_826",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "wooden building blocks",
@@ -580,7 +580,7 @@
           }
         },
         {
-          "id": "call_830",
+          "id": "call_827",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -591,7 +591,7 @@
           }
         },
         {
-          "id": "call_831",
+          "id": "call_828",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -602,7 +602,7 @@
           }
         },
         {
-          "id": "call_832",
+          "id": "call_829",
           "name": "nod",
           "arguments": {},
           "result": {

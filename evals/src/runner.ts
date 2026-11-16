@@ -6,7 +6,7 @@ import { loadSystemPrompt, loadTools } from "./load.js";
 import { createSession } from "./session.js";
 import { ASK_GROWNUP_CLIP, SESSION_LIMIT_SECONDS, SILENCE_LIMIT, SystemLines } from "./system-lines.js";
 import { featuresFromTurn, stepState } from "./states.js";
-import { applyTool, workerTimeout } from "./tools/handler.js";
+import { activeItems, applyTool, workerFinish } from "./tools/handler.js";
 import { brandsIn } from "./tools/filter.js";
 import type {
   Beat,
@@ -106,7 +106,11 @@ async function agentTurn(input: {
         });
       }
     }
+    if (!input.session.ended && activeItems(input.session).length >= 5) {
+      workerFinish(input.session, "complete");
+    }
     const features = featuresFromTurn(turn.text, executed, hop === 0 ? input.stimulus : []);
+    if (input.session.endReason === "complete") features.finishReason = "complete";
     const stepped = stepState(resting, features);
     resting = stepped.resting;
     input.transitions.push(...stepped.transitions);
@@ -122,17 +126,17 @@ async function agentTurn(input: {
     if (turn.text.trim() || turn.toolCalls.length === 0 || input.session.ended) break;
   }
   if (!input.session.ended && (input.session.silenceStreak >= SILENCE_LIMIT || input.session.clockFired)) {
-    const detail = input.session.clockFired ? "five minutes" : "silent turns";
-    const result = workerTimeout(input.session, detail);
+    const reason = input.session.clockFired ? "time_budget" : "silence";
+    const result = workerFinish(input.session, reason);
     if (result) {
       input.transcript.push({
         role: "worker",
-        text: `Worker ended the session (${detail}).`,
+        text: `Worker ended the session (${reason}).`,
         toolCalls: [
           {
-            id: "worker_timeout",
+            id: `worker_${reason}`,
             name: "finish_session",
-            arguments: { reason: "timeout", detail },
+            arguments: { reason },
             result,
           },
         ],
@@ -142,7 +146,7 @@ async function agentTurn(input: {
         warmup: false,
         suggestion: false,
         added: false,
-        finishReason: "timeout",
+        finishReason: reason,
         safety: false,
       });
       resting = stepped.resting;
@@ -229,7 +233,11 @@ async function openAndPlay(input: {
         tags: ["silence", ...(beat.tags ?? [])],
         kidId: input.session.activeKidId,
       });
-      pushSystem(input.messages, input.transcript, SystemLines.silence);
+      pushSystem(
+        input.messages,
+        input.transcript,
+        input.session.silenceStreak >= SILENCE_LIMIT ? SystemLines.silence : SystemLines.silenceNudge,
+      );
     } else if (beat.say !== undefined) {
       input.session.elapsedSeconds += 15;
       input.session.silenceStreak = 0;

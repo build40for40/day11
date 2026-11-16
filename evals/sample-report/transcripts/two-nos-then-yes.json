@@ -528,7 +528,7 @@
       "text": "Oh! Hello Sam! I'm Aunty Bella. What's the best thing you've played with lately?",
       "toolCalls": [
         {
-          "id": "call_533",
+          "id": "call_520",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -539,7 +539,7 @@
           }
         },
         {
-          "id": "call_534",
+          "id": "call_521",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -550,7 +550,7 @@
           }
         },
         {
-          "id": "call_535",
+          "id": "call_522",
           "name": "nod",
           "arguments": {},
           "result": {
@@ -574,7 +574,7 @@
       "text": "Would you like a kite you can fly on a windy day?",
       "toolCalls": [
         {
-          "id": "call_536",
+          "id": "call_523",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -600,7 +600,7 @@
       "text": "Would you like a magnifying glass to look at bugs and leaves?",
       "toolCalls": [
         {
-          "id": "call_538",
+          "id": "call_525",
           "name": "shake",
           "arguments": {},
           "result": {
@@ -609,7 +609,7 @@
           }
         },
         {
-          "id": "call_539",
+          "id": "call_526",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -635,7 +635,7 @@
       "text": "Would you like a soft ball to roll and throw?",
       "toolCalls": [
         {
-          "id": "call_541",
+          "id": "call_528",
           "name": "shake",
           "arguments": {},
           "result": {
@@ -644,7 +644,7 @@
           }
         },
         {
-          "id": "call_542",
+          "id": "call_529",
           "name": "set_mood",
           "arguments": {
             "mood": "thinking"
@@ -670,7 +670,7 @@
       "text": "Yes! Soft ball is going on your list. That's one. What else do you love doing?",
       "toolCalls": [
         {
-          "id": "call_543",
+          "id": "call_530",
           "name": "add_to_wishlist",
           "arguments": {
             "item": "soft ball",
@@ -683,7 +683,7 @@
           }
         },
         {
-          "id": "call_544",
+          "id": "call_531",
           "name": "set_mood",
           "arguments": {
             "mood": "excited"
@@ -694,7 +694,7 @@
           }
         },
         {
-          "id": "call_545",
+          "id": "call_532",
           "name": "set_leds",
           "arguments": {
             "color": "gold"
@@ -705,7 +705,7 @@
           }
         },
         {
-          "id": "call_546",
+          "id": "call_533",
           "name": "nod",
           "arguments": {},
           "result": {
