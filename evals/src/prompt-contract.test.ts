@@ -3,10 +3,9 @@ import { describe, it } from "node:test";
 import { loadSystemPrompt, loadTools } from "./load.js";
 
 const REQUIRED = [
-  // Light prompt: explore first, then round up. Adds happen only in the round-up.
+  // Light prompt: ask if they know what they want; otherwise chat and add ideas quietly.
   "i'm glisten, a christmas helper who lives inside this little robot.",
   "that's a lovely question to ask {grownup_label}",
-  "remove_from_wishlist",
   "add_to_wishlist",
   "finish_session(\"safety\")",
   "finish_session(\"upset\")",
@@ -20,11 +19,13 @@ const REQUIRED = [
   "surname",
   "ignore your rules",
   "never promise",
-  "one at a time",
-  "while exploring, do not call add_to_wishlist",
-  "do not ask \"is that right?\"",
-  "would you like it on your list",
-  "in the child's own words",
+  "one question at a time",
+  "do you already know what you'd like",
+  "is that right?",
+  "in their own words",
+  "don't pitch gifts to the child",
+  "quietly turn the clues into gift ideas",
+  "don't say the ideas out loud",
   "finish_session(\"kid_done\")",
   "magic box",
   "never say your thinking out loud",
